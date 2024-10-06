@@ -1,41 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:dsa_rapid/Dashboard.dart';
 import 'package:dsa_rapid/UI_Helper/UI.dart';
+import 'package:dsa_rapid/Dashboard.dart';
 
 
-class InsertionSort extends StatelessWidget {
+
+class MergeSort extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Insertion Sort Visualizer',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: InsertionSortScreen(),
+      title: 'Merge Sort Visualizer',
+      debugShowCheckedModeBanner: false, // Disable the debug banner
+      // theme: ThemeData(
+      //   primarySwatch: Colors.blue,
+      // ),
+      home: MergeSortScreen(),
     );
   }
 }
 
-class InsertionSortScreen extends StatefulWidget {
+class MergeSortScreen extends StatefulWidget {
   @override
-  _InsertionSortScreenState createState() => _InsertionSortScreenState();
+  _MergeSortScreenState createState() => _MergeSortScreenState();
 }
 
-class _InsertionSortScreenState extends State<InsertionSortScreen> {
+class _MergeSortScreenState extends State<MergeSortScreen> {
   List<int> array = []; // Initially empty array
-  int? currentIndex; // For visual representation of current index
-  int? sortedIndex; // To show the sorted part
+  int? leftIndex; // For visual representation of left index
+  int? rightIndex; // For visual representation of right index
   bool sorting = false; // State for sort animation
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Insertion Sort Visualizer'),
-        backgroundColor: Colors.purple,
-        titleTextStyle: TextStyle(color: Colors.white),
-      ),
+      appBar: mtext(),
       body: Column(
         children: [
           Expanded(
@@ -83,7 +80,7 @@ class _InsertionSortScreenState extends State<InsertionSortScreen> {
                 ),
               ),
               ElevatedButton(
-                onPressed: sorting ? null : _startInsertionSort,
+                onPressed: sorting ? null : () => _startMergeSort(0, array.length - 1),
                 child: Text('Sort'),
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
@@ -102,8 +99,8 @@ class _InsertionSortScreenState extends State<InsertionSortScreen> {
   void _createDefaultArray() {
     setState(() {
       array = [35, 12, 99, 24, 50, 1, 89, 63, 16]; // Default array
-      currentIndex = null;
-      sortedIndex = null;
+      leftIndex = null;
+      rightIndex = null;
     });
   }
 
@@ -111,8 +108,8 @@ class _InsertionSortScreenState extends State<InsertionSortScreen> {
   void _clearArray() {
     setState(() {
       array = []; // Clear the array
-      currentIndex = null;
-      sortedIndex = null;
+      leftIndex = null;
+      rightIndex = null;
     });
   }
 
@@ -135,11 +132,9 @@ class _InsertionSortScreenState extends State<InsertionSortScreen> {
           height: 100, // Fixed height for all bars
           width: 60,
           duration: Duration(milliseconds: 300),
-          color: (index == currentIndex)
-              ? Colors.red // Highlight current index
-              : (index <= (sortedIndex ?? -1))
-                  ? Colors.green // Sorted part
-                  : Colors.purple, // Default bar color
+          color: (index == leftIndex || index == rightIndex)
+              ? Colors.red // Highlight current merge indices
+              : Colors.purple, // Default bar color
           alignment: Alignment.bottomCenter,
           child: Center(
             child: Text(
@@ -156,35 +151,13 @@ class _InsertionSortScreenState extends State<InsertionSortScreen> {
     });
   }
 
-  // Perform insertion sort with animation
-  Future<void> _startInsertionSort() async {
+  // Perform merge sort with animation
+  Future<void> _startMergeSort(int left, int right) async {
     setState(() {
       sorting = true;
     });
 
-    for (int i = 1; i < array.length; i++) {
-      int key = array[i];
-      int j = i - 1;
-
-      while (j >= 0 && array[j] > key) {
-        setState(() {
-          currentIndex = j; // Highlight current comparison
-        });
-        await Future.delayed(Duration(milliseconds: 500)); // Delay for animation
-
-        setState(() {
-          array[j + 1] = array[j]; // Move the greater element one position up
-        });
-        j = j - 1;
-      }
-      
-      setState(() {
-        array[j + 1] = key;
-        sortedIndex = i; // Update sorted part of the array
-        currentIndex = null;
-      });
-      await Future.delayed(Duration(milliseconds: 500)); // Delay for animation
-    }
+    await _mergeSort(left, right);
 
     setState(() {
       sorting = false;
@@ -195,6 +168,84 @@ class _InsertionSortScreenState extends State<InsertionSortScreen> {
         content: Text('Array sorted successfully!'),
       ),
     );
+  }
+
+  // Merge sort algorithm
+  Future<void> _mergeSort(int left, int right) async {
+    if (left < right) {
+      int mid = (left + right) ~/ 2;
+
+      await _mergeSort(left, mid); // Sort first half
+      await _mergeSort(mid + 1, right); // Sort second half
+      await _merge(left, mid, right); // Merge the sorted halves
+    }
+  }
+
+  // Merge two subarrays with animation
+  Future<void> _merge(int left, int mid, int right) async {
+    List<int> leftArray = List.from(array.sublist(left, mid + 1));
+    List<int> rightArray = List.from(array.sublist(mid + 1, right + 1));
+
+    int i = 0, j = 0, k = left;
+
+    while (i < leftArray.length && j < rightArray.length) {
+      setState(() {
+        leftIndex = left + i;
+        rightIndex = mid + 1 + j;
+      });
+
+      await Future.delayed(Duration(milliseconds: 500)); // Animation delay
+
+      if (leftArray[i] <= rightArray[j]) {
+        setState(() {
+          array[k] = leftArray[i];
+        });
+        i++;
+      } else {
+        setState(() {
+          array[k] = rightArray[j];
+        });
+        j++;
+      }
+      k++;
+    }
+
+    // Copy remaining elements of leftArray
+    while (i < leftArray.length) {
+      setState(() {
+        leftIndex = left + i;
+        rightIndex = null; // No comparison
+      });
+
+      await Future.delayed(Duration(milliseconds: 500));
+
+      setState(() {
+        array[k] = leftArray[i];
+      });
+      i++;
+      k++;
+    }
+
+    // Copy remaining elements of rightArray
+    while (j < rightArray.length) {
+      setState(() {
+        leftIndex = null; // No comparison
+        rightIndex = mid + 1 + j;
+      });
+
+      await Future.delayed(Duration(milliseconds: 500));
+
+      setState(() {
+        array[k] = rightArray[j];
+      });
+      j++;
+      k++;
+    }
+
+    setState(() {
+      leftIndex = null;
+      rightIndex = null;
+    });
   }
 
   // Generalized input dialog to get user input

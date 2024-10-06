@@ -21,7 +21,7 @@ class StackScreen extends StatefulWidget {
   _StackScreenState createState() => _StackScreenState();
 }
 
-class _StackScreenState extends State<StackScreen> {
+class _StackScreenState extends State<StackScreen> {  
   List<int> stack = []; // Stack to hold elements
   int? topIndex; // For visual representation of the top of the stack
   bool isEmpty = true;
