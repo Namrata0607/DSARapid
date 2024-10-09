@@ -62,114 +62,116 @@ class _HomeState extends State<Home> {
         body: Container(
           child: Row(
             children: [
-              Container(
-                padding: EdgeInsets.all(10),
-                color: Color.fromARGB(255, 199, 167, 255),
-                height: 1000,
-                width: 300,
-        // margin: EdgeInsets.all(16.0), // Add margin around the Column
-        child: Column(
-          children: [
-            Center(
-              child: Container(
-                child: CircleAvatar(
-                  backgroundImage: AssetImage("assets/images/profile.png"),
-                  radius: 90,
+              SingleChildScrollView(
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  color: Color.fromARGB(255, 199, 167, 255),
+                  height: 1000,
+                  width: 300,
+                        // margin: EdgeInsets.all(16.0), // Add margin around the Column
+                        child: Column(
+                          children: [
+                            Center(
+                child: Container(
+                  child: CircleAvatar(
+                    backgroundImage: AssetImage("assets/images/profile.png"),
+                    radius: 90,
+                  ),
                 ),
+                            ),
+                            // Profile information section
+                            SizedBox(height: 16.0), // Adds spacing between the image and the next row
+                            Column(
+                children: [
+                  ListTile(
+                    leading: Icon(Icons.person),
+                    title: Text("Name:"),
+                    subtitle: Text("Namrata Daphale"), // Replace with dynamic data if needed
+                    onTap: () {
+                      // Add onTap functionality if needed
+                    },
+                  ),
+                  Divider(), // Optional: Adds a divider line between items
+                  ListTile(
+                    leading: Icon(Icons.confirmation_number),
+                    title: Text("Roll Number:"),
+                    subtitle: Text("66"), // Replace with dynamic data if needed
+                    onTap: () {
+                      // Add onTap functionality if needed
+                    },
+                  ),
+                  Divider(), // Optional: Adds a divider line between items
+                  ListTile(
+                    leading: Icon(Icons.group),
+                    title: Text("Division:"),
+                    subtitle: Text("C"), // Replace with dynamic data if needed
+                    onTap: () {
+                      // Add onTap functionality if needed
+                    },
+                  ),
+                  Divider(), // Optional: Adds a divider line between items
+                  ListTile(
+                    leading: Icon(Icons.class_),
+                    title: Text("Class:"),
+                    subtitle: Text("B.Tech"), // Replace with dynamic data if needed
+                    onTap: () {
+                      // Add onTap functionality if needed
+                    },
+                  ),
+                ],
+                            ),
+                
+                            SizedBox(height: 16.0), // Adds spacing between the rows
+                            Row(
+                 mainAxisAlignment: MainAxisAlignment.center, // Centers children vertically
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 50, // Set the desired height
+                    width: 250, // Set the desired width
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(255, 105, 1, 161), // Set the button's background color
+                      ),
+                      onPressed: _Viewprofile,
+                      child: Text(
+                        'View profile',
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+                            ),
+                
+                            SizedBox(height: 16.0), // Adds spacing between the rows
+                            Row(
+                 mainAxisAlignment: MainAxisAlignment.center, // Centers children vertically
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 50, // Set the desired height
+                    width: 250, // Set the desired width
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(255, 105, 1, 161), // Set the button's background color
+                      ),
+                      onPressed: _Updateprofile,
+                      child: Text(
+                        'Update profile',
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+                            ),
+                          ],
+                        ),
+                      ),
               ),
-            ),
-            // Profile information section
-            SizedBox(height: 16.0), // Adds spacing between the image and the next row
-            Column(
-              children: [
-                ListTile(
-                  leading: Icon(Icons.person),
-                  title: Text("Name:"),
-                  subtitle: Text("Namrata Daphale"), // Replace with dynamic data if needed
-                  onTap: () {
-                    // Add onTap functionality if needed
-                  },
-                ),
-                Divider(), // Optional: Adds a divider line between items
-                ListTile(
-                  leading: Icon(Icons.confirmation_number),
-                  title: Text("Roll Number:"),
-                  subtitle: Text("66"), // Replace with dynamic data if needed
-                  onTap: () {
-                    // Add onTap functionality if needed
-                  },
-                ),
-                Divider(), // Optional: Adds a divider line between items
-                ListTile(
-                  leading: Icon(Icons.group),
-                  title: Text("Division:"),
-                  subtitle: Text("C"), // Replace with dynamic data if needed
-                  onTap: () {
-                    // Add onTap functionality if needed
-                  },
-                ),
-                Divider(), // Optional: Adds a divider line between items
-                ListTile(
-                  leading: Icon(Icons.class_),
-                  title: Text("Class:"),
-                  subtitle: Text("B.Tech"), // Replace with dynamic data if needed
-                  onTap: () {
-                    // Add onTap functionality if needed
-                  },
-                ),
-              ],
-            ),
-
-            SizedBox(height: 16.0), // Adds spacing between the rows
-            Row(
-               mainAxisAlignment: MainAxisAlignment.center, // Centers children vertically
-                crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: 50, // Set the desired height
-                  width: 250, // Set the desired width
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 105, 1, 161), // Set the button's background color
-                    ),
-                    onPressed: _Viewprofile,
-                    child: Text(
-                      'View profile',
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            SizedBox(height: 16.0), // Adds spacing between the rows
-            Row(
-               mainAxisAlignment: MainAxisAlignment.center, // Centers children vertically
-                crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: 50, // Set the desired height
-                  width: 250, // Set the desired width
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 105, 1, 161), // Set the button's background color
-                    ),
-                    onPressed: _Updateprofile,
-                    child: Text(
-                      'Update profile',
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
               Expanded(child: myFunc(),)
             ],
           ),
@@ -292,8 +294,8 @@ return GridView.builder(
     itemCount: colorsList.length, // Number of items (colors)
     padding: EdgeInsets.all(10),
     itemBuilder: (context, index) {
-      return SizedBox(
-        height: 350, // Increased height
+      return FittedBox(
+        //height: 350, // Increased height
         child: Container(
           margin: EdgeInsets.all(10),
           // height: 500, // Increased height
@@ -378,8 +380,7 @@ return GridView.builder(
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color.fromARGB(255, 105, 1, 161),
-                            onPrimary: Color.fromARGB(255, 199, 167, 255),
+                            foregroundColor: Color.fromARGB(255, 199, 167, 255), backgroundColor: Color.fromARGB(255, 105, 1, 161),
                             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                           ),
                           child: Text(
