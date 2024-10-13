@@ -512,7 +512,7 @@ class _QuizScreenState extends State<QuizScreen> {
           child: Text('Submit Quiz'),
           style: ElevatedButton.styleFrom(
             padding: EdgeInsets.all(16.0),
-            primary: Color.fromARGB(255, 167, 69, 167),
+            // primary: Color.fromARGB(255, 167, 69, 167),
           ),
         ),
       ],
@@ -567,7 +567,7 @@ class _QuizScreenState extends State<QuizScreen> {
             child: Text('Restart Quiz'),
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.all(16.0),
-              primary: Colors.green,
+              // primary: Colors.green,
             ),
           ),
         ],
