@@ -26,6 +26,8 @@ class _LinearSearchScreenState extends State<LinearSearchScreen> {
   List<int> array = []; // Initially empty array
   int? currentIndex; // For visual representation of current index
   bool searching = false; // State for search animation
+  String currentAlgorithm = ""; // Holds the current algorithm
+  String currentOutput = ""; // Holds the step-by-step output
 
   @override
   Widget build(BuildContext context) {
@@ -38,60 +40,178 @@ class _LinearSearchScreenState extends State<LinearSearchScreen> {
       body: Column(
         children: [
           Expanded(
-            child: Center(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: array.isEmpty
-                      ? [
-                          Text(
-                            'Array is empty',
-                            style: TextStyle(fontSize: 18, color: Colors.red),
-                          )
-                        ]
-                      : _buildBars(),
+            child: Row(
+              children: [
+                // Left Container (for Algorithm and Output)
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: Colors.grey.shade300,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        // Algorithm section
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Algorithm',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple,
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentAlgorithm,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        // Output/Step-by-step explanation section
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Step-by-Step Output',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple,
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentOutput,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+                SizedBox(width: 10),
+                // Right Container (for Array Visualizer)
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Linear Search Visualizer',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purple,
+                          ),
+                        ),
+                        Divider(),
+                        Expanded(
+                          child: Center(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: array.isEmpty
+                                    ? [
+                                        Text(
+                                          'Array is empty',
+                                          style: TextStyle(
+                                              fontSize: 18, color: Colors.red),
+                                        )
+                                      ]
+                                    : _buildBars(),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              ElevatedButton(
-                onPressed: _createDefaultArray, // Create Default Button
-                child: Text('Create Default'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+          // Bottom Container (for Operation Buttons)
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            color: Colors.grey.shade100,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  onPressed: _createDefaultArray,
+                  child: Text('Create Default'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: _clearArray,
-                child: Text('Clear'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                ElevatedButton(
+                  onPressed: _clearArray,
+                  child: Text('Clear'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: () => _showInsertDialog(context),
-                child: Text('Insert'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                ElevatedButton(
+                  onPressed: () => _showInsertDialog(context),
+                  child: Text('Insert'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: searching ? null : () => _showFindValueDialog(context),
-                child: Text('Search'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                ElevatedButton(
+                  onPressed: searching ? null : () => _showFindValueDialog(context),
+                  child: Text('Search'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          SizedBox(height: 10),
         ],
       ),
     );
@@ -100,8 +220,16 @@ class _LinearSearchScreenState extends State<LinearSearchScreen> {
   // Create default array
   void _createDefaultArray() {
     setState(() {
-      array = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]; // Default array
+      array = [10, 20, 30, 40]; // Default array
       currentIndex = null;
+      currentAlgorithm = """
+1. Start from the first element.
+2. Compare the current element with the target value.
+3. If a match is found, return the index.
+4. If no match is found, continue to the next element.
+5. Repeat until the target value is found or the end of the array is reached.
+""";
+      currentOutput = "Default array created.";
     });
   }
 
@@ -110,6 +238,8 @@ class _LinearSearchScreenState extends State<LinearSearchScreen> {
     setState(() {
       array = []; // Clear the array
       currentIndex = null;
+      currentAlgorithm = "";
+      currentOutput = "Array cleared.";
     });
   }
 
@@ -119,6 +249,7 @@ class _LinearSearchScreenState extends State<LinearSearchScreen> {
     if (value != null) {
       setState(() {
         array.add(value); // Add element to array
+        currentOutput = "Inserted $value into the array.";
       });
     }
   }
@@ -139,9 +270,9 @@ class _LinearSearchScreenState extends State<LinearSearchScreen> {
         child: AnimatedContainer(
           height: 100, // Fixed height for all bars
           width: 60,
-          duration: Duration(milliseconds: 300),
+          duration: Duration(milliseconds: 500),
           color: (index == currentIndex)
-              ? Colors.red // Highlight current index
+              ? Color.fromARGB(255, 85, 255, 227) // Highlight current index
               : Colors.purple, // Default bar color
           alignment: Alignment.bottomCenter,
           child: Center(
@@ -162,10 +293,14 @@ class _LinearSearchScreenState extends State<LinearSearchScreen> {
   // Perform linear search with animation
   Future<void> _linearSearch(int value) async {
     searching = true;
+    currentOutput = ""; // Clear previous output
 
     for (int i = 0; i < array.length; i++) {
       setState(() {
         currentIndex = i; // Highlight current index
+        currentOutput += "Step ${i + 1}: Checking index $i\n"; // Update output
+        currentOutput += "Current Value: ${array[i]}\n"; // Show current value
+        currentOutput += "Comparing with target value: $value\n"; // Show comparison
       });
       await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
 
@@ -173,13 +308,17 @@ class _LinearSearchScreenState extends State<LinearSearchScreen> {
         // Found the value
         setState(() {
           currentIndex = i; // Highlight found index
+          currentOutput += "Match found!\n";
+          currentOutput += "Value $value found at index $i.\n"; // Update output
         });
-        await Future.delayed(Duration(seconds: 1));
+        await Future.delayed(Duration(seconds: 2));
         break;
+      } else {
+        currentOutput += "No match at index $i. Continuing search...\n"; // Update output for no match
       }
     }
 
-    // Show result in a snackbar
+    // Show result in a snackbar if not found
     if (currentIndex != null && array[currentIndex!] == value) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
