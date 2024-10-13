@@ -9,7 +9,6 @@ class BubbleSort extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Bubble Sort Visualizer',
-      debugShowCheckedModeBanner: false, // Disable the debug banner
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -25,10 +24,10 @@ class BubbleSortScreen extends StatefulWidget {
 
 class _BubbleSortScreenState extends State<BubbleSortScreen> {
   List<int> array = []; // Initially empty array
-  int? currentIndex; // For visual representation of the current index
-  int? compareIndex; // For the index being compared during sorting
+  int? currentIndex; // For visual representation of current index
   bool sorting = false; // State for sort animation
-  int? sortedIndex; // Tracks the sorted part of the array
+  String currentAlgorithm = ""; // Holds the current algorithm
+  String currentOutput = ""; // Holds the step-by-step output
 
   @override
   Widget build(BuildContext context) {
@@ -41,60 +40,178 @@ class _BubbleSortScreenState extends State<BubbleSortScreen> {
       body: Column(
         children: [
           Expanded(
-            child: Center(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: array.isEmpty
-                      ? [
-                          Text(
-                            'Array is empty',
-                            style: TextStyle(fontSize: 18, color: Colors.red),
-                          )
-                        ]
-                      : _buildBars(),
+            child: Row(
+              children: [
+                // Left Container (for Algorithm and Output)
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: Colors.grey.shade300,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        // Algorithm section
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Algorithm',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple,
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentAlgorithm,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        // Output/Step-by-step explanation section
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Step-by-Step Output',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple,
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentOutput,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+                SizedBox(width: 10),
+                // Right Container (for Array Visualizer)
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Bubble Sort Visualizer',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purple,
+                          ),
+                        ),
+                        Divider(),
+                        Expanded(
+                          child: Center(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: array.isEmpty
+                                    ? [
+                                        Text(
+                                          'Array is empty',
+                                          style: TextStyle(
+                                              fontSize: 18, color: Colors.red),
+                                        )
+                                      ]
+                                    : _buildBars(),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              ElevatedButton(
-                onPressed: _createDefaultArray, // Create Default Button
-                child: Text('Create Default'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+          // Bottom Container (for Operation Buttons)
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            color: Colors.grey.shade100,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  onPressed: _createDefaultArray,
+                  child: Text('Create Default'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: _clearArray,
-                child: Text('Clear'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                ElevatedButton(
+                  onPressed: _clearArray,
+                  child: Text('Clear'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: () => _showInsertDialog(context),
-                child: Text('Insert'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                ElevatedButton(
+                  onPressed: () => _showInsertDialog(context),
+                  child: Text('Insert'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: sorting ? null : _startBubbleSort,
-                child: Text('Sort'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                ElevatedButton(
+                  onPressed: sorting ? null : () => _bubbleSort(),
+                  child: Text('Sort'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          SizedBox(height: 10),
         ],
       ),
     );
@@ -103,10 +220,16 @@ class _BubbleSortScreenState extends State<BubbleSortScreen> {
   // Create default array
   void _createDefaultArray() {
     setState(() {
-      array = [35, 12, 99, 24, 50, 1, 89, 63, 16]; // Default array
+      array = [40, 20, 30, 10]; // Default array
       currentIndex = null;
-      compareIndex = null;
-      sortedIndex = null;
+      currentAlgorithm = """
+1. Compare the first two adjacent elements.
+2. If the first element is greater than the second, swap them.
+3. Move to the next pair of adjacent elements and repeat the process.
+4. Continue this for each element in the array.
+5. Repeat the entire process until no swaps are needed.
+""";
+      currentOutput = "Default array created.";
     });
   }
 
@@ -115,8 +238,8 @@ class _BubbleSortScreenState extends State<BubbleSortScreen> {
     setState(() {
       array = []; // Clear the array
       currentIndex = null;
-      compareIndex = null;
-      sortedIndex = null;
+      currentAlgorithm = "";
+      currentOutput = "Array cleared.";
     });
   }
 
@@ -126,6 +249,7 @@ class _BubbleSortScreenState extends State<BubbleSortScreen> {
     if (value != null) {
       setState(() {
         array.add(value); // Add element to array
+        currentOutput = "Inserted $value into the array.";
       });
     }
   }
@@ -140,12 +264,8 @@ class _BubbleSortScreenState extends State<BubbleSortScreen> {
           width: 60,
           duration: Duration(milliseconds: 300),
           color: (index == currentIndex)
-              ? Colors.red // Highlight current index
-              : (index == compareIndex)
-                  ? Colors.orange // Highlight the element being compared
-                  : (index >= (sortedIndex ?? array.length))
-                      ? Colors.green // Sorted part
-                      : Colors.purple, // Default bar color
+              ? Color.fromARGB(255, 85, 255, 227) // Highlight current index
+              : Colors.purple, // Default bar color
           alignment: Alignment.bottomCenter,
           child: Center(
             child: Text(
@@ -163,45 +283,44 @@ class _BubbleSortScreenState extends State<BubbleSortScreen> {
   }
 
   // Perform bubble sort with animation
-  Future<void> _startBubbleSort() async {
-    setState(() {
-      sorting = true;
-    });
+  Future<void> _bubbleSort() async {
+    sorting = true;
+    currentOutput = ""; // Clear previous output
 
     for (int i = 0; i < array.length - 1; i++) {
       for (int j = 0; j < array.length - i - 1; j++) {
         setState(() {
-          currentIndex = j;
-          compareIndex = j + 1;
+          currentIndex = j; // Highlight current index
+          currentOutput += "Step ${i * (array.length - 1) + j + 1}: Comparing index $j and index ${j + 1}\n"; // Update output
+          currentOutput += "Values: ${array[j]} and ${array[j + 1]}\n"; // Show values being compared
         });
-
-        await Future.delayed(Duration(milliseconds: 500)); // Delay for animation
+        await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
 
         if (array[j] > array[j + 1]) {
+          // Swap if the current element is greater than the next
           setState(() {
-            // Swap if elements are out of order
+            // Perform the swap
             int temp = array[j];
             array[j] = array[j + 1];
             array[j + 1] = temp;
-          });
-        }
-      }
 
-      setState(() {
-        sortedIndex = array.length - i - 1; // Mark sorted part
-        currentIndex = null;
-      });
+            currentOutput += "Swapped: ${array[j]} and ${array[j + 1]}\n"; // Update output
+          });
+        } else {
+          currentOutput += "No swap needed.\n"; // Update output for no swap
+        }
+        await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
+      }
     }
 
-    setState(() {
-      sorting = false;
-    });
-
+    currentOutput += "Sorting complete! Final array: ${array.toString()}\n"; // Final output
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Array sorted successfully!'),
+        content: Text('Sorting complete!'),
       ),
     );
+
+    sorting = false;
   }
 
   // Generalized input dialog to get user input
