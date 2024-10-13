@@ -451,6 +451,8 @@ class _QuizScreenState extends State<QuizScreen> {
   Map<int, int> selectedAnswers = {};
   bool isSubmitted = false;
   int score = 0;
+  
+  get padding => null;
 
   @override
   void initState() {
@@ -521,8 +523,12 @@ class _QuizScreenState extends State<QuizScreen> {
               : null, // Enable button only if all questions are answered
           child: Text('Submit Quiz'),
           style: ElevatedButton.styleFrom(
+<<<<<<< HEAD
             padding: EdgeInsets.all(16.0),
             // primary: Color.fromARGB(255, 167, 69, 167),
+=======
+            padding: EdgeInsets.all(16.0), backgroundColor: Color.fromARGB(255, 167, 69, 167),
+>>>>>>> cf18e42 (vs add)
           ),
         ),
       ],
@@ -576,8 +582,12 @@ class _QuizScreenState extends State<QuizScreen> {
             onPressed: restartQuiz,
             child: Text('Restart Quiz'),
             style: ElevatedButton.styleFrom(
+<<<<<<< HEAD
               padding: EdgeInsets.all(16.0),
               // primary: Colors.green,
+=======
+              padding: EdgeInsets.all(16.0), backgroundColor: Colors.green,
+>>>>>>> cf18e42 (vs add)
             ),
           ),
         ],
