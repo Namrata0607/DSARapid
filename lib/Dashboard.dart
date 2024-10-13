@@ -24,8 +24,6 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 // import 'package:pdfx/pdfx.dart';
 
 
-
-
 // void main() => runApp(
 //       Home()
 // );
@@ -200,22 +198,28 @@ Widget myFunc() {
   ];
 
   final List<String> textList = [
-    "Binary Search",
-    "Linear Search",
-    "Insertion Sort",
-    "Selection Sort",
-    "Bubble Sort",
-    "Quick Sort",
+    "Array",
     "Stack",
     "Queue",
+    "Circular Queue",
+    "Priority Queue",
+    "Linked List",
+    "Singly Linked List",
+    "Doubly Linked List",
+    "Linear Search",
+    "Binary Search",
+    "Bubble Sort",
+    "Selection Sort",
+    "Insertion Sort",
     "Merge Sort",
-    "Array",
-    "data11",
-    "data12",
+    "Quick Sort"
   ];
 
   // List of button texts
   final List<List<String>> buttonTextsList = [
+      ["Notes", "Visualizer", "Test"],
+      ["Notes", "Visualizer", "Test"],
+      ["Notes", "Visualizer", "Test"],
       ["Notes", "Visualizer", "Test"],
       ["Notes", "Visualizer", "Test"],
       ["Notes", "Visualizer", "Test"],
@@ -239,9 +243,8 @@ void openPdf(BuildContext context, String assetPath) {
   );
 }
 
-
 final List<Function(BuildContext)> NotesBtn = [
-  (context) => openPdf(context, 'assets/files/sample.pdf'),
+  (context) => openPdf(context, 'assets/files/array.pdf'),
   (context) => openPdf(context, 'assets/linear_search.pdf'),
   (context) => openPdf(context, 'assets/insertion_sort.pdf'),
   (context) => openPdf(context, 'assets/selection_sort.pdf'),
@@ -255,33 +258,43 @@ final List<Function(BuildContext)> NotesBtn = [
 
 // List of functions to call for the middle button
 final List<Function(BuildContext)> VisualizerBtn = [
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BinarySearch())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => LinearSearch())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => InsertionSort())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => SelectionSort())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BubbleSort())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QuickSort())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => ArrayVisualizer())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => StackVisualizer())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueVisualizer())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueVisualizer())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueVisualizer())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueVisualizer())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueVisualizer())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueVisualizer())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => LinearSearch())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BinarySearch())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BubbleSort())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => SelectionSort())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => InsertionSort())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => MergeSort())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => ArrayVisualizer())),
-  // (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => PrimAlgorithm())),
-  // (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => FloydWarshall())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QuickSort())),
+
+
+
 ];
 
 final List<Function(BuildContext)> TestBtn = [
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => ArrayQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => LinearSearch())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => InsertionSort())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => SelectionSort())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BubbleSort())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QuickSort())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => StackVisualizer())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueVisualizer())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => StackQuiz())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueQuiz())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueQuiz())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueQuiz())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueQuiz())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueQuiz())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueQuiz())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => LinearSearchQuiz())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BinarySearchQuiz())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BubbleSortQuiz())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => SelectionSortQuiz())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => InsertionSortQuiz())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => MergeSort())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => ArrayQuiz())),
-  // (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => PrimAlgorithm())),
-  // (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => FloydWarshall())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QuickSortQuiz())),
+
 ];
 
 return GridView.builder(

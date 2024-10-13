@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:dsa_rapid/Dashboard.dart';
 import 'package:dsa_rapid/UI_Helper/UI.dart';
+import 'dart:math';
+
 
 class BubbleSort extends StatelessWidget {
   @override
@@ -231,6 +233,355 @@ class _BubbleSortScreenState extends State<BubbleSortScreen> {
           ],
         );
       },
+    );
+  }
+}
+
+//Test
+
+
+// Question model
+class Question {
+  final String questionText;
+  final List<String> options;
+  final int correctAnswerIndex;
+
+  Question({
+    required this.questionText,
+    required this.options,
+    required this.correctAnswerIndex,
+  });
+}
+
+// Function to generate random questions
+List<Question> getRandomQuestions(List<Question> allQuestions) {
+  var random = Random();
+  List<Question> selectedQuestions = [];
+  while (selectedQuestions.length < 10) {
+    Question question = allQuestions[random.nextInt(allQuestions.length)];
+    if (!selectedQuestions.contains(question)) {
+      selectedQuestions.add(question);
+    }
+  }
+  return selectedQuestions;
+}
+
+// List of questions (buuble sort questions in data structure)
+final List<Question> allQuestions = [
+  Question(
+    questionText: 'What is the time complexity of bubble sort in the worst case?',
+    options: ['O(n)', 'O(n log n)', 'O(n^2)', 'O(log n)'],
+    correctAnswerIndex: 2,
+),//1
+
+Question(
+    questionText: 'What is the primary purpose of bubble sort?',
+    options: ['To search for an element', 'To sort a list of elements', 'To merge two lists', 'To divide a list'],
+    correctAnswerIndex: 1,
+),//2
+
+Question(
+    questionText: 'In which of the following scenarios is bubble sort most efficient?',
+    options: ['When the array is sorted', 'When the array is in reverse order', 'When the array has many duplicate elements', 'When the array is very large'],
+    correctAnswerIndex: 0,
+),//3
+
+Question(
+    questionText: 'Which of the following statements is true about bubble sort?',
+    options: ['It is a stable sorting algorithm', 'It is not a stable sorting algorithm', 'It can sort linked lists', 'It is not an in-place sorting algorithm'],
+    correctAnswerIndex: 0,
+),//4
+
+Question(
+    questionText: 'What is the best-case time complexity of bubble sort?',
+    options: ['O(n)', 'O(n log n)', 'O(n^2)', 'O(1)'],
+    correctAnswerIndex: 0,
+),//5
+Question(
+    questionText: 'Which of the following is a disadvantage of bubble sort?',
+    options: ['It is simple to implement', 'It is inefficient for large data sets', 'It can be implemented recursively', 'It requires extra space'],
+    correctAnswerIndex: 1,
+),//6
+Question(
+    questionText: 'What does bubble sort do during each pass through the array?',
+    options: ['Sorts all elements', 'Swaps adjacent elements if they are out of order', 'Finds the maximum element', 'Sorts the first half of the array'],
+    correctAnswerIndex: 1,
+),//7
+Question(
+    questionText: 'How many passes does bubble sort typically require in the worst case?',
+    options: ['n', 'n-1', 'n^2', '1'],
+    correctAnswerIndex: 1,
+),//8
+Question(
+    questionText: 'Which of the following is an advantage of bubble sort?',
+    options: ['It is the fastest sorting algorithm', 'It is easy to understand and implement', 'It can sort in place without additional memory', 'Both b and c'],
+    correctAnswerIndex: 3,
+),//9
+Question(
+    questionText: 'After the first complete iteration of bubble sort on the array [9, 3, 5, 1], what will be the state of the array?',
+    options: ['[1, 3, 5, 9]', '[3, 5, 1, 9]', '[9, 5, 3, 1]', '[3, 1, 5, 9]'],
+    correctAnswerIndex: 1,
+),//10
+Question(
+    questionText: 'What is the average-case time complexity of bubble sort?',
+    options: ['O(n)', 'O(n log n)', 'O(n^2)', 'O(n^3)'],
+    correctAnswerIndex: 2,
+),//11
+Question(
+    questionText: 'Bubble sort is classified as which type of sorting algorithm?',
+    options: ['Comparison sort', 'Non-comparison sort', 'Distribution sort', 'Hybrid sort'],
+    correctAnswerIndex: 0,
+),//12
+Question(
+    questionText: 'Which type of data structure does bubble sort work on?',
+    options: ['Arrays', 'Linked lists', 'Trees', 'Graphs'],
+    correctAnswerIndex: 0,
+),//13
+Question(
+    questionText: 'What is the space complexity of bubble sort?',
+    options: ['O(1)', 'O(n)', 'O(n log n)', 'O(n^2)'],
+    correctAnswerIndex: 0,
+),//14
+Question(
+    questionText: 'What is the primary operation performed in bubble sort?',
+    options: ['Comparison', 'Division', 'Insertion', 'Selection'],
+    correctAnswerIndex: 0,
+),//15
+Question(
+    questionText: 'Given the array [1, 4, 3, 2, 5], how many total passes will bubble sort make to sort the array completely?',
+    options: ['1', '2', '4', '5'],
+    correctAnswerIndex: 3,
+),//16
+Question(
+    questionText: 'What will the array [2, 9, 5, 1, 7] look like after the first pass of bubble sort?',
+    options: ['[1, 2, 5, 7, 9]', '[2, 5, 1, 7, 9]', '[2, 9, 5, 1, 7]', '[2, 5, 1, 7, 9]'],
+    correctAnswerIndex: 3,
+),//17
+Question(
+    questionText: 'Which of the following best describes the operation of bubble sort?',
+    options: ['It divides the array into two halves', 'It repeatedly compares adjacent elements and swaps them if they are in the wrong order', 'It builds a sorted array by adding elements one by one', 'It selects the minimum element and places it at the beginning'],
+    correctAnswerIndex: 1,
+),//18
+Question(
+    questionText: 'For the array [8, 7, 6, 5, 4], what is the final sorted array after applying bubble sort?',
+    options: ['[4, 5, 6, 7, 8]', '[8, 7, 6, 5, 4]', '[5, 6, 7, 8, 4]', '[7, 8, 6, 5, 4]'],
+    correctAnswerIndex: 0,
+),//19
+Question(
+    questionText: 'What is the main characteristic of a stable sorting algorithm?',
+    options: ['It always sorts in ascending order', 'It maintains the relative order of equal elements', 'It uses more memory', 'It is faster than unstable algorithms'],
+    correctAnswerIndex: 1,
+),//20
+Question(
+    questionText: 'How does bubble sort handle an already sorted array?',
+    options: ['It takes longer than unsorted arrays', 'It completes in one pass with no swaps', 'It behaves the same as an unsorted array', 'It throws an error'],
+    correctAnswerIndex: 1,
+),//21
+Question(
+    questionText: 'In bubble sort, which element is moved to its final position after each pass?',
+    options: ['The smallest element', 'The largest element', 'The middle element', 'The first element'],
+    correctAnswerIndex: 1,
+),//22
+Question(
+    questionText: 'If bubble sort is applied to the array [3, 2, 1, 4], what will be the result after the second pass?',
+    options: ['[1, 2, 3, 4]', '[2, 1, 3, 4]', '[3, 1, 2, 4]', '[3, 2, 1, 4]'],
+    correctAnswerIndex: 1,
+),//23
+Question(
+    questionText: 'Given the array [5, 1, 4, 2, 8], what will be the array after the first pass of bubble sort?',
+    options: ['[1, 4, 2, 5, 8]', '[5, 1, 4, 2, 8]', '[1, 2, 4, 5, 8]', '[1, 4, 2, 8, 5]'],
+    correctAnswerIndex: 0,
+),//24
+Question(
+    questionText: 'What is the primary disadvantage of bubble sort when compared to more advanced sorting algorithms?',
+    options: ['It is stable', 'It is inefficient on large datasets', 'It is easy to implement', 'It uses less memory'],
+    correctAnswerIndex: 1,
+),//25
+Question(
+    questionText: 'If the array [4, 2, 6, 5, 3] is sorted using bubble sort, what will be the result after the second pass?',
+    options: ['[2, 3, 4, 5, 6]', '[4, 2, 5, 3, 6]', '[4, 2, 5, 6, 3]', '[2, 4, 3, 5, 6]'],
+    correctAnswerIndex: 3,
+),//26
+Question(
+    questionText: 'For the array [7, 5, 8, 6, 3], what will the array look like after the third pass of bubble sort?',
+    options: ['[3, 5, 6, 7, 8]', '[5, 6, 3, 7, 8]', '[5, 7, 6, 3, 8]', '[7, 6, 5, 3, 8]'],
+    correctAnswerIndex: 0,
+),//27
+Question(
+    questionText: 'What is the main advantage of bubble sort in teaching sorting algorithms?',
+    options: ['It is the most efficient', 'It is the easiest to understand', 'It can handle large datasets', 'It uses complex logic'],
+    correctAnswerIndex: 1,
+),//28
+Question(
+    questionText: 'What is the purpose of the outer loop in bubble sort?',
+    options: ['To iterate through the entire array', 'To track the number of swaps', 'To ensure all elements are sorted', 'To find the maximum element'],
+    correctAnswerIndex: 2,
+),//29
+Question(
+    questionText: 'What will be the state of the array [10, 1, 2, 3, 5] after applying bubble sort for two passes?',
+    options: ['[1, 2, 3, 5, 10]', '[1, 3, 2, 5, 10]', '[10, 1, 2, 3, 5]', '[1, 10, 2, 3, 5]'],
+    correctAnswerIndex: 1,
+),//30
+
+];
+
+// void main() => runApp(QuizApp());
+
+class BubbleSortQuiz extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Bubble sort Quiz',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        fontFamily: 'Montserrat',
+      ),
+      home: QuizScreen(),
+    );
+  }
+}
+
+class QuizScreen extends StatefulWidget {
+  @override
+  _QuizScreenState createState() => _QuizScreenState();
+}
+
+class _QuizScreenState extends State<QuizScreen> {
+  List<Question> quizQuestions = [];
+  Map<int, int> selectedAnswers = {};
+  bool isSubmitted = false;
+  int score = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    quizQuestions = getRandomQuestions(allQuestions); // Get random 5 questions
+  }
+
+  void handleAnswer(int questionIndex, int answerIndex) {
+    setState(() {
+      selectedAnswers[questionIndex] = answerIndex;
+    });
+  }
+
+  void submitQuiz() {
+    setState(() {
+      score = 0;
+      for (var i = 0; i < quizQuestions.length; i++) {
+        if (selectedAnswers[i] == quizQuestions[i].correctAnswerIndex) {
+          score++;
+        }
+      }
+      isSubmitted = true;
+    });
+  }
+
+  void restartQuiz() {
+    setState(() {
+      isSubmitted = false;
+      score = 0;
+      selectedAnswers.clear();
+      quizQuestions = getRandomQuestions(allQuestions);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Array Quiz'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: isSubmitted ? buildResultScreen() : buildQuizBody(),
+      ),
+    );
+  }
+
+  Widget buildQuizBody() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Answer all questions:',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 16),
+        Expanded(
+          child: ListView.builder(
+            itemCount: quizQuestions.length,
+            itemBuilder: (context, index) {
+              return buildQuestionCard(index);
+            },
+          ),
+        ),
+        ElevatedButton(
+          onPressed: selectedAnswers.length == quizQuestions.length
+              ? submitQuiz
+              : null, // Enable button only if all questions are answered
+          child: Text('Submit Quiz'),
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.all(16.0),
+            primary: Color.fromARGB(255, 167, 69, 167),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildQuestionCard(int questionIndex) {
+    Question question = quizQuestions[questionIndex];
+    return Card(
+      margin: EdgeInsets.only(bottom: 16),
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '${questionIndex + 1}. ${question.questionText}',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            ...question.options.asMap().entries.map((entry) {
+              int optionIndex = entry.key;
+              String optionText = entry.value;
+              return RadioListTile<int>(
+                title: Text(optionText),
+                value: optionIndex,
+                groupValue: selectedAnswers[questionIndex],
+                onChanged: (value) {
+                  handleAnswer(questionIndex, value!);
+                },
+              );
+            }).toList(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildResultScreen() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Your Score: $score / ${quizQuestions.length}',
+            style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: restartQuiz,
+            child: Text('Restart Quiz'),
+            style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.all(16.0),
+              primary: Colors.green,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

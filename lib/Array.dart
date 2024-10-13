@@ -1,6 +1,7 @@
 import 'package:dsa_rapid/UI_Helper/UI.dart';
 import 'package:flutter/material.dart';
 import 'package:dsa_rapid/Dashboard.dart';
+import 'package:flutter/services.dart';
 import 'dart:math';
 // import 'package:flutter_full_pdf_viewer/full_pdf_viewer_scaffold.dart';
 
@@ -24,7 +25,6 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 //   }
 // }
 
-
 class PdfViewerPage extends StatelessWidget {
   final String assetPath;
 
@@ -38,29 +38,61 @@ class PdfViewerPage extends StatelessWidget {
         title: Text('PDF Viewer'),
         backgroundColor: Colors.purple,
       ),
-      body: FutureBuilder(
-        future: Future.delayed(Duration(milliseconds: 500)), // Delay to simulate loading
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else {
-            try {
-              return SfPdfViewer.asset(assetPath);
-            } catch (e) {
-              return Center(
-                child: Text(
-                  'Error loading PDF. Please make sure the asset path is correct.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 18, color: Colors.red),
-                ),
-              );
-            }
-          }
-        },
-      ),
+      body: SfPdfViewer.asset(assetPath), // Directly load the PDF
     );
   }
 }
+
+
+// class PdfViewerPage extends StatelessWidget {
+//   final String assetPath;
+
+//   PdfViewerPage({required this.assetPath});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     print("Loading PDF from: $assetPath");
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('PDF Viewer'),
+//         backgroundColor: Colors.purple,
+//       ),
+//       body: FutureBuilder(
+//         future: Future.delayed(Duration(milliseconds: 500)), // Replace with your actual future
+//         builder: (context, snapshot) {
+//           if (snapshot.connectionState == ConnectionState.waiting) {
+//             return Center(child: CircularProgressIndicator());
+//           } else if (snapshot.hasError) {
+//             return Center(
+//               child: Text(
+//                 'Error: ${snapshot.error}',
+//                 textAlign: TextAlign.center,
+//                 style: TextStyle(fontSize: 18, color: Colors.red),
+//               ),
+//             );
+//           } else {
+//             try {
+//               return SfPdfViewer.asset(assetPath);
+//             } catch (e) {
+//               return Center(
+//                 child: Text(
+//                   'Error loading PDF. Please make sure the asset path is correct.',
+//                   textAlign: TextAlign.center,
+//                   style: TextStyle(fontSize: 18, color: Colors.red),
+//                 ),
+//               );
+//             }
+//           }
+//         },
+//       ),
+
+
+//     );
+//   }
+// }
+
+
+
 // void main() {
 //   runApp(ArrayVisualizer());
 // }
