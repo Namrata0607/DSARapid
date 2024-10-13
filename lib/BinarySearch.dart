@@ -21,6 +21,7 @@ class BinarySearch extends StatelessWidget {
   }
 }
 
+
 class BinarySearchScreen extends StatefulWidget {
   @override
   _BinarySearchScreenState createState() => _BinarySearchScreenState();
@@ -28,8 +29,12 @@ class BinarySearchScreen extends StatefulWidget {
 
 class _BinarySearchScreenState extends State<BinarySearchScreen> {
   List<int> array = []; // Initially empty array
-  int? left, right; // For visual representation of search bounds
+  int? low; // For visual representation of low index
+  int? high; // For visual representation of high index
+  int? mid; // For visual representation of mid index
   bool searching = false; // State for search animation
+  String currentAlgorithm = ""; // Holds the current algorithm
+  String currentOutput = ""; // Holds the step-by-step output
 
   @override
   Widget build(BuildContext context) {
@@ -42,60 +47,178 @@ class _BinarySearchScreenState extends State<BinarySearchScreen> {
       body: Column(
         children: [
           Expanded(
-            child: Center(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: array.isEmpty
-                      ? [
-                          Text(
-                            'Array is empty',
-                            style: TextStyle(fontSize: 18, color: Colors.red),
-                          )
-                        ]
-                      : _buildBars(),
+            child: Row(
+              children: [
+                // Left Container (for Algorithm and Output)
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: Colors.grey.shade300,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        // Algorithm section
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Algorithm',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple,
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentAlgorithm,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        // Output/Step-by-step explanation section
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Step-by-Step Output',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple,
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentOutput,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+                SizedBox(width: 10),
+                // Right Container (for Array Visualizer)
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Binary Search Visualizer',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purple,
+                          ),
+                        ),
+                        Divider(),
+                        Expanded(
+                          child: Center(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: array.isEmpty
+                                    ? [
+                                        Text(
+                                          'Array is empty',
+                                          style: TextStyle(
+                                              fontSize: 18, color: Colors.red),
+                                        )
+                                      ]
+                                    : _buildBars(),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              ElevatedButton(
-                onPressed: _createDefaultArray, // Create Default Button
-                child: Text('Create Default'),
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all<Color>(Colors.purple),
-                  foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+          // Bottom Container (for Operation Buttons)
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            color: Colors.grey.shade100,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  onPressed: _createDefaultArray,
+                  child: Text('Create Default'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: _clearArray,
-                child: Text('Clear'),
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all<Color>(Colors.purple),
-                  foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+                ElevatedButton(
+                  onPressed: _clearArray,
+                  child: Text('Clear'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: () => _showInsertDialog(context),
-                child: Text('Insert'),
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all<Color>(Colors.purple),
-                  foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+                ElevatedButton(
+                  onPressed: () => _showInsertDialog(context),
+                  child: Text('Insert'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: searching ? null : () => _showFindIndexDialog(context),
-                child: Text('Search'),
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all<Color>(Colors.purple),
-                  foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+                ElevatedButton(
+                  onPressed: searching ? null : () => _showFindValueDialog(context),
+                  child: Text('Search'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          SizedBox(height: 10),
         ],
       ),
     );
@@ -104,7 +227,21 @@ class _BinarySearchScreenState extends State<BinarySearchScreen> {
   // Create default array
   void _createDefaultArray() {
     setState(() {
-      array = [10, 20, 30, 40, 50,60,70,80,90,100]; // Default array
+      array = [10, 20, 30, 40, 50, 60, 70, 80]; // Default sorted array
+      low = null;
+      high = null;
+      mid = null;
+      currentAlgorithm = """
+1. Set the low index to the start of the array (0).
+2. Set the high index to the end of the array (length of the array - 1).
+3. While low is less than or equal to high:
+   a. Calculate mid as the average of low and high.
+   b. If the value at mid is equal to the target value, return mid.
+   c. If the value at mid is less than the target value, set low to mid + 1.
+   d. If the value at mid is greater than the target value, set high to mid - 1.
+4. If the target value is not found, return -1.
+""";
+      currentOutput = "Default array created.";
     });
   }
 
@@ -112,8 +249,11 @@ class _BinarySearchScreenState extends State<BinarySearchScreen> {
   void _clearArray() {
     setState(() {
       array = []; // Clear the array
-      left = null;
-      right = null;
+      low = null;
+      high = null;
+      mid = null;
+      currentAlgorithm = "";
+      currentOutput = "Array cleared.";
     });
   }
 
@@ -123,17 +263,63 @@ class _BinarySearchScreenState extends State<BinarySearchScreen> {
     if (value != null) {
       setState(() {
         array.add(value); // Add element to array
-        array.sort(); // Sort the array after insertion for binary search
+        array.sort(); // Ensure the array remains sorted
+        currentOutput = "$value inserted. Array: $array\n";
       });
     }
   }
 
   // Show dialog to find the index of an element using binary search
-  Future<void> _showFindIndexDialog(BuildContext context) async {
-    int? value = await _showInputDialog(context, 'Find Index of Value');
+  Future<void> _showFindValueDialog(BuildContext context) async {
+    int? value = await _showInputDialog(context, 'Find Value');
     if (value != null) {
       await _binarySearch(value); // Perform binary search with animation
     }
+  }
+
+  // Perform binary search with animation
+  Future<void> _binarySearch(int value) async {
+    searching = true;
+    low = 0;
+    high = array.length - 1;
+    currentOutput = ""; // Clear previous output
+
+    while (low! <= high!) {
+      mid = (low! + high!) ~/ 2; // Find the middle index
+      setState(() {
+        // Highlight low, high, and mid indices
+        currentOutput += "Current low: $low, high: $high, mid: $mid\n";
+        currentOutput += "Comparing ${array[mid!]} with $value.\n";
+      });
+      await Future.delayed(Duration(seconds: 4)); // Pause for visual effect
+
+      if (array[mid!] == value) {
+        setState(() {
+          currentOutput += "$value found at index: $mid!\n";
+        });
+        await Future.delayed(Duration(seconds: 1));
+        break;
+      } else if (array[mid!] < value) {
+        low = mid! + 1; // Adjust low index
+        setState(() {
+          currentOutput += "Searching in the right half.\n";
+        });
+      } else {
+        high = mid! - 1; // Adjust high index
+        setState(() {
+          currentOutput += "Searching in the left half.\n";
+        });
+      }
+      await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
+    }
+
+    if (low! > high!) {
+      setState(() {
+        currentOutput += "$value not found in the array.\n";
+      });
+    }
+
+    searching = false;
   }
 
   // Build the visual bars for the array
@@ -144,9 +330,10 @@ class _BinarySearchScreenState extends State<BinarySearchScreen> {
         child: AnimatedContainer(
           height: 100, // Fixed height for all bars
           width: 60,
-          duration: Duration(milliseconds: 300),
-          color: (index == left || index == right)
-              ? Colors.red // Highlight search bounds
+          duration: Duration(milliseconds: 500),
+          color: (index == low) ? Colors.blue // Highlight low index
+              : (index == high) ? Colors.red // Highlight high index
+              : (index == mid) ? Colors.green // Highlight mid index
               : Colors.purple, // Default bar color
           alignment: Alignment.bottomCenter,
           child: Center(
@@ -164,74 +351,33 @@ class _BinarySearchScreenState extends State<BinarySearchScreen> {
     });
   }
 
-  // Perform binary search with animation
-  Future<void> _binarySearch(int value) async {
-    searching = true;
-    left = 0;
-    right = array.length - 1;
-
-    while (left! <= right!) {
-      setState(() {});
-      await Future.delayed(Duration(seconds: 2)); // Pause for visual effect
-
-      int mid = left! + (right! - left!) ~/ 2;
-      if (array[mid] == value) {
-        setState(() {
-          left = mid; // Highlight found index
-          right = mid; // Highlight found index
-        });
-        await Future.delayed(Duration(seconds: 1));
-        break;
-      } else if (array[mid] < value) {
-        left = mid + 1;
-      } else {
-        right = mid - 1;
-      }
-      setState(() {
-        // Optional: Add a small visual effect (e.g., change mid bar color momentarily)
-      });
-    }
-
-    // Show result in a snackbar
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(value.toString() + ' found at index: ${left!}'),
-      ),
-    );
-
-    searching = false;
-  }
-
   // Generalized input dialog to get user input
   Future<int?> _showInputDialog(BuildContext context, String title) async {
     final TextEditingController controller = TextEditingController();
 
-    return showDialog<int>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(title),
-          content: TextField(
-            controller: controller,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(hintText: 'Enter a number'),
+    return showDialog<int>(context: context, builder: (context) {
+      return AlertDialog(
+        title: Text(title),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(hintText: 'Enter a number'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(), // Dismiss dialog
+            child: Text('Cancel'),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(), // Dismiss dialog
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                final value = int.tryParse(controller.text);
-                Navigator.of(context).pop(value); // Return value
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-     },
-    );
+          TextButton(
+            onPressed: () {
+              final value = int.tryParse(controller.text);
+              Navigator.of(context).pop(value); // Return value
+            },
+            child: Text('OK'),
+          ),
+        ],
+      );
+    });
   }
 }
 
