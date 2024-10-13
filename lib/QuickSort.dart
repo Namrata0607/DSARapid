@@ -8,7 +8,6 @@ class QuickSort extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Quick Sort Visualizer',
-      debugShowCheckedModeBanner: false, // Disable the debug banner
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -24,11 +23,10 @@ class QuickSortScreen extends StatefulWidget {
 
 class _QuickSortScreenState extends State<QuickSortScreen> {
   List<int> array = []; // Initially empty array
-  int? pivotIndex; // Pivot element during the sort
-  int? leftIndex; // Left partition pointer
-  int? rightIndex; // Right partition pointer
+  int? pivotIndex; // For visual representation of pivot index
   bool sorting = false; // State for sort animation
-  List<int> sortedIndex = []; // Track sorted indexes
+  String currentAlgorithm = ""; // Holds the current algorithm
+  String currentOutput = ""; // Holds the step-by-step output
 
   @override
   Widget build(BuildContext context) {
@@ -41,60 +39,178 @@ class _QuickSortScreenState extends State<QuickSortScreen> {
       body: Column(
         children: [
           Expanded(
-            child: Center(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: array.isEmpty
-                      ? [
-                          Text(
-                            'Array is empty',
-                            style: TextStyle(fontSize: 18, color: Colors.red),
-                          )
-                        ]
-                      : _buildBars(),
+            child: Row(
+              children: [
+                // Left Container (for Algorithm and Output)
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: Colors.grey.shade300,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        // Algorithm section
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Algorithm',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple,
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentAlgorithm,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        // Output/Step-by-step explanation section
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Step-by-Step Output',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple,
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentOutput,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+                SizedBox(width: 10),
+                // Right Container (for Array Visualizer)
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Quick Sort Visualizer',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purple,
+                          ),
+                        ),
+                        Divider(),
+                        Expanded(
+                          child: Center(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: array.isEmpty
+                                    ? [
+                                        Text(
+                                          'Array is empty',
+                                          style: TextStyle(
+                                              fontSize: 18, color: Colors.red),
+                                        )
+                                      ]
+                                    : _buildBars(),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              ElevatedButton(
-                onPressed: _createDefaultArray, // Create Default Button
-                child: Text('Create Default'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+          // Bottom Container (for Operation Buttons)
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            color: Colors.grey.shade100,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  onPressed: _createDefaultArray,
+                  child: Text('Create Default'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: _clearArray,
-                child: Text('Clear'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                ElevatedButton(
+                  onPressed: _clearArray,
+                  child: Text('Clear'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: () => _showInsertDialog(context),
-                child: Text('Insert'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                ElevatedButton(
+                  onPressed: () => _showInsertDialog(context),
+                  child: Text('Insert'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: sorting ? null : _startQuickSort,
-                child: Text('Sort'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                ElevatedButton(
+                  onPressed: sorting ? null : () => _quickSort(0, array.length - 1),
+                  child: Text('Sort'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          SizedBox(height: 10),
         ],
       ),
     );
@@ -103,11 +219,17 @@ class _QuickSortScreenState extends State<QuickSortScreen> {
   // Create default array
   void _createDefaultArray() {
     setState(() {
-      array = [35, 12, 99, 24, 50, 1, 89, 63, 16]; // Default array
-      pivotIndex = null;
-      leftIndex = null;
-      rightIndex = null;
-      sortedIndex = [];
+      array = [10, 80, 30, 90, 40, 50, 70]; // Default array
+      currentOutput = "Default array created.";
+      pivotIndex = null; // Reset pivot index
+      currentAlgorithm = """
+1. Choose a pivot element from the array.
+2. Partition the array into two sub-arrays:
+   - Elements less than the pivot
+   - Elements greater than the pivot
+3. Recursively apply the above steps to the sub-arrays.
+4. Combine the sorted sub-arrays.
+""";
     });
   }
 
@@ -116,9 +238,8 @@ class _QuickSortScreenState extends State<QuickSortScreen> {
     setState(() {
       array = []; // Clear the array
       pivotIndex = null;
-      leftIndex = null;
-      rightIndex = null;
-      sortedIndex = [];
+      currentAlgorithm = "";
+      currentOutput = "Array cleared.";
     });
   }
 
@@ -128,6 +249,7 @@ class _QuickSortScreenState extends State<QuickSortScreen> {
     if (value != null) {
       setState(() {
         array.add(value); // Add element to array
+        currentOutput = "Inserted $value into the array.";
       });
     }
   }
@@ -141,13 +263,7 @@ class _QuickSortScreenState extends State<QuickSortScreen> {
           height: 100, // Fixed height for all bars
           width: 60,
           duration: Duration(milliseconds: 300),
-          color: (index == pivotIndex)
-              ? Colors.red // Highlight pivot
-              : (index == leftIndex || index == rightIndex)
-                  ? Colors.orange // Highlight left and right partitions
-                  : (sortedIndex.contains(index))
-                      ? Colors.green // Highlight sorted part
-                      : Colors.purple, // Default bar color
+          color: (index == pivotIndex) ? Colors.green : Colors.purple, // Pivot index color
           alignment: Alignment.bottomCenter,
           child: Center(
             child: Text(
@@ -164,86 +280,73 @@ class _QuickSortScreenState extends State<QuickSortScreen> {
     });
   }
 
-  // Start quick sort with animation
-  Future<void> _startQuickSort() async {
-    setState(() {
-      sorting = true;
-    });
-
-    await _quickSort(0, array.length - 1);
-
-    setState(() {
-      sorting = false;
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Array sorted successfully!'),
-      ),
-    );
-  }
-
-  // Quick sort algorithm with animation
+  // Quick Sort algorithm with animation
   Future<void> _quickSort(int low, int high) async {
-    if (low < high) {
-      int p = await _partition(low, high); // Partitioning index
+    sorting = true; // Set sorting state
+    currentOutput = ""; // Clear previous output
 
-      await Future.wait([
-        _quickSort(low, p - 1), // Sort the left side
-        _quickSort(p + 1, high), // Sort the right side
-      ]);
-    } else {
+    if (low < high) {
+      // Call partition
+      int pivot = await _partition(low, high);
+      // Recursively sort the elements
+      await _quickSort(low, pivot - 1);
+      await _quickSort(pivot + 1, high);
+    }
+
+    // Only show the Snackbar after the last sorting is complete
+    if (low == 0 && high == array.length - 1) {
       setState(() {
-        if (!sortedIndex.contains(low)) sortedIndex.add(low); // Mark as sorted
+        currentOutput += "Sorting complete! Final sorted array: ${array.toString()}.\n";
       });
+
+      // Show result in a snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Sorting complete! Final sorted array: ${array.toString()}'),
+        ),
+      );
+      sorting = false; // Reset sorting state
     }
   }
 
-  // Partition function for quick sort with visual feedback
+  // Partition function for Quick Sort
   Future<int> _partition(int low, int high) async {
-    int pivot = array[high];
-    int i = low - 1;
+    int pivot = array[high]; // Choose the last element as pivot
+    int i = low - 1; // Index of smaller element
 
     setState(() {
-      pivotIndex = high; // Highlight pivot
+      pivotIndex = high; // Highlight pivot index
     });
+    await Future.delayed(Duration(seconds: 3)); // Pause for visual effect
 
     for (int j = low; j < high; j++) {
       setState(() {
-        leftIndex = i;
-        rightIndex = j;
+        currentOutput += "Comparing ${array[j]} with pivot $pivot.\n"; // Show comparison
       });
-
-      await Future.delayed(Duration(milliseconds: 500)); // Delay for animation
-
-      if (array[j] <= pivot) {
-        i++;
+      await Future.delayed(Duration(seconds: 3)); // Pause for visual effect
+      if (array[j] < pivot) {
+        i++; // Increment index of smaller element
         setState(() {
+          // Swap array[i] and array[j]
           int temp = array[i];
           array[i] = array[j];
           array[j] = temp;
+          currentOutput += "Swapping ${array[i]} and ${array[j]}.\n"; // Show swap
         });
-
-        await Future.delayed(Duration(milliseconds: 500)); // Delay for animation
+        await Future.delayed(Duration(seconds: 3)); // Pause for visual effect
       }
     }
 
+    // Swap array[i + 1] and array[high] (or pivot)
     setState(() {
       int temp = array[i + 1];
       array[i + 1] = array[high];
       array[high] = temp;
+      currentOutput += "Placing pivot $pivot at index ${i + 1}.\n"; // Show pivot placement
     });
+    await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
 
-    await Future.delayed(Duration(milliseconds: 500)); // Delay for animation
-
-    setState(() {
-      sortedIndex.add(i + 1); // Mark the pivot as sorted
-      pivotIndex = null;
-      leftIndex = null;
-      rightIndex = null;
-    });
-
-    return i + 1;
+    return i + 1; // Return the partition index
   }
 
   // Generalized input dialog to get user input
@@ -278,6 +381,7 @@ class _QuickSortScreenState extends State<QuickSortScreen> {
     );
   }
 }
+
 
 //Test
 

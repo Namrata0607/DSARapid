@@ -9,7 +9,6 @@ class SelectionSort extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Selection Sort Visualizer',
-      debugShowCheckedModeBanner: false, // Disable the debug banner
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -25,10 +24,11 @@ class SelectionSortScreen extends StatefulWidget {
 
 class _SelectionSortScreenState extends State<SelectionSortScreen> {
   List<int> array = []; // Initially empty array
-  int? currentIndex; // For visual representation of the current index
-  int? minIndex; // For the index of the current minimum element
+  int? currentIndex; // For visual representation of current index
+  int? minIndex; // Index of the minimum element
   bool sorting = false; // State for sort animation
-  int? sortedIndex; // Tracks the sorted part of the array
+  String currentAlgorithm = ""; // Holds the current algorithm
+  String currentOutput = ""; // Holds the step-by-step output
 
   @override
   Widget build(BuildContext context) {
@@ -41,60 +41,178 @@ class _SelectionSortScreenState extends State<SelectionSortScreen> {
       body: Column(
         children: [
           Expanded(
-            child: Center(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: array.isEmpty
-                      ? [
-                          Text(
-                            'Array is empty',
-                            style: TextStyle(fontSize: 18, color: Colors.red),
-                          )
-                        ]
-                      : _buildBars(),
+            child: Row(
+              children: [
+                // Left Container (for Algorithm and Output)
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: Colors.grey.shade300,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        // Algorithm section
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Algorithm',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple,
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentAlgorithm,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        // Output/Step-by-step explanation section
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Step-by-Step Output',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple,
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentOutput,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+                SizedBox(width: 10),
+                // Right Container (for Array Visualizer)
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Selection Sort Visualizer',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purple,
+                          ),
+                        ),
+                        Divider(),
+                        Expanded(
+                          child: Center(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: array.isEmpty
+                                    ? [
+                                        Text(
+                                          'Array is empty',
+                                          style: TextStyle(
+                                              fontSize: 18, color: Colors.red),
+                                        )
+                                      ]
+                                    : _buildBars(),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              ElevatedButton(
-                onPressed: _createDefaultArray, // Create Default Button
-                child: Text('Create Default'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+          // Bottom Container (for Operation Buttons)
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            color: Colors.grey.shade100,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  onPressed: _createDefaultArray,
+                  child: Text('Create Default'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: _clearArray,
-                child: Text('Clear'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                ElevatedButton(
+                  onPressed: _clearArray,
+                  child: Text('Clear'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: () => _showInsertDialog(context),
-                child: Text('Insert'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                ElevatedButton(
+                  onPressed: () => _showInsertDialog(context),
+                  child: Text('Insert'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: sorting ? null : _startSelectionSort,
-                child: Text('Sort'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                ElevatedButton(
+                  onPressed: sorting ? null : () => _selectionSort(),
+                  child: Text('Sort'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          SizedBox(height: 10),
         ],
       ),
     );
@@ -103,10 +221,17 @@ class _SelectionSortScreenState extends State<SelectionSortScreen> {
   // Create default array
   void _createDefaultArray() {
     setState(() {
-      array = [35, 12, 99, 24, 50, 1, 89, 63, 16]; // Default array
+      array = [64, 25, 12, 22, 11]; // Default array
       currentIndex = null;
       minIndex = null;
-      sortedIndex = null;
+      currentAlgorithm = """
+1. Start from the first element as the minimum.
+2. Compare the current minimum with the rest of the array.
+3. If a smaller element is found, update the minimum.
+4. After scanning the entire array, swap the minimum with the first unsorted element.
+5. Repeat until the entire array is sorted.
+""";
+      currentOutput = "Default array created.";
     });
   }
 
@@ -116,7 +241,8 @@ class _SelectionSortScreenState extends State<SelectionSortScreen> {
       array = []; // Clear the array
       currentIndex = null;
       minIndex = null;
-      sortedIndex = null;
+      currentAlgorithm = "";
+      currentOutput = "Array cleared.";
     });
   }
 
@@ -126,6 +252,7 @@ class _SelectionSortScreenState extends State<SelectionSortScreen> {
     if (value != null) {
       setState(() {
         array.add(value); // Add element to array
+        currentOutput = "Inserted $value into the array.";
       });
     }
   }
@@ -140,12 +267,8 @@ class _SelectionSortScreenState extends State<SelectionSortScreen> {
           width: 60,
           duration: Duration(milliseconds: 300),
           color: (index == currentIndex)
-              ? Colors.red // Highlight current index
-              : (index == minIndex)
-                  ? Colors.orange // Highlight current minimum element
-                  : (index <= (sortedIndex ?? -1))
-                      ? Colors.green // Sorted part
-                      : Colors.purple, // Default bar color
+              ? Colors.green // Highlight current index
+              : (index == minIndex ? Colors.red : Colors.purple), // Min index color
           alignment: Alignment.bottomCenter,
           child: Center(
             child: Text(
@@ -163,54 +286,60 @@ class _SelectionSortScreenState extends State<SelectionSortScreen> {
   }
 
   // Perform selection sort with animation
-  Future<void> _startSelectionSort() async {
-    setState(() {
-      sorting = true;
-    });
+  Future<void> _selectionSort() async {
+    sorting = true;
+    currentOutput = ""; // Clear previous output
 
     for (int i = 0; i < array.length - 1; i++) {
       int minIdx = i;
+      setState(() {
+        currentIndex = i; // Highlight the current index
+        currentOutput += "Step ${i + 1}: Starting from index $i. Current array: ${array.toString()}\n";
+      });
+
+      await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
 
       for (int j = i + 1; j < array.length; j++) {
         setState(() {
-          currentIndex = j; // Highlight current comparison
-          minIndex = minIdx; // Highlight the current minimum
+          minIndex = minIdx; // Highlight the current minimum index
+          currentOutput += "Comparing ${array[minIdx]} (current min) and ${array[j]} at index $j.\n";
         });
-        await Future.delayed(Duration(milliseconds: 500)); // Delay for animation
 
         if (array[j] < array[minIdx]) {
+          minIdx = j; // Update the index of the minimum element
           setState(() {
-            minIdx = j; // Update the minimum element index
+            currentOutput += "Found a new minimum ${array[minIdx]} at index $minIdx.\n"; // Update output
           });
         }
+        await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
       }
 
+      // Swap the found minimum element with the first element
       if (minIdx != i) {
-        // Swap the found minimum element with the first element
         setState(() {
-          int temp = array[i];
-          array[i] = array[minIdx];
-          array[minIdx] = temp;
+          // Swap the elements
+          int temp = array[minIdx];
+          array[minIdx] = array[i];
+          array[i] = temp;
+          currentOutput += "Swapping ${array[i]} and ${array[minIdx]}.\n";
         });
-        await Future.delayed(Duration(milliseconds: 500)); // Delay for animation
       }
 
-      setState(() {
-        sortedIndex = i; // Mark this index as sorted
-        currentIndex = null; // Reset the current index
-      });
+      await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
     }
 
     setState(() {
-      sorting = false;
-      sortedIndex = array.length - 1; // The entire array is sorted
+      currentOutput += "Sorting complete! Final sorted array: ${array.toString()}.\n";
     });
 
+    // Show result in a snackbar
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Array sorted successfully!'),
+        content: Text('Sorting complete!'),
       ),
     );
+
+    sorting = false; // Reset sorting state
   }
 
   // Generalized input dialog to get user input
