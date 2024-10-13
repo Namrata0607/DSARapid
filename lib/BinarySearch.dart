@@ -65,32 +65,32 @@ class _BinarySearchScreenState extends State<BinarySearchScreen> {
                 onPressed: _createDefaultArray, // Create Default Button
                 child: Text('Create Default'),
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                  backgroundColor: WidgetStateProperty.all<Color>(Colors.purple),
+                  foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
                 ),
               ),
               ElevatedButton(
                 onPressed: _clearArray,
                 child: Text('Clear'),
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                  backgroundColor: WidgetStateProperty.all<Color>(Colors.purple),
+                  foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
                 ),
               ),
               ElevatedButton(
                 onPressed: () => _showInsertDialog(context),
                 child: Text('Insert'),
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                  backgroundColor: WidgetStateProperty.all<Color>(Colors.purple),
+                  foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
                 ),
               ),
               ElevatedButton(
                 onPressed: searching ? null : () => _showFindIndexDialog(context),
                 child: Text('Search'),
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                  backgroundColor: WidgetStateProperty.all<Color>(Colors.purple),
+                  foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
                 ),
               ),
             ],
@@ -451,8 +451,6 @@ class _QuizScreenState extends State<QuizScreen> {
   Map<int, int> selectedAnswers = {};
   bool isSubmitted = false;
   int score = 0;
-  
-  get padding => null;
 
   @override
   void initState() {
@@ -523,12 +521,8 @@ class _QuizScreenState extends State<QuizScreen> {
               : null, // Enable button only if all questions are answered
           child: Text('Submit Quiz'),
           style: ElevatedButton.styleFrom(
-<<<<<<< HEAD
-            padding: EdgeInsets.all(16.0),
-            // primary: Color.fromARGB(255, 167, 69, 167),
-=======
-            padding: EdgeInsets.all(16.0), backgroundColor: Color.fromARGB(255, 167, 69, 167),
->>>>>>> cf18e42 (vs add)
+            padding: EdgeInsets.all(16.0), 
+            backgroundColor: Color.fromARGB(255, 167, 69, 167),
           ),
         ),
       ],
@@ -582,12 +576,8 @@ class _QuizScreenState extends State<QuizScreen> {
             onPressed: restartQuiz,
             child: Text('Restart Quiz'),
             style: ElevatedButton.styleFrom(
-<<<<<<< HEAD
-              padding: EdgeInsets.all(16.0),
-              // primary: Colors.green,
-=======
-              padding: EdgeInsets.all(16.0), backgroundColor: Colors.green,
->>>>>>> cf18e42 (vs add)
+              padding: EdgeInsets.all(16.0), 
+              backgroundColor: Colors.green,
             ),
           ),
         ],

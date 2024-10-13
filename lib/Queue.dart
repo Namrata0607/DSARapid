@@ -1,40 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:dsa_rapid/UI_Helper/UI.dart';
 import 'package:dsa_rapid/Dashboard.dart';
+import 'package:dsa_rapid/UI_Helper/UI.dart';
 import 'dart:math';
 
-// void main() {
-//   runApp(BinarySearchVisualizerApp());
-// }
 
-class BinarySearch extends StatelessWidget {
+class QueueVisualizer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Binary Search Visualizer',
+      title: 'Queue Visualizer',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: BinarySearchScreen(),
+      home: QueueScreen(),
     );
   }
 }
 
-class BinarySearchScreen extends StatefulWidget {
+class QueueScreen extends StatefulWidget {
   @override
-  _BinarySearchScreenState createState() => _BinarySearchScreenState();
+  _QueueScreenState createState() => _QueueScreenState();
 }
 
-class _BinarySearchScreenState extends State<BinarySearchScreen> {
-  List<int> array = []; // Initially empty array
-  int? left, right; // For visual representation of search bounds
-  bool searching = false; // State for search animation
+class _QueueScreenState extends State<QueueScreen> {
+  List<int> queue = []; // Queue to hold elements
+  bool isEmpty = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Binary Search Visualizer'),
+        title: Text('Queue Visualizer'),
         backgroundColor: Colors.purple,
         titleTextStyle: TextStyle(color: Colors.white),
       ),
@@ -45,14 +42,14 @@ class _BinarySearchScreenState extends State<BinarySearchScreen> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: array.isEmpty
+                  children: queue.isEmpty
                       ? [
                           Text(
-                            'Array is empty',
+                            'Queue is empty',
                             style: TextStyle(fontSize: 18, color: Colors.red),
                           )
                         ]
-                      : _buildBars(),
+                      : _buildQueueBars(),
                 ),
               ),
             ),
@@ -61,34 +58,47 @@ class _BinarySearchScreenState extends State<BinarySearchScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               ElevatedButton(
-                onPressed: _createDefaultArray, // Create Default Button
+                onPressed: _createDefaultQueue, // Create Default Button
                 child: Text('Create Default'),
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.purple),
                   foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
                 ),
               ),
               ElevatedButton(
-                onPressed: _clearArray,
+                onPressed: _clearQueue, // Clear Button
                 child: Text('Clear'),
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.purple),
                   foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
                 ),
               ),
               ElevatedButton(
-                onPressed: () => _showInsertDialog(context),
-                child: Text('Insert'),
+                onPressed: () => _showEnqueueDialog(context), // Enqueue Button
+                child: Text('Enqueue'),
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.purple),
                   foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
                 ),
               ),
               ElevatedButton(
-                onPressed: searching ? null : () => _showFindIndexDialog(context),
-                child: Text('Search'),
+                onPressed: queue.isEmpty ? null : _dequeueElement, // Dequeue Button
+                child: Text('Dequeue'),
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.purple),
+                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: queue.isEmpty ? null : _peekElement, // Peek Button
+                child: Text('Peek'),
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.purple),
                   foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
                 ),
               ),
@@ -100,57 +110,20 @@ class _BinarySearchScreenState extends State<BinarySearchScreen> {
     );
   }
 
-  // Create default array
-  void _createDefaultArray() {
-    setState(() {
-      array = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]; // Default array
-    });
-  }
-
-  // Clear the array
-  void _clearArray() {
-    setState(() {
-      array = []; // Clear the array
-      left = null;
-      right = null;
-    });
-  }
-
-  // Show dialog to input value for inserting into the array
-  Future<void> _showInsertDialog(BuildContext context) async {
-    int? value = await _showInputDialog(context, 'Insert Value');
-    if (value != null) {
-      setState(() {
-        array.add(value); // Add element to array
-        array.sort(); // Sort the array after insertion for binary search
-      });
-    }
-  }
-
-  // Show dialog to find the index of an element using binary search
-  Future<void> _showFindIndexDialog(BuildContext context) async {
-    int? value = await _showInputDialog(context, 'Find Index of Value');
-    if (value != null) {
-      await _binarySearch(value); // Perform binary search with animation
-    }
-  }
-
-  // Build the visual bars for the array
-  List<Widget> _buildBars() {
-    return List<Widget>.generate(array.length, (index) {
+  // Build the visual representation of the queue
+  List<Widget> _buildQueueBars() {
+    return List<Widget>.generate(queue.length, (index) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5.0),
         child: AnimatedContainer(
           height: 100, // Fixed height for all bars
           width: 60,
           duration: Duration(milliseconds: 300),
-          color: (index == left || index == right)
-              ? Colors.red // Highlight search bounds
-              : Colors.purple, // Default bar color
+          color: Colors.purple, // No top element highlight for queue
           alignment: Alignment.bottomCenter,
           child: Center(
             child: Text(
-              array[index].toString(),
+              queue[index].toString(),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 18,
@@ -163,42 +136,54 @@ class _BinarySearchScreenState extends State<BinarySearchScreen> {
     });
   }
 
-  // Perform binary search with animation
-  Future<void> _binarySearch(int value) async {
-    searching = true;
-    left = 0;
-    right = array.length - 1;
-
-    while (left! <= right!) {
-      setState(() {});
-      await Future.delayed(Duration(seconds: 2)); // Pause for visual effect
-
-      int mid = left! + (right! - left!) ~/ 2;
-      if (array[mid] == value) {
-        setState(() {
-          left = mid; // Highlight found index
-          right = mid; // Highlight found index
-        });
-        await Future.delayed(Duration(seconds: 1));
-        break;
-      } else if (array[mid] < value) {
-        left = mid + 1;
-      } else {
-        right = mid - 1;
-      }
+  // Enqueue element into the queue
+  Future<void> _showEnqueueDialog(BuildContext context) async {
+    int? value = await _showInputDialog(context, 'Enqueue Value');
+    if (value != null) {
       setState(() {
-        // Optional: Add a small visual effect (e.g., change mid bar color momentarily)
+        queue.add(value); // Add element to the end of the queue
       });
     }
+  }
 
-    // Show result in a snackbar
+  // Dequeue element from the queue
+  void _dequeueElement() {
+    setState(() {
+      if (queue.isNotEmpty) {
+        queue.removeAt(0); // Remove front element from the queue
+      }
+    });
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(value.toString() + ' found at index: ${left!}'),
+        content: Text('Front element dequeued'),
       ),
     );
+  }
 
-    searching = false;
+  // Peek at the front element of the queue
+  void _peekElement() {
+    if (queue.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Front element: ${queue.first}'),
+        ),
+      );
+    }
+  }
+
+  // Create a default queue with some values
+  void _createDefaultQueue() {
+    setState(() {
+      queue = [10, 20, 30, 40, 50]; // Default queue values
+    });
+  }
+
+  // Clear the queue
+  void _clearQueue() {
+    setState(() {
+      queue = []; // Clear the queue
+    });
   }
 
   // Generalized input dialog to get user input
@@ -234,7 +219,7 @@ class _BinarySearchScreenState extends State<BinarySearchScreen> {
   }
 }
 
-// Test
+//Test
 
 // Question model
 class Question {
@@ -262,61 +247,318 @@ List<Question> getRandomQuestions(List<Question> allQuestions) {
   return selectedQuestions;
 }
 
-// List of questions (binary questions in data structure)
+// List of questions (Queue questions in data structure)
 final List<Question> allQuestions = [
-  Question(
-    questionText: 'What is the time complexity of the binary search algorithm in the best case?',
-    options: ['O(1)', 'O(log n)', 'O(n)', 'O(n^2)'],
-    correctAnswerIndex: 0,
-  ),
-  Question(
-    questionText: 'What is the time complexity of binary search in the average case?',
-    options: ['O(log n)', 'O(n)', 'O(n log n)', 'O(n^2)'],
-    correctAnswerIndex: 0,
-  ),
-  Question(
-    questionText: 'What is the time complexity of binary search in the worst case?',
-    options: ['O(1)', 'O(log n)', 'O(n)', 'O(n log n)'],
+ Question(
+    questionText: 'What is the primary data structure used to implement a queue?',
+    options: ['Stack', 'Linked List', 'Array', 'All of the above'],
+    correctAnswerIndex: 3,
+),
+Question(
+    questionText: 'Which of the following operations is not a valid queue operation?',
+    options: ['Enqueue', 'Dequeue', 'Peek', 'Push'],
+    correctAnswerIndex: 3,
+),
+Question(
+    questionText: 'What does the enqueue operation do in a queue?',
+    options: ['Removes an element from the front', 'Adds an element to the rear', 'Returns the front element', 'None of the above'],
     correctAnswerIndex: 1,
-  ),
-  Question(
-    questionText: 'Binary search requires the array to be:',
-    options: ['Unsorted', 'Sorted', 'Random', 'Reverse Sorted'],
+),
+Question(
+    questionText: 'Which of the following is true about a queue?',
+    options: ['It is a LIFO structure', 'It is a FIFO structure', 'It can grow in any direction', 'None of the above'],
     correctAnswerIndex: 1,
-  ),
-  Question(
-    questionText: 'Which of the following is a valid example of using binary search?',
-    options: ['Searching in a sorted array', 'Searching in a linked list', 'Searching in an unsorted array', 'None of the above'],
-    correctAnswerIndex: 0,
-  ),
-  Question(
-    questionText: 'What is the mid index calculation in binary search?',
-    options: ['(left + right) / 2', '(left + right) ~/ 2', 'left + (right - left) / 2', 'None of the above'],
+),
+Question(
+    questionText: 'If a queue is implemented using an array, what happens if you try to enqueue an element onto a full queue?',
+    options: ['Underflow', 'Overflow', 'Queue is unchanged', 'Program crash'],
     correctAnswerIndex: 1,
-  ),
-  Question(
-    questionText: 'What happens if the array has duplicate elements?',
-    options: ['Binary search will not work', 'Binary search will still work', 'Duplicates are ignored', 'None of the above'],
+),
+Question(
+    questionText: 'What will happen if you call dequeue on an empty queue?',
+    options: ['Returns null', 'Throws an exception', 'Returns 0', 'None of the above'],
     correctAnswerIndex: 1,
-  ),
-  Question(
-    questionText: 'What is the space complexity of binary search?',
-    options: ['O(1)', 'O(log n)', 'O(n)', 'O(n^2)'],
-    correctAnswerIndex: 0,
-  ),
-  Question(
-    questionText: 'Which of the following is NOT a requirement for binary search?',
-    options: ['Sorted array', 'Random access', 'Iterative approach', 'Divide and conquer'],
+),
+Question(
+    questionText: 'For an array-based implementation of a queue, which variable typically indicates the current front of the queue?',
+    options: ['Size', 'Front', 'Count', 'Length'],
+    correctAnswerIndex: 1,
+),
+Question(
+    questionText: 'Which operation is used to view the front element of a queue without removing it?',
+    options: ['Dequeue', 'Peek', 'Enqueue', 'Front'],
+    correctAnswerIndex: 1,
+),
+Question(
+    questionText: 'What type of problems can be solved using queues?',
+    options: ['Scheduling processes', 'Breadth-first search', 'Buffering data', 'All of the above'],
+    correctAnswerIndex: 3,
+),
+Question(
+    questionText: 'What is the time complexity for the enqueue operation in a queue?',
+    options: ['O(n)', 'O(log n)', 'O(1)', 'O(n log n)'],
     correctAnswerIndex: 2,
-  ),
-  Question(
-    questionText: 'In binary search, what is the purpose of the mid index?',
-    options: ['To divide the array into two halves', 'To search for an element', 'To find the maximum element', 'None of the above'],
+),
+Question(
+    questionText: 'Given the queue operations: Enqueue(1), Enqueue(2), Dequeue(), Enqueue(3), what will the front element be?',
+    options: ['1', '2', '3', 'Empty'],
+    correctAnswerIndex: 1,
+),
+Question(
+    questionText: 'What is the maximum number of elements in a queue of size n?',
+    options: ['n', 'n-1', 'n+1', '2n'],
     correctAnswerIndex: 0,
-  ),
+),
+Question(
+    questionText: 'If you have the following operations on an empty queue: Enqueue(5), Enqueue(10), Dequeue(), Enqueue(20), what will the front element be?',
+    options: ['5', '10', '20', 'Empty'],
+    correctAnswerIndex: 1,
+),
+Question(
+    questionText: 'In a queue, which of the following statements is true?',
+    options: ['Elements are removed from the front', 'Elements are added to the back', 'Both A and B', 'None of the above'],
+    correctAnswerIndex: 2,
+),
+Question(
+    questionText: 'How would you check if a queue is empty?',
+    options: ['Check if the front is null', 'Check if the size is 0', 'Both A and B', 'None of the above'],
+    correctAnswerIndex: 2,
+),
+Question(
+    questionText: 'For a queue with elements [A, B, C, D] (with A at the front), what will be the state of the queue after performing a dequeue operation?',
+    options: ['[A, B, C]', '[B, C, D]', '[C, D]', '[]'],
+    correctAnswerIndex: 1,
+),
+Question(
+    questionText: 'What is the space complexity of a queue implemented using a linked list?',
+    options: ['O(1)', 'O(n)', 'O(log n)', 'O(n^2)'],
+    correctAnswerIndex: 1,
+),
+Question(
+    questionText: 'Which of the following can be used to implement a queue?',
+    options: ['Stack', 'Array', 'Linked List', 'All of the above'],
+    correctAnswerIndex: 3,
+),
+Question(
+    questionText: 'What will be the contents of a queue after performing Enqueue(5), Enqueue(10), Enqueue(15), Dequeue()?',
+    options: ['[5, 10]', '[10, 15]', '[5, 15]', '[5, 10, 15]'],
+    correctAnswerIndex: 0,
+),
+Question(
+    questionText: 'Which of the following can cause queue overflow?',
+    options: ['Infinite enqueue operations', 'Excessive queue size', 'Large data structures', 'All of the above'],
+    correctAnswerIndex: 0,
+),
+Question(
+    questionText: 'In a circular queue, when the last position is reached and the queue is not empty, where should the next element be added?',
+    options: ['At the end', 'At the front', 'At the back', 'Circularly at the beginning'],
+    correctAnswerIndex: 3,
+),
+Question(
+    questionText: 'Which data structure is best for implementing a priority queue?',
+    options: ['Array', 'Linked List', 'Heap', 'Stack'],
+    correctAnswerIndex: 2,
+),
+Question(
+    questionText: 'What is the result of performing these operations: Enqueue(1), Enqueue(2), Enqueue(3), Dequeue(), Dequeue() on an empty queue?',
+    options: ['1', '2', '3', '0'],
+    correctAnswerIndex: 1,
+),
+Question(
+    questionText: 'What is the best use case for a queue?',
+    options: ['Task scheduling', 'Undo functionality in text editors', 'Storing history', 'None of the above'],
+    correctAnswerIndex: 0,
+),
+Question(
+    questionText: 'How would you implement a queue using two stacks?',
+    options: ['Using one stack for enqueue and another for dequeue', 'Using one stack for dequeue and another for enqueue', 'Using both stacks for both enqueue and dequeue', 'Not possible'],
+    correctAnswerIndex: 0,
+),
+Question(
+    questionText: 'Which of the following is true about a double-ended queue (Deque)?',
+    options: ['Elements can be added/removed from both ends', 'It is a LIFO structure', 'It can only hold unique elements', 'None of the above'],
+    correctAnswerIndex: 0,
+),
+Question(
+    questionText: 'What will be the output after performing these operations: Enqueue(1), Enqueue(2), Dequeue(), Enqueue(3) on an empty queue?',
+    options: ['1', '2', '3', '0'],
+    correctAnswerIndex: 2,
+),
+Question(
+    questionText: 'In which scenario would you use a queue data structure?',
+    options: ['Processing requests in order', 'Finding shortest paths', 'Sorting data', 'None of the above'],
+    correctAnswerIndex: 0,
+),
+Question(
+    questionText: 'If a queue contains elements [1, 2, 3] (with 1 at the front), what will be the state of the queue after performing two dequeue operations?',
+    options: ['[1, 2]', '[2, 3]', '[3]', '[]'],
+    correctAnswerIndex: 1,
+),
+Question(
+    questionText: 'What is the average time complexity for dequeue operations in a queue?',
+    options: ['O(n)', 'O(log n)', 'O(1)', 'O(n log n)'],
+    correctAnswerIndex: 2,
+),
+
 ];
 
-// Main function to run the app
-void main() {
-  runApp(BinarySearch());
+// void main() => runApp(QuizApp());
+
+class QueueQuiz extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Queue Quiz',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        fontFamily: 'Montserrat',
+      ),
+      home: QuizScreen(),
+    );
+  }
+}
+
+class QuizScreen extends StatefulWidget {
+  @override
+  _QuizScreenState createState() => _QuizScreenState();
+}
+
+class _QuizScreenState extends State<QuizScreen> {
+  List<Question> quizQuestions = [];
+  Map<int, int> selectedAnswers = {};
+  bool isSubmitted = false;
+  int score = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    quizQuestions = getRandomQuestions(allQuestions); // Get random 5 questions
+  }
+
+  void handleAnswer(int questionIndex, int answerIndex) {
+    setState(() {
+      selectedAnswers[questionIndex] = answerIndex;
+    });
+  }
+
+  void submitQuiz() {
+    setState(() {
+      score = 0;
+      for (var i = 0; i < quizQuestions.length; i++) {
+        if (selectedAnswers[i] == quizQuestions[i].correctAnswerIndex) {
+          score++;
+        }
+      }
+      isSubmitted = true;
+    });
+  }
+
+  void restartQuiz() {
+    setState(() {
+      isSubmitted = false;
+      score = 0;
+      selectedAnswers.clear();
+      quizQuestions = getRandomQuestions(allQuestions);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Stack Quiz'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: isSubmitted ? buildResultScreen() : buildQuizBody(),
+      ),
+    );
+  }
+
+  Widget buildQuizBody() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Answer all questions:',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 16),
+        Expanded(
+          child: ListView.builder(
+            itemCount: quizQuestions.length,
+            itemBuilder: (context, index) {
+              return buildQuestionCard(index);
+            },
+          ),
+        ),
+        ElevatedButton(
+          onPressed: selectedAnswers.length == quizQuestions.length
+              ? submitQuiz
+              : null, // Enable button only if all questions are answered
+          child: Text('Submit Quiz'),
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.all(16.0), 
+            backgroundColor: Color.fromARGB(255, 167, 69, 167),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildQuestionCard(int questionIndex) {
+    Question question = quizQuestions[questionIndex];
+    return Card(
+      margin: EdgeInsets.only(bottom: 16),
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '${questionIndex + 1}. ${question.questionText}',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            ...question.options.asMap().entries.map((entry) {
+              int optionIndex = entry.key;
+              String optionText = entry.value;
+              return RadioListTile<int>(
+                title: Text(optionText),
+                value: optionIndex,
+                groupValue: selectedAnswers[questionIndex],
+                onChanged: (value) {
+                  handleAnswer(questionIndex, value!);
+                },
+              );
+            }).toList(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildResultScreen() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Your Score: $score / ${quizQuestions.length}',
+            style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: restartQuiz,
+            child: Text('Restart Quiz'),
+            style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.all(16.0), 
+              backgroundColor: Colors.green,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

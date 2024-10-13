@@ -96,170 +96,420 @@ class PdfViewerPage extends StatelessWidget {
 // void main() {
 //   runApp(ArrayVisualizer());
 // }
-
 class ArrayVisualizer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Array Visualizer',
-      debugShowCheckedModeBanner: false,
+      title: 'Array Operations Visualizer',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ArrayScreen(),
+      home: ArrayVisualizerScreen(),
     );
   }
 }
 
-class ArrayScreen extends StatefulWidget {
+class ArrayVisualizerScreen extends StatefulWidget {
   @override
-  _ArrayScreenState createState() => _ArrayScreenState();
+  _ArrayVisualizerScreenState createState() => _ArrayVisualizerScreenState();
 }
 
-class _ArrayScreenState extends State<ArrayScreen> {
-  List<int> array = []; // Array to hold elements
+
+class _ArrayVisualizerScreenState extends State<ArrayVisualizerScreen> {
+  List<int> array = [];
+  int? highlightedIndex;
+  String currentOperation = "";
+  String currentAlgorithm = ""; // Holds static algorithm for the current operation
+  bool isProcessing = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: mtext(),
+      appBar: AppBar(
+        title: Text('Array Operations Visualizer'),
+        backgroundColor: Colors.purple,
+        titleTextStyle: TextStyle(color: Colors.white),
+      ),
       body: Column(
         children: [
           Expanded(
-            child: Center(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: array.isEmpty
-                      ? [
-                          Text(
-                            'Array is empty',
-                            style: TextStyle(fontSize: 18, color: Colors.red),
-                          )
-                        ]
-                      : _buildArrayBars(),
+            child: Row(
+              children: [
+                // Left container (for Algorithm and Output)
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: Colors.grey.shade300,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        // Algorithm part (Static)
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Algorithm',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple,
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentAlgorithm,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        // Output/Step-by-step explanation part
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Step-by-Step Output',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple,
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentOperation,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+                SizedBox(width: 10),
+                // Right container (Array Visualizer)
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Array Visualizer',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purple,
+                          ),
+                        ),
+                        Divider(),
+                        Expanded(
+                          child: Center(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: array.isEmpty
+                                    ? [
+                                        Text(
+                                          'Array is empty',
+                                          style: TextStyle(
+                                              fontSize: 18, color: Colors.red),
+                                        )
+                                      ]
+                                    : array
+                                        .asMap()
+                                        .map((index, value) => MapEntry(
+                                            index,
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 5.0),
+                                              child: AnimatedContainer(
+                                                duration:
+                                                    Duration(milliseconds: 500),
+                                                height: 100,
+                                                width: 60,
+                                                color: highlightedIndex == index
+                                                    ? Colors.greenAccent
+                                                    : Color.fromARGB(
+                                                        255, 175, 87, 160),
+                                                alignment: Alignment.center,
+                                                child: Text(
+                                                  value.toString(),
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            )))
+                                        .values
+                                        .toList(),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              ElevatedButton(
-                onPressed: () => _showAddDialog(context), // Add Button
-                child: Text('Add Element'),
-                style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.teal),
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.white),
+          // Bottom container (for Operation Buttons)
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            color: Colors.grey.shade100,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  onPressed: _createArray,
+                  child: Text('Create Default'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: () => _showUpdateDialog(context), // Update Button
-                child: Text('Update Element'),
-                style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.teal),
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.white),
+                ElevatedButton(
+                  onPressed: _clearArray,
+                  child: Text('Clear'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: _removeElement, // Remove Button
-                child: Text('Remove Last Element'),
-                style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.teal),
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.white),
+                ElevatedButton(
+                  onPressed: () => _showInsertDialog(context),
+                  child: Text('Insert'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: _createDefaultArray, // Default Array Button
-                child: Text('Create Default'),
-                style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.teal),
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.white),
+                ElevatedButton(
+                  onPressed: () => _showDeleteDialog(context),
+                  child: Text('Delete'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                 ),
-              ),
-            ],
+                ElevatedButton(
+                  onPressed: () => _showUpdateDialog(context),
+                  child: Text('Update'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () => _showFindIndexDialog(context),
+                  child: Text('Find Index'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+              ],
+            ),
           ),
-          SizedBox(height: 10),
         ],
       ),
     );
   }
 
-  // Build the visual representation of the array
-  List<Widget> _buildArrayBars() {
-    return List<Widget>.generate(array.length, (index) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 5.0),
-        child: AnimatedContainer(
-          height: 100, // Fixed height for all bars
-          width: 60,
-          duration: Duration(milliseconds: 300),
-          color: Colors.teal,
-          alignment: Alignment.bottomCenter,
-          child: Center(
-            child: Text(
-              array[index].toString(),
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
-      );
+  // Create default array
+  void _createArray() {
+    setState(() {
+      array = [10, 50, 30, 80]; // Default array
+      currentAlgorithm = """
+Algorithm for Create:
+1. Define the array.
+2. Populate the array with initial values.
+""";
+      currentOperation = "Initial array created.";
     });
   }
 
-  // Add element to the array
-  Future<void> _showAddDialog(BuildContext context) async {
-    int? value = await _showInputDialog(context, 'Add Element');
-    if (value != null) {
+  // Clear the array
+  void _clearArray() {
+    setState(() {
+      array = [];
+      currentAlgorithm = """
+Algorithm for Clear:
+1. Set the array length to 0.
+2. Remove all elements.
+""";
+      currentOperation = "Array cleared.";
+    });
+  }
+
+  // Highlight the element by index in a loop
+  Future<void> _highlightInLoop(int start, int end) async {
+    for (int i = start; i <= end; i++) {
       setState(() {
-        array.add(value); // Add element to the array
+        highlightedIndex = i; // Highlight current index being processed
+        currentOperation = "Current index: $i";
       });
+      await Future.delayed(Duration(seconds: 1));
     }
   }
 
-  // Update element in the array
+  // Insert value into the array step-by-step with highlighting
+  Future<void> _showInsertDialog(BuildContext context) async {
+    int? index = await _showInputDialog(context, 'Insert at Index');
+    if (index != null && index >= 0 && index <= array.length) {
+      int? value = await _showInputDialog(context, 'Value to Insert');
+      if (value != null) {
+        await _highlightInLoop(0, index); // Highlight until insert position
+        setState(() {
+          array.insert(index, value); // Insert element
+          highlightedIndex = index;
+          currentAlgorithm = """
+Algorithm for Insert:
+1. Select the index.
+2. Insert the value at the selected index.
+3. Shift the remaining elements.
+""";
+          currentOperation = "Inserted $value at index $index.";
+        });
+        await Future.delayed(Duration(milliseconds: 500));
+        setState(() {
+          highlightedIndex = null;
+        });
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Invalid index'),
+        ),
+      );
+    }
+  }
+
+  // Delete value from the array with highlighting
+  Future<void> _showDeleteDialog(BuildContext context) async {
+    int? value = await _showInputDialog(context, 'Delete Value');
+    if (value != null) {
+      int index = array.indexOf(value);
+      if (index != -1) {
+        await _highlightInLoop(0, index); // Highlight until delete position
+        setState(() {
+          array.removeAt(index); // Remove element
+          currentAlgorithm = """
+Algorithm for Delete:
+1. Find the index of the value.
+2. Remove the element at that index.
+3. Shift the remaining elements.
+""";
+          currentOperation = "Deleted $value from index $index.";
+          highlightedIndex = null;
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Value not found'),
+          ),
+        );
+      }
+    }
+  }
+
+  // Show dialog for updating an array element at a specific index
   Future<void> _showUpdateDialog(BuildContext context) async {
-    int? index = await _showInputDialog(context, 'Index to Update');
+    int? index = await _showInputDialog(context, 'Update Index');
     if (index != null && index >= 0 && index < array.length) {
       int? value = await _showInputDialog(context, 'New Value');
       if (value != null) {
+        await _highlightInLoop(0, index); // Highlight until update position
         setState(() {
-          array[index] = value; // Update element at the given index
+          array[index] = value; // Update element at index
+          highlightedIndex = index;
+          currentAlgorithm = """
+Algorithm for Update:
+1. Find the index of the element.
+2. Update the value at the selected index.
+""";
+          currentOperation = "Updated index $index to $value.";
+        });
+        await Future.delayed(Duration(milliseconds: 500));
+        setState(() {
+          highlightedIndex = null;
         });
       }
-    } else if (index != null) {
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Invalid Index')),
+        SnackBar(
+          content: Text('Invalid index'),
+        ),
       );
     }
   }
 
-  // Remove the last element from the array
-  void _removeElement() {
-    setState(() {
-      if (array.isNotEmpty) {
-        array.removeLast(); // Remove last element
-      }
-    });
-  }
-
-  // Create a default array with some values
-  void _createDefaultArray() {
-    setState(() {
-      array = [5, 15, 25, 35, 45]; // Default array values
-    });
+  // Show dialog to find the index of an element
+  Future<void> _showFindIndexDialog(BuildContext context) async {
+    int? value = await _showInputDialog(context, 'Find Index of Value');
+    if (value != null) {
+      await _highlightInLoop(0, array.length - 1);
+      int index = array.indexOf(value);
+      setState(() {
+        highlightedIndex = index;
+        currentAlgorithm = """
+Algorithm for Find:
+1. Iterate through the array.
+2. Compare each element to the target value.
+3. Return the index if found.
+""";
+        currentOperation = index >= 0
+            ? 'Element found at index: $index'
+            : 'Element not found';
+      });
+      await Future.delayed(Duration(milliseconds: 500));
+      setState(() {
+        highlightedIndex = null;
+      });
+    }
   }
 
   // Generalized input dialog to get user input
@@ -294,6 +544,7 @@ class _ArrayScreenState extends State<ArrayScreen> {
     );
   }
 }
+
 
 //Test
 
