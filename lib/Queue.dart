@@ -524,11 +524,7 @@ Question(
     options: ['At the end', 'At the front', 'At the back', 'Circularly at the beginning'],
     correctAnswerIndex: 3,
 ),
-Question(
-    questionText: 'Which data structure is best for implementing a priority queue?',
-    options: ['Array', 'Linked List', 'Heap', 'Stack'],
-    correctAnswerIndex: 2,
-),
+
 Question(
     questionText: 'What is the result of performing these operations: Enqueue(1), Enqueue(2), Enqueue(3), Dequeue(), Dequeue() on an empty queue?',
     options: ['1', '2', '3', '0'],
@@ -544,11 +540,7 @@ Question(
     options: ['Using one stack for enqueue and another for dequeue', 'Using one stack for dequeue and another for enqueue', 'Using both stacks for both enqueue and dequeue', 'Not possible'],
     correctAnswerIndex: 0,
 ),
-Question(
-    questionText: 'Which of the following is true about a double-ended queue (Deque)?',
-    options: ['Elements can be added/removed from both ends', 'It is a LIFO structure', 'It can only hold unique elements', 'None of the above'],
-    correctAnswerIndex: 0,
-),
+
 Question(
     questionText: 'What will be the output after performing these operations: Enqueue(1), Enqueue(2), Dequeue(), Enqueue(3) on an empty queue?',
     options: ['1', '2', '3', '0'],
@@ -571,6 +563,7 @@ Question(
 ),
 
 ];
+
 
 // void main() => runApp(QuizApp());
 

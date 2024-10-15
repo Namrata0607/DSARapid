@@ -1,9 +1,21 @@
+import 'package:dsa_rapid/AVLTree.dart';
+import 'package:dsa_rapid/BFS.dart';
+import 'package:dsa_rapid/BST.dart';
+import 'package:dsa_rapid/BTree.dart';
 import 'package:dsa_rapid/BubbleSort.dart';
+import 'package:dsa_rapid/CircularLinkedList.dart';
+import 'package:dsa_rapid/CircularQueue.dart';
+import 'package:dsa_rapid/DFS.dart';
+import 'package:dsa_rapid/DoublyLinkedList.dart';
+import 'package:dsa_rapid/Hashing.dart';
+import 'package:dsa_rapid/HeapTree.dart';
 import 'package:dsa_rapid/InsertionSort.dart';
 import 'package:dsa_rapid/LinearSearch.dart';
 import 'package:dsa_rapid/MergeSort.dart';
+import 'package:dsa_rapid/PriorityQueue.dart';
 import 'package:dsa_rapid/QuickSort.dart';
 import 'package:dsa_rapid/SelectionSort.dart';
+import 'package:dsa_rapid/SinglyLinkedList.dart';
 import 'package:dsa_rapid/Stack.dart';
 import 'package:video_player/video_player.dart';
 
@@ -183,10 +195,10 @@ class _HomeState extends State<Home> {
 Widget myFunc() {
   // List of colors
   final List<Color> colorsList = [
-    Color.fromARGB(255, 250, 145, 138),
-    Color.fromARGB(255, 152, 248, 155),
-    Color.fromARGB(255, 155, 207, 250),
-    Color.fromARGB(255, 249, 240, 152),
+    Color.fromARGB(255, 250, 145, 138),//1
+    Color.fromARGB(255, 152, 248, 155),//2
+    Color.fromARGB(255, 155, 207, 250),//3
+    Color.fromARGB(255, 249, 240, 152),//4
     Color.fromARGB(255, 55, 242, 236),
     Color.fromARGB(255, 235, 153, 249),
     Color.fromARGB(255, 250, 145, 138),
@@ -195,44 +207,64 @@ Widget myFunc() {
     Color.fromARGB(255, 249, 240, 152),
     Color.fromARGB(255, 55, 242, 236),
     Color.fromARGB(255, 235, 153, 249),
+    Color.fromARGB(255, 250, 145, 138),
+    Color.fromARGB(255, 152, 248, 155),
+    Color.fromARGB(255, 155, 207, 250),
+    Color.fromARGB(255, 188, 110, 198),
+    Color.fromARGB(162, 111, 182, 191),
+    Color.fromARGB(255, 152, 248, 155),
+    Color.fromARGB(255, 155, 207, 250),
+    Color.fromARGB(255, 183, 106, 154),
+    Color.fromARGB(255, 250, 145, 138),
+    Color.fromARGB(255, 152, 248, 155),
   ];
 
   final List<String> textList = [
-    "Array",
-    "Stack",
-    "Queue",
-    "Circular Queue",
-    "Priority Queue",
-    "Linked List",
-    "Singly Linked List",
+    "Array", //Done
+    "Stack",  //Done
+    "Queue",  //Done
+    "Circular Queue", //Done
+    "Priority Queue", //Done
+    "Singly Linked List", 
     "Doubly Linked List",
+    "Circular Linked List",
     "Linear Search",
     "Binary Search",
     "Bubble Sort",
     "Selection Sort",
     "Insertion Sort",
     "Merge Sort",
-    "Quick Sort"
+    "Quick Sort",
+    "Hashing",
+    "Binary Search Tree",
+    "Binary tree",
+    "Heap tree",
+    "AVL tree",
+    "BFS",
+    "DFS"
   ];
 
   // List of button texts
-  final List<List<String>> buttonTextsList = [
-      ["Notes", "Visualizer", "Test"],
-      ["Notes", "Visualizer", "Test"],
-      ["Notes", "Visualizer", "Test"],
-      ["Notes", "Visualizer", "Test"],
-      ["Notes", "Visualizer", "Test"],
-      ["Notes", "Visualizer", "Test"],
-      ["Notes", "Visualizer", "Test"],
-      ["Notes", "Visualizer", "Test"],
-      ["Notes", "Visualizer", "Test"],
-      ["Notes", "Visualizer", "Test"],
-      ["Notes", "Visualizer", "Test"],
-      ["Notes", "Visualizer", "Test"],
-      ["Notes", "Visualizer", "Test"],
-      ["Notes", "Visualizer", "Test"],
-      ["Notes", "Visualizer", "Test"],
-  ];
+  // final List<List<String>> buttonTextsList = [
+  //     ["Notes", "Visualizer", "Test"],
+  //     ["Notes", "Visualizer", "Test"],
+  //     ["Notes", "Visualizer", "Test"],
+  //     ["Notes", "Visualizer", "Test"],
+  //     ["Notes", "Visualizer", "Test"],
+  //     ["Notes", "Visualizer", "Test"],
+  //     ["Notes", "Visualizer", "Test"],
+  //     ["Notes", "Visualizer", "Test"],
+  //     ["Notes", "Visualizer", "Test"],
+  //     ["Notes", "Visualizer", "Test"],
+  //     ["Notes", "Visualizer", "Test"],
+  //     ["Notes", "Visualizer", "Test"],
+  //     ["Notes", "Visualizer", "Test"],
+  //     ["Notes", "Visualizer", "Test"],
+  //     ["Notes", "Visualizer", "Test"],
+  // ];
+
+  final List<List<String>> buttonTextsList = List.generate(22, (_) => ["Notes", "Visualizer", "Test"]);
+
 
 
 void openPdf(BuildContext context, String assetPath) {
@@ -282,19 +314,25 @@ final List<Function(BuildContext)> TestBtn = [
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => ArrayQuiz())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => StackQuiz())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueQuiz())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => CircularqueueQuiz())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => PriorityqueueQuiz())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => SinglylinkedlistQuiz())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => DoublylinkedlistQuiz())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => CircularlinkedlistQuiz())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => LinearSearchQuiz())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BinarySearchQuiz())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BubbleSortQuiz())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => SelectionSortQuiz())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => InsertionSortQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => MergeSort())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => MergesortQuiz())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QuickSortQuiz())),
-
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => HashingQuiz())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BinarySearchTreeQuiz())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BtreeQuiz())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => HeaptreeQuiz())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => AvltreeQuiz())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BfsQuiz())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => DfsQuiz())),
 ];
 
 return GridView.builder(
