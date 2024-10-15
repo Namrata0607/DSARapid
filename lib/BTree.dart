@@ -35,266 +35,287 @@ List<Question> getRandomQuestions(List<Question> allQuestions) {
 // List of questions (Binary Tree questions in data structure)
 final List<Question> allQuestions = [
   Question(
-    questionText: 'What is a binary tree?',
+    questionText: 'What is a B-Tree in data structures?',
     options: [
-      'A tree data structure where each node has at most two children',
-      'A tree where every node has exactly two children',
-      'A tree where nodes are arranged in a linear fashion',
-      'A tree structure with no nodes'
+      'A self-balancing binary search tree with sorted order of elements',
+      'A binary tree with exactly two children for every node',
+      'A self-balancing tree data structure that maintains sorted data and allows searches, insertions, deletions, and sequential access in logarithmic time',
+      'A tree structure used primarily for representing graphs'
     ],
-    correctAnswerIndex: 0,
+    correctAnswerIndex: 2,
   ),
   Question(
-    questionText: 'What is the maximum number of nodes in a binary tree of height h?',
+    questionText: 'What is the primary application of B-Trees?',
     options: [
-      '2^h - 1',
-      '2h - 1',
-      'h^2',
-      '2h'
-    ],
-    correctAnswerIndex: 0,
-  ),
-  Question(
-    questionText: 'In a binary tree, what is the height of a tree with a single node?',
-    options: [
-      '0',
-      '1',
-      '2',
-      'It depends on the tree structure'
-    ],
-    correctAnswerIndex: 0,
-  ),
-  Question(
-    questionText: 'What is the depth of the root node in a binary tree?',
-    options: [
-      '0',
-      '1',
-      '2',
-      'It depends on the number of nodes'
-    ],
-    correctAnswerIndex: 0,
-  ),
-  Question(
-    questionText: 'What traversal method visits nodes in the order of root, left, right?',
-    options: [
-      'In-order',
-      'Pre-order',
-      'Post-order',
-      'Level-order'
+      'Implementing priority queues',
+      'Handling large data sets in databases and file systems',
+      'Sorting algorithms',
+      'Representing graphs'
     ],
     correctAnswerIndex: 1,
   ),
   Question(
-    questionText: 'What traversal method visits nodes in the order of left, root, right?',
+    questionText: 'What is the minimum degree of a B-Tree?',
     options: [
-      'In-order',
-      'Pre-order',
-      'Post-order',
-      'Level-order'
+      'The maximum number of children each node can have',
+      'The minimum number of children each internal node must have',
+      'The number of elements each node must have at least',
+      'The maximum depth of the tree'
     ],
-    correctAnswerIndex: 0,
+    correctAnswerIndex: 1,
   ),
   Question(
-    questionText: 'What is a complete binary tree?',
+    questionText: 'What is the time complexity of searching in a B-Tree?',
     options: [
-      'A binary tree where all levels are fully filled except possibly for the last',
-      'A binary tree where all nodes have two children',
-      'A binary tree where every level is filled from left to right',
-      'A binary tree that is balanced'
-    ],
-    correctAnswerIndex: 0,
-  ),
-  Question(
-    questionText: 'What is a full binary tree?',
-    options: [
-      'A binary tree where every node has zero or two children',
-      'A binary tree where every node has exactly one child',
-      'A binary tree that is completely filled',
-      'A binary tree with an arbitrary number of children'
-    ],
-    correctAnswerIndex: 0,
-  ),
-  Question(
-    questionText: 'What is the time complexity for searching an element in a binary tree?',
-    options: [
-      'O(1)',
       'O(log n)',
       'O(n)',
-      'O(n log n)'
+      'O(n log n)',
+      'O(1)'
+    ],
+    correctAnswerIndex: 0,
+  ),
+  Question(
+    questionText: 'What property makes a B-Tree balanced?',
+    options: [
+      'All leaves are at the same level',
+      'Each node has the same number of children',
+      'Each path from the root to a leaf has the same number of nodes',
+      'Each node stores the same number of elements'
+    ],
+    correctAnswerIndex: 0,
+  ),
+  Question(
+    questionText: 'What is the order of a B-Tree?',
+    options: [
+      'The number of elements each node can store',
+      'The maximum number of children a node can have',
+      'The number of nodes in the tree',
+      'The depth of the tree'
+    ],
+    correctAnswerIndex: 1,
+  ),
+  Question(
+    questionText: 'What is a leaf node in a B-Tree?',
+    options: [
+      'A node with no children',
+      'A node with no elements',
+      'A node that contains exactly two children',
+      'A node that has a single parent'
+    ],
+    correctAnswerIndex: 0,
+  ),
+  Question(
+    questionText: 'Which of the following is a characteristic of B-Trees?',
+    options: [
+      'All keys are stored in leaf nodes',
+      'Every node has at least two children',
+      'Internal nodes store keys and have child pointers',
+      'Every node contains exactly one key'
     ],
     correctAnswerIndex: 2,
   ),
   Question(
-    questionText: 'What is the time complexity for inserting an element in a binary tree?',
+    questionText: 'How are insertions handled in B-Trees when a node becomes full?',
     options: [
-      'O(1)',
+      'The tree is rebalanced by shifting elements to other nodes',
+      'The node is split, and the middle key is promoted to the parent node',
+      'The node is deleted and its keys are redistributed',
+      'The tree height is increased by adding new levels'
+    ],
+    correctAnswerIndex: 1,
+  ),
+  Question(
+    questionText: 'What happens during a split operation in a B-Tree?',
+    options: [
+      'The elements of the full node are redistributed evenly across its children',
+      'The middle key of a full node is promoted, and the node is split into two halves',
+      'The entire subtree is restructured to maintain balance',
+      'All keys are rearranged in ascending order'
+    ],
+    correctAnswerIndex: 1,
+  ),
+  Question(
+    questionText: 'What is the time complexity for insertion in a B-Tree?',
+    options: [
       'O(log n)',
       'O(n)',
-      'O(n log n)'
+      'O(n log n)',
+      'O(1)'
+    ],
+    correctAnswerIndex: 0,
+  ),
+  Question(
+    questionText: 'What condition must be met before deleting a key from a B-Tree?',
+    options: [
+      'The node must be a leaf node',
+      'The tree must be balanced',
+      'The node must have at least the minimum number of keys',
+      'The key must be larger than all other keys in the node'
     ],
     correctAnswerIndex: 2,
   ),
   Question(
-    questionText: 'What is the post-order traversal of a binary tree?',
+    questionText: 'What happens when a key is deleted from a B-Tree?',
     options: [
-      'Visit left, visit right, visit root',
-      'Visit root, visit left, visit right',
-      'Visit root, visit right, visit left',
-      'Visit right, visit left, visit root'
+      'The tree is restructured to maintain balance',
+      'The keys are redistributed among the nodes',
+      'The node is split into two halves',
+      'The parent node becomes the new root'
     ],
     correctAnswerIndex: 0,
   ),
   Question(
-    questionText: 'Which of the following is a characteristic of a balanced binary tree?',
+    questionText: 'How is the minimum number of children a node must have in a B-Tree determined?',
     options: [
-      'The height of the left and right subtrees of any node differ by at most one',
-      'All nodes have two children',
-      'It is always a complete binary tree',
-      'It can only have a maximum height of 2'
+      'By the degree of the B-Tree',
+      'By the depth of the node',
+      'By the height of the tree',
+      'By the number of elements in the tree'
     ],
     correctAnswerIndex: 0,
   ),
   Question(
-    questionText: 'What is the level-order traversal of a binary tree?',
+    questionText: 'What is the primary advantage of using a B-Tree?',
     options: [
-      'Visiting nodes level by level from top to bottom',
-      'Visiting nodes from left to right',
-      'Visiting nodes in pre-order',
-      'Visiting nodes in post-order'
+      'Efficient space utilization and reduced disk I/O',
+      'Faster insertion than binary search trees',
+      'Ability to store multiple keys in each node',
+      'Simpler implementation compared to other trees'
     ],
     correctAnswerIndex: 0,
   ),
   Question(
-    questionText: 'Which of the following trees is not a binary tree?',
+    questionText: 'In a B-Tree, how are the elements within a node typically arranged?',
     options: [
-      'Binary tree',
-      'Complete binary tree',
-      'Full binary tree',
-      'Ternary tree'
-    ],
-    correctAnswerIndex: 3,
-  ),
-  Question(
-    questionText: 'What is a degenerate (or pathological) tree?',
-    options: [
-      'A tree where each parent node has only one child',
-      'A tree that is perfectly balanced',
-      'A tree where all nodes are leaf nodes',
-      'A tree that is completely filled'
+      'In ascending order',
+      'In descending order',
+      'In random order',
+      'By their insertion sequence'
     ],
     correctAnswerIndex: 0,
   ),
   Question(
-    questionText: 'What is the purpose of a tree’s height?',
+    questionText: 'What is the relationship between the height of a B-Tree and its performance?',
     options: [
-      'To determine the number of nodes in the tree',
-      'To evaluate the efficiency of operations like insertion and search',
-      'To find the minimum and maximum values',
-      'To count the number of leaf nodes'
+      'The height has no impact on performance',
+      'The shorter the height, the better the performance',
+      'The taller the tree, the better the performance',
+      'Height only affects deletion performance'
     ],
     correctAnswerIndex: 1,
   ),
   Question(
-    questionText: 'How do you find the maximum value in a binary tree?',
+    questionText: 'Which operation may cause a node in a B-Tree to be merged?',
     options: [
-      'By traversing all nodes',
-      'By checking the root node only',
-      'By comparing left and right child nodes',
-      'By traversing to the rightmost node'
-    ],
-    correctAnswerIndex: 0,
-  ),
-  Question(
-    questionText: 'What is the main difference between a binary tree and a binary heap?',
-    options: [
-      'A binary heap is a complete binary tree, while a binary tree is not',
-      'A binary tree can have more than two children',
-      'A binary heap is always balanced',
-      'A binary tree does not allow duplicate values'
-    ],
-    correctAnswerIndex: 0,
-  ),
-  Question(
-    questionText: 'What is a leaf node in a binary tree?',
-    options: [
-      'A node that has two children',
-      'A node that has one child',
-      'A node that has no children',
-      'A node that is the root'
+      'Insertion',
+      'Search',
+      'Deletion',
+      'Traversal'
     ],
     correctAnswerIndex: 2,
   ),
   Question(
-    questionText: 'What is the time complexity for deleting a node from a binary tree?',
+    questionText: 'What condition triggers a merge in a B-Tree?',
     options: [
-      'O(1)',
-      'O(log n)',
+      'When a node has fewer than the minimum number of keys after a deletion',
+      'When a node becomes too large after an insertion',
+      'When the root has no children',
+      'When a leaf node is full'
+    ],
+    correctAnswerIndex: 0,
+  ),
+  Question(
+    questionText: 'What is the time complexity for deletion in a B-Tree?',
+    options: [
       'O(n)',
-      'O(n log n)'
-    ],
-    correctAnswerIndex: 2,
-  ),
-  Question(
-    questionText: 'What is the in-order traversal of a binary tree?',
-    options: [
-      'Visit left, visit root, visit right',
-      'Visit root, visit left, visit right',
-      'Visit right, visit left, visit root',
-      'Visit level by level'
-    ],
-    correctAnswerIndex: 0,
-  ),
-  Question(
-    questionText: 'How do you identify a non-full binary tree?',
-    options: [
-      'It has at least one node with one child',
-      'All nodes have two children',
-      'All leaf nodes are at the same level',
-      'All nodes are filled completely'
-    ],
-    correctAnswerIndex: 0,
-  ),
-  Question(
-    questionText: 'What happens if you remove the root of a binary tree?',
-    options: [
-      'The tree becomes empty',
-      'The left or right child becomes the new root',
-      'The tree remains unchanged',
-      'The tree becomes a full binary tree'
+      'O(log n)',
+      'O(n log n)',
+      'O(1)'
     ],
     correctAnswerIndex: 1,
   ),
   Question(
-    questionText: 'Which of the following is NOT a type of binary tree?',
+    questionText: 'What does “balanced” mean in the context of B-Trees?',
     options: [
-      'Binary tree',
-      'Complete binary tree',
-      'Balanced binary tree',
-      'Quad tree'
-    ],
-    correctAnswerIndex: 3,
-  ),
-  Question(
-    questionText: 'What is the depth of a leaf node in a binary tree?',
-    options: [
-      '0',
-      '1',
-      'The same as the tree height',
-      'The number of edges from the root to the node'
-    ],
-    correctAnswerIndex: 3,
-  ),
-  Question(
-    questionText: 'How many leaf nodes can a complete binary tree with n levels have?',
-    options: [
-      '1',
-      '2^(n-1)',
-      '2^n - 1',
-      '2^n'
+      'All nodes have the same number of keys',
+      'All leaves are at the same level',
+      'The height of the tree is minimized',
+      'All keys are evenly distributed'
     ],
     correctAnswerIndex: 1,
+  ),
+  Question(
+    questionText: 'Why are B-Trees especially useful for databases?',
+    options: [
+      'They allow efficient searching and sequential access',
+      'They are faster than other tree structures for all operations',
+      'They can store large amounts of data in memory',
+      'They are easier to implement than binary trees'
+    ],
+    correctAnswerIndex: 0,
+  ),
+  Question(
+    questionText: 'What happens if a B-Tree becomes unbalanced?',
+    options: [
+      'It remains functional but loses its efficiency',
+      'It must be restructured or rebalanced',
+      'It automatically reorganizes its nodes',
+      'It cannot perform any further operations'
+    ],
+    correctAnswerIndex: 1,
+  ),
+  Question(
+    questionText: 'Which of the following can be stored in a B-Tree?',
+    options: [
+      'Only integers',
+      'Any comparable elements',
+      'Only strings',
+      'Only binary data'
+    ],
+    correctAnswerIndex: 1,
+  ),
+  Question(
+    questionText: 'What is the order of a B-Tree determined by?',
+    options: [
+      'The number of children each node can have',
+      'The number of elements in the entire tree',
+      'The total depth of the tree',
+      'The size of the keys being stored'
+    ],
+    correctAnswerIndex: 0,
+  ),
+  Question(
+    questionText: 'What is the difference between a B-Tree and a Binary Search Tree?',
+    options: [
+      'B-Trees store multiple keys per node, while binary search trees store only one',
+      'Binary search trees have more efficient search operations',
+      'B-Trees are used for smaller datasets',
+      'Binary search trees balance themselves automatically'
+    ],
+    correctAnswerIndex: 0,
+  ),
+  Question(
+    questionText: 'What is the maximum number of children a B-Tree node can have if its order is "m"?',
+    options: [
+      'm',
+      'm + 1',
+      'm - 1',
+      '2m'
+    ],
+    correctAnswerIndex: 0,
+  ),
+  Question(
+    questionText: 'What is the maximum number of keys a B-Tree node of order "m" can store?',
+    options: [
+      'm - 1',
+      'm',
+      'm + 1',
+      '2m'
+    ],
+    correctAnswerIndex: 0,
   ),
 ];
+
 
 //void main() => runApp(QuizApp());
 

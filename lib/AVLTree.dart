@@ -5,6 +5,508 @@ import 'package:flutter/services.dart';
 import 'dart:math';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
+//void main() => runApp(AVLTreeVisualizer());
+
+class AVLTreeVisualizer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'AVL Tree Visualizer',
+      theme: ThemeData(
+        primarySwatch: Colors.purple, // Set theme to purple
+      ),
+      home: AVLTreeScreen(),
+    );
+  }
+}
+
+class AVLTreeScreen extends StatefulWidget {
+  @override
+  _AVLTreeScreenState createState() => _AVLTreeScreenState();
+}
+
+class _AVLTreeScreenState extends State<AVLTreeScreen> {
+  AVLTree? tree; // AVL Tree object
+  String currentAlgorithm = ""; // Holds the current algorithm
+  String currentOutput = ""; // Holds the step-by-step output
+  String rotationMessage = ""; // Message to show the rotation type
+
+  @override
+  void initState() {
+    super.initState();
+    tree = AVLTree(); // Initialize empty tree
+    currentAlgorithm = """
+AVL Tree Insertion Algorithm:
+1. Insert the value in the correct position (BST property).
+2. Update the heights of the nodes.
+3. Check the balance factor (difference between left and right subtree heights).
+4. If balance factor is -2 or +2, rotate:
+   a. Left-Left case: Perform Right Rotation.
+   b. Right-Right case: Perform Left Rotation.
+   c. Left-Right case: Perform Left Rotation, then Right Rotation.
+   d. Right-Left case: Perform Right Rotation, then Left Rotation.
+""";
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('AVL Tree Visualizer'),
+        backgroundColor: Colors.purple,
+        titleTextStyle: TextStyle(color: Colors.white),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                // Left Panel: Algorithm and Output
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: Colors.grey.shade300,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        // Algorithm section
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Algorithm',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple,
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentAlgorithm,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        // Output section
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Step-by-Step Output',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple,
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentOutput + rotationMessage,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                // Right Panel: AVL Tree Visualizer
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'AVL Tree Visualizer',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purple,
+                          ),
+                        ),
+                        Divider(),
+                        Expanded(
+                          child: Center(
+                            child: _buildTree(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Bottom Panel: Buttons
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            color: Colors.grey.shade100,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  onPressed: _insertValue,
+                  child: Text('Insert'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: _leftBalance,
+                  child: Text('Left Balance'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: _rightBalance,
+                  child: Text('Right Balance'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: _searchValue,
+                  child: Text('Search'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: _clearTree,
+                  child: Text('Clear'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Build tree visualization
+  Widget _buildTree() {
+    return tree == null || tree!.root == null
+        ? Text(
+            'Tree is empty',
+            style: TextStyle(fontSize: 18, color: Colors.red),
+          )
+        : CustomPaint(
+            painter: TreePainter(tree!.root!, tree!.highlightNode),
+            size: Size.infinite,
+          );
+  }
+
+  // Insert value into AVL Tree
+  void _insertValue() async {
+    int? value = await _showInputDialog(context, 'Insert Value');
+    if (value != null) {
+      setState(() {
+        rotationMessage = ""; // Reset rotation message
+        tree!.insert(value); // Insert value and balance the tree
+        currentOutput = "Inserted $value into the AVL Tree.";
+        rotationMessage = tree!.rotationMessage; // Get the rotation message
+      });
+    }
+  }
+
+  // Manual Left Balancing (Right Rotation)
+  void _leftBalance() {
+    setState(() {
+      tree!.root = tree!._rightRotate(tree!.root!);
+      currentOutput = "Performed manual Left Balancing (Right Rotation).";
+    });
+  }
+
+  // Manual Right Balancing (Left Rotation)
+  void _rightBalance() {
+    setState(() {
+      tree!.root = tree!._leftRotate(tree!.root!);
+      currentOutput = "Performed manual Right Balancing (Left Rotation).";
+    });
+  }
+
+  // Search for a value in the AVL Tree
+  void _searchValue() async {
+    int? value = await _showInputDialog(context, 'Search Value');
+    if (value != null) {
+      setState(() {
+        bool found = tree!.search(value); // Search value in the tree
+        if (found) {
+          currentOutput = "Value $value found in the AVL Tree.";
+        } else {
+          currentOutput = "Value $value not found in the AVL Tree.";
+        }
+      });
+    }
+  }
+
+  // Clear the AVL tree
+  void _clearTree() {
+    setState(() {
+      tree = AVLTree(); // Reinitialize tree
+      currentOutput = "Tree cleared.";
+    });
+  }
+
+  // Generalized input dialog
+  Future<int?> _showInputDialog(BuildContext context, String title) async {
+    final TextEditingController controller = TextEditingController();
+
+    return showDialog<int>(context: context, builder: (context) {
+      return AlertDialog(
+        title: Text(title),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(hintText: 'Enter a number'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(), // Dismiss dialog
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              int? value = int.tryParse(controller.text);
+              Navigator.of(context).pop(value); // Return value
+            },
+            child: Text('OK'),
+          ),
+        ],
+      );
+    });
+  }
+}
+
+// AVL Node class
+class AVLNode {
+  int value;
+  AVLNode? left;
+  AVLNode? right;
+  int height;
+
+  AVLNode(this.value) : height = 1;
+}
+
+// AVL Tree class
+class AVLTree {
+  AVLNode? root; // Root of the AVL tree
+  AVLNode? highlightNode; // Node to highlight
+  String rotationMessage = ""; // Message to show rotation info
+
+  // Insert value into AVL Tree
+  void insert(int value) {
+    root = _insertNode(root, value);
+  }
+
+  // Search for a value in AVL Tree
+  bool search(int value) {
+    AVLNode? result = _searchNode(root, value);
+    if (result != null) {
+      highlightNode = result; // Highlight found node
+      return true;
+    }
+    return false;
+  }
+
+  // Recursive search
+  AVLNode? _searchNode(AVLNode? node, int value) {
+    if (node == null) return null;
+    if (value == node.value) return node;
+    if (value < node.value) return _searchNode(node.left, value);
+    return _searchNode(node.right, value);
+  }
+
+  // Insert node recursively and balance AVL Tree
+  AVLNode _insertNode(AVLNode? node, int value) {
+    if (node == null) return AVLNode(value); // New node
+
+    if (value < node.value) {
+      node.left = _insertNode(node.left, value);
+    } else if (value > node.value) {
+      node.right = _insertNode(node.right, value);
+    } else {
+      return node; // No duplicates allowed
+    }
+
+    // Update height
+    node.height = 1 + _max(_getHeight(node.left), _getHeight(node.right));
+
+    // Balance tree
+    int balance = _getBalance(node);
+    rotationMessage = ""; // Reset rotation message
+
+    if (balance > 1 && value < node.left!.value) {
+      rotationMessage = "Left-Left case: Performing Right Rotation.";
+      return _rightRotate(node);
+    }
+
+    if (balance < -1 && value > node.right!.value) {
+      rotationMessage = "Right-Right case: Performing Left Rotation.";
+      return _leftRotate(node);
+    }
+
+    if (balance > 1 && value > node.left!.value) {
+      rotationMessage = "Left-Right case: Performing Left Rotation, then Right Rotation.";
+      node.left = _leftRotate(node.left!);
+      return _rightRotate(node);
+    }
+
+    if (balance < -1 && value < node.right!.value) {
+      rotationMessage = "Right-Left case: Performing Right Rotation, then Left Rotation.";
+      node.right = _rightRotate(node.right!);
+      return _leftRotate(node);
+    }
+
+    return node; // Return unchanged node
+  }
+
+  // Get height of node
+  int _getHeight(AVLNode? node) {
+    return node?.height ?? 0; // Return 0 if node is null
+  }
+
+  // Get balance factor of node
+  int _getBalance(AVLNode? node) {
+    return node == null ? 0 : _getHeight(node.left) - _getHeight(node.right);
+  }
+
+  // Right Rotation
+  AVLNode _rightRotate(AVLNode y) {
+    AVLNode x = y.left!;
+    AVLNode T2 = x.right!;
+
+    x.right = y; // Perform rotation
+    y.left = T2; // Update left subtree
+
+    // Update heights
+    y.height = _max(_getHeight(y.left), _getHeight(y.right)) + 1;
+    x.height = _max(_getHeight(x.left), _getHeight(x.right)) + 1;
+
+    return x; // Return new root
+  }
+
+  // Left Rotation
+  AVLNode _leftRotate(AVLNode x) {
+    AVLNode y = x.right!;
+    AVLNode T2 = y.left!;
+
+    y.left = x; // Perform rotation
+    x.right = T2; // Update right subtree
+
+    // Update heights
+    x.height = _max(_getHeight(x.left), _getHeight(x.right)) + 1;
+    y.height = _max(_getHeight(y.left), _getHeight(y.right)) + 1;
+
+    return y; // Return new root
+  }
+
+  // Return max of two values
+  int _max(int a, int b) => (a > b) ? a : b;
+}
+
+// Painter class for drawing the AVL tree with purple theme and rotation highlighting
+class TreePainter extends CustomPainter {
+  final AVLNode root;
+  final AVLNode? highlightNode; // Node involved in rotation or search
+
+  TreePainter(this.root, this.highlightNode);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    _drawNode(canvas, root, Offset(size.width / 2, 40), size.width / 4);
+  }
+
+  // Draw node recursively
+  void _drawNode(Canvas canvas, AVLNode node, Offset position, double offset) {
+    Paint paint = Paint()
+      ..color = (node == highlightNode) ? Colors.red : Colors.purple; // Highlight for search
+    TextPainter textPainter = TextPainter(
+      text: TextSpan(
+        text: node.value.toString(),
+        style: TextStyle(fontSize: 18, color: Colors.white),
+      ),
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout();
+    Offset textOffset = Offset(position.dx - textPainter.width / 2,
+        position.dy - textPainter.height / 2);
+
+    canvas.drawCircle(position, 20, paint);
+    textPainter.paint(canvas, textOffset);
+
+    // Draw left child
+    if (node.left != null) {
+      Offset leftPosition = Offset(position.dx - offset, position.dy + 60);
+      canvas.drawLine(position, leftPosition, Paint()..color = Colors.black);
+      _drawNode(canvas, node.left!, leftPosition, offset / 2);
+    }
+
+    // Draw right child
+    if (node.right != null) {
+      Offset rightPosition = Offset(position.dx + offset, position.dy + 60);
+      canvas.drawLine(position, rightPosition, Paint()..color = Colors.black);
+      _drawNode(canvas, node.right!, rightPosition, offset / 2);
+    }
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
+
 // Question model
 class Question {
   final String questionText;
@@ -555,6 +1057,8 @@ class _QuizScreenState extends State<QuizScreen> {
   );
 }
 }
+
+
 
 
 

@@ -5,6 +5,234 @@ import 'package:flutter/services.dart';
 import 'dart:math';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
+class HashTable extends StatefulWidget {
+  @override
+  _HashTableVisualizerState createState() => _HashTableVisualizerState();
+}
+
+class _HashTableVisualizerState extends State<HashTable> {
+  List<List<int>> table = List.generate(10, (_) => []); // Hash table of size 10
+  int? highlightedIndex;  // This will highlight the index being operated on
+  int? currentKey;
+  String currentAlgorithm = "";
+  String currentOutput = "";
+  bool searching = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Hash Table Visualizer')),
+      body: Column(
+        children: [
+          // Display Algorithm and Output
+          Expanded(
+            flex: 1,
+            child: Row(
+              children: [
+                // Left side for Algorithm and Output
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: Colors.grey.shade300,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        // Algorithm Display
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Algorithm', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.purple)),
+                                Divider(),
+                                Expanded(child: SingleChildScrollView(child: Text(currentAlgorithm))),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        // Output Display
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Step-by-Step Output', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.purple)),
+                                Divider(),
+                                Expanded(child: SingleChildScrollView(child: Text(currentOutput))),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                // Right side for Hash Table Visualization
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text('Hash Table Visualizer', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.purple)),
+                        Divider(),
+                        Expanded(
+                          child: Center(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(children: _buildHashTable()),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Bottom Container for Buttons
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            color: Colors.grey.shade100,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(onPressed: _createDefaultTable, child: Text('Create Default Table')),
+                ElevatedButton(onPressed: _clearTable, child: Text('Clear Table')),
+                ElevatedButton(onPressed: () => _showInsertDialog(context), child: Text('Insert')),
+                ElevatedButton(onPressed: searching ? null : () => _showFindDialog(context), child: Text('Search')),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Method to create default hash table
+  void _createDefaultTable() {
+    setState(() {
+      table = List.generate(10, (_) => []); // Reset the table with 10 empty lists
+      currentAlgorithm = "1. Compute hash using key % table size\n2. Insert key at the index.\n3. Handle collisions if necessary (Separate Chaining).";
+      currentOutput = "Default hash table created.";
+      highlightedIndex = null; // Reset highlight
+    });
+  }
+
+  // Method to clear the hash table
+  void _clearTable() {
+    setState(() {
+      table = List.generate(10, (_) => []);
+      currentOutput = "Hash table cleared.";
+      highlightedIndex = null; // Reset highlight
+    });
+  }
+
+  // Method to show insert dialog and insert a value into the hash table
+  Future<void> _showInsertDialog(BuildContext context) async {
+    int? key = await _showInputDialog(context, 'Insert Key');
+    if (key != null) {
+      int index = key % table.length;
+      setState(() {
+        highlightedIndex = index; // Highlight the current index being inserted
+        table[index].add(key);
+        currentOutput = "Inserted key $key at index $index.";
+      });
+      await Future.delayed(Duration(seconds: 2)); // Keep highlight for 2 seconds
+      setState(() {
+        highlightedIndex = null; // Reset highlight after insertion
+      });
+    }
+  }
+
+  // Method to visualize hash table
+  List<Widget> _buildHashTable() {
+    return List<Widget>.generate(table.length, (index) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5.0),
+        child: Column(
+          children: [
+            Text('Index $index'),
+            Container(
+              height: 100,
+              width: 60,
+              color: highlightedIndex == index ? Colors.green.shade300 : Colors.purple.shade100,
+              child: Column(
+                children: List.generate(table[index].length, (i) {
+                  return Text(table[index][i].toString());
+                }),
+              ),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  // Generalized input dialog to get user input
+  Future<int?> _showInputDialog(BuildContext context, String title) async {
+    final TextEditingController controller = TextEditingController();
+
+    return showDialog<int>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(title),
+          content: TextField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(hintText: 'Enter a number'),
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: Text('Cancel')),
+            TextButton(
+              onPressed: () {
+                final value = int.tryParse(controller.text);
+                Navigator.of(context).pop(value);
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Method to handle searching in the hash table
+  Future<void> _showFindDialog(BuildContext context) async {
+    int? key = await _showInputDialog(context, 'Find Key');
+    if (key != null) {
+      int index = key % table.length;
+      setState(() {
+        highlightedIndex = index; // Highlight the index being searched
+      });
+      await Future.delayed(Duration(seconds: 2)); // Keep highlight for 2 seconds
+
+      if (table[index].contains(key)) {
+        setState(() {
+          currentOutput = "Key $key found at index $index.";
+        });
+      } else {
+        setState(() {
+          currentOutput = "Key $key not found in the hash table.";
+        });
+      }
+
+      setState(() {
+        highlightedIndex = null; // Reset highlight after search
+      });
+    }
+  }
+}
+
 // Question model
 class Question {
   final String questionText;

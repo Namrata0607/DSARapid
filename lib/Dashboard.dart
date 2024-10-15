@@ -216,7 +216,7 @@ Widget myFunc() {
     Color.fromARGB(255, 155, 207, 250),
     Color.fromARGB(255, 183, 106, 154),
     Color.fromARGB(255, 250, 145, 138),
-    Color.fromARGB(255, 152, 248, 155),
+    // Color.fromARGB(255, 152, 248, 155),
   ];
 
   final List<String> textList = [
@@ -237,7 +237,6 @@ Widget myFunc() {
     "Quick Sort",
     "Hashing",
     "Binary Search Tree",
-    "Binary tree",
     "Heap tree",
     "AVL tree",
     "BFS",
@@ -263,7 +262,7 @@ Widget myFunc() {
   //     ["Notes", "Visualizer", "Test"],
   // ];
 
-  final List<List<String>> buttonTextsList = List.generate(22, (_) => ["Notes", "Visualizer", "Test"]);
+  final List<List<String>> buttonTextsList = List.generate(21, (_) => ["Notes", "Visualizer", "Test"]);
 
 
 
@@ -305,8 +304,14 @@ final List<Function(BuildContext)> VisualizerBtn = [
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => InsertionSort())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => MergeSort())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QuickSort())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QuickSort())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => HashTable())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BSTVisualizer())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BSTVisualizer())),   //heaptree
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => AVLTreeVisualizer())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BSTVisualizer())),    //bfs
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BSTVisualizer())),  //dfs
+
+
 
 ];
 
@@ -328,11 +333,12 @@ final List<Function(BuildContext)> TestBtn = [
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QuickSortQuiz())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => HashingQuiz())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BinarySearchTreeQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BtreeQuiz())),
+  // (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BtreeQuiz())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => HeaptreeQuiz())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => AvltreeQuiz())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BfsQuiz())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => DfsQuiz())),
+  
 ];
 
 return GridView.builder(
