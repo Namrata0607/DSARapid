@@ -5,6 +5,508 @@ import 'package:flutter/services.dart';
 import 'dart:math';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
+
+
+void main() {
+  runApp(DoublyLinkedListVisualizerApp());
+}
+
+class DoublyNode {
+  final int value;
+  DoublyNode? next;
+  DoublyNode? prev;
+
+  DoublyNode(this.value);
+}
+
+class DoublyLinkedListVisualizerApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Doubly Linked List Visualizer',
+      theme: ThemeData(
+        primarySwatch: Colors.purple,
+      ),
+      home: DoublyLinkedListScreen(),
+    );
+  }
+}
+
+class DoublyLinkedListScreen extends StatefulWidget {
+  @override
+  _DoublyLinkedListScreenState createState() => _DoublyLinkedListScreenState();
+}
+
+class _DoublyLinkedListScreenState extends State<DoublyLinkedListScreen>
+    with SingleTickerProviderStateMixin {
+  DoublyNode? head;
+  String currentOutput = "";
+  bool isAnimating = false;
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Doubly Linked List Visualizer'),
+        backgroundColor: Colors.purple,
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: Colors.grey.shade300,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        // Container for Algorithm Description
+                        Text(
+                          'Doubly Linked List Algorithm',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purple,
+                          ),
+                        ),
+                        Divider(),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Text(
+                              _getAlgorithmDescription(),
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20), // Spacing between sections
+                        Text(
+                          'Step-by-Step Output',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purple,
+                          ),
+                        ),
+                        Divider(),
+                        Expanded(
+                          child: Container(
+                            constraints: BoxConstraints(
+                              minHeight: 100, // Minimum height
+                            ),
+                            child: SingleChildScrollView(
+                              child: Text(
+                                currentOutput,
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Doubly Linked List Visualizer',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purple,
+                          ),
+                        ),
+                        Divider(),
+                        Expanded(
+                          child: Center(
+                            child: _buildAnimatedDoublyLinkedList(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            color: Colors.grey.shade100,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  onPressed: isAnimating ? null : () => _showAddNodeDialog(context),
+                  child: Text('Add Node'),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: isAnimating ? null : _showRemoveNodeDialog,
+                  child: Text('Remove Node'),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: isAnimating ? null : _clearList,
+                  child: Text('Clear List'),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _getAlgorithmDescription() {
+    return "1. **Add Node**:\n"
+        "   - Create a new node with the specified value.\n"
+        "   - If the position is 1 or the list is empty, set the new node as the head.\n"
+        "   - Otherwise, traverse the list to the specified position and insert the node.\n\n"
+        "2. **Remove Node**:\n"
+        "   - Check if the list is empty.\n"
+        "   - If the head contains the specified value, update the head.\n"
+        "   - Otherwise, traverse the list to find the node with the specified value and remove it.\n";
+  }
+
+  Widget _buildAnimatedDoublyLinkedList() {
+    if (head == null) {
+      return Text(
+        'List is empty',
+        style: TextStyle(fontSize: 18, color: Colors.grey),
+      );
+    }
+
+    List<Widget> nodes = [];
+    DoublyNode? currentNode = head;
+
+    while (currentNode != null) {
+      nodes.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5.0),
+          child: Column(
+            children: [
+              Container(
+                height: 80,
+                width: 120,
+                color: Colors.purple,
+                child: Column(
+                  children: [
+                    // Value section
+                    Expanded(
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          currentNode.value.toString(),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Divider(color: Colors.white, height: 1), // Divider between value and addresses
+                  ],
+                ),
+              ),
+              // Previous Address section
+              Container(
+                height: 30,
+                width: 120,
+                color: Colors.blue,
+                alignment: Alignment.center,
+                child: Text(
+                  'Prev: ${currentNode.prev != null ? currentNode.prev.hashCode.toString() : 'null'}',
+                  style: TextStyle(color: Colors.white, fontSize: 12),
+                ),
+              ),
+              // Next Address section
+              Container(
+                height: 30,
+                width: 120,
+                color: Colors.green,
+                alignment: Alignment.center,
+                child: Text(
+                  'Next: ${currentNode.next != null ? currentNode.next.hashCode.toString() : 'null'}',
+                  style: TextStyle(color: Colors.white, fontSize: 12),
+                ),
+              ),
+              if (currentNode.next != null)
+                Icon(
+                  Icons.arrow_forward,
+                  size: 40,
+                  color: Colors.purple,
+                ),
+            ],
+          ),
+        ),
+      );
+      currentNode = currentNode.next;
+    }
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: nodes,
+      ),
+    );
+  }
+
+  Future<void> _showAddNodeDialog(BuildContext context) async {
+    Map<String, dynamic>? result = await _showInputDialog(context, 'Add Node Value', true);
+    if (result != null) {
+      setState(() {
+        int value = result['value'];
+        int position = result['position'];
+        _addNode(value, position);
+      });
+    }
+  }
+
+  Future<void> _showRemoveNodeDialog() async {
+    int? value = await _showInputDialogForValue(context, 'Remove Node by Value');
+    if (value != null) {
+      setState(() {
+        _removeNode(value);
+      });
+    }
+  }
+
+  bool _isListEmpty() {
+    return head == null;
+  }
+
+  DoublyNode? _traverseTo(int position) {
+    DoublyNode? current = head;
+    for (int i = 1; i < position; i++) {
+      if (current == null) {
+        return null;
+      }
+      current = current.next;
+    }
+    return current;
+  }
+
+  Future<void> _addNode(int value, int position) async {
+    if (isAnimating) return;
+
+    isAnimating = true;
+    DoublyNode newNode = DoublyNode(value);
+
+    // Start with the algorithm description
+    currentOutput = "Algorithm for Add Node:\n"
+        "1. Create a new node with value $value.\n"
+        "2. If position is 1 or list is empty, update head.\n"
+        "3. Else, traverse to position and insert node.\n\n";
+
+    if (position <= 1 || _isListEmpty()) {
+      newNode.next = head;
+      if (head != null) {
+        head!.prev = newNode;
+      }
+      head = newNode;
+      currentOutput += "Added node with value $value at position 1 (as head).\n";
+    } else {
+      DoublyNode? current = _traverseTo(position - 1);
+      if (current != null) {
+        newNode.next = current.next;
+        newNode.prev = current;
+        current.next = newNode;
+        if (newNode.next != null) {
+          newNode.next!.prev = newNode;
+        }
+        currentOutput += "Added node with value $value at position $position.\n";
+      } else {
+        currentOutput += "Position $position is out of bounds.\n";
+      }
+    }
+
+    _controller.reset();
+    _controller.forward();
+
+    setState(() {});
+    isAnimating = false;
+  }
+
+  Future<void> _removeNode(int value) async {
+    if (isAnimating) return;
+
+    if (_isListEmpty()) {
+      setState(() {
+        currentOutput = "List is empty! Cannot remove node.";
+      });
+      return;
+    }
+
+    isAnimating = true;
+    currentOutput = "Algorithm for Remove Node:\n"
+        "1. Check if the list is empty.\n"
+        "2. If head contains value $value, update head.\n"
+        "3. Otherwise, traverse the list to find the node.\n\n";
+
+    // Handle removal
+    if (head!.value == value) {
+      head = head!.next;
+      if (head != null) {
+        head!.prev = null;
+      }
+      currentOutput += "Removed node with value $value from the head.\n";
+    } else {
+      DoublyNode? current = head;
+      while (current != null && current.value != value) {
+        current = current.next;
+      }
+      if (current != null) {
+        if (current.next != null) {
+          current.next!.prev = current.prev;
+        }
+        if (current.prev != null) {
+          current.prev!.next = current.next;
+        }
+        currentOutput += "Removed node with value $value from the list.\n";
+      } else {
+        currentOutput += "Node with value $value not found.\n";
+      }
+    }
+
+    _controller.reset();
+    _controller.forward();
+
+    setState(() {});
+    isAnimating = false;
+  }
+
+  Future<Map<String, dynamic>?> _showInputDialog(
+      BuildContext context, String title, bool forAdd) {
+    TextEditingController valueController = TextEditingController();
+    TextEditingController positionController = TextEditingController();
+
+    return showDialog<Map<String, dynamic>>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                TextField(
+                  controller: valueController,
+                  decoration: InputDecoration(hintText: 'Node Value'),
+                  keyboardType: TextInputType.number,
+                ),
+                if (forAdd)
+                  TextField(
+                    controller: positionController,
+                    decoration: InputDecoration(hintText: 'Position (1-based)'),
+                    keyboardType: TextInputType.number,
+                  ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Add'),
+              onPressed: () {
+                int value = int.parse(valueController.text);
+                int position = forAdd ? int.parse(positionController.text) : 1;
+                Navigator.of(context).pop({'value': value, 'position': position});
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<int?> _showInputDialogForValue(BuildContext context, String title) {
+    TextEditingController valueController = TextEditingController();
+
+    return showDialog<int>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                TextField(
+                  controller: valueController,
+                  decoration: InputDecoration(hintText: 'Node Value'),
+                  keyboardType: TextInputType.number,
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Remove'),
+              onPressed: () {
+                int value = int.parse(valueController.text);
+                Navigator.of(context).pop(value);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _clearList() {
+    setState(() {
+      head = null;
+      currentOutput = "Cleared the list.\n";
+    });
+  }
+}
+
+
+
 // Question model
 class Question {
   final String questionText;

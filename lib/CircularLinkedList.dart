@@ -5,6 +5,469 @@ import 'package:flutter/services.dart';
 import 'dart:math';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
+void main() {
+  runApp(CircularLinkedListVisualizerApp());
+}
+
+class Node {
+  int value;
+  Node? next;
+
+  Node(this.value);
+}
+
+class CircularLinkedList {
+  Node? head;
+
+  void insert(int value, int index) {
+    Node newNode = Node(value);
+    if (head == null) {
+      if (index == 0) {
+        head = newNode;
+        newNode.next = head;
+      }
+    } else {
+      if (index == 0) {
+        Node? current = head;
+        while (current?.next != head) {
+          current = current?.next!;
+        }
+        current?.next = newNode;
+        newNode.next = head;
+        head = newNode; // Update head if inserting at index 0
+      } else {
+        Node? current = head;
+        int currentIndex = 0;
+
+        while (currentIndex < index - 1 && current?.next != head) {
+          current = current?.next!;
+          currentIndex++;
+        }
+
+        newNode.next = current?.next;
+        current?.next = newNode;
+      }
+    }
+  }
+
+  int? delete(int value) {
+    if (head == null) return null;
+
+    Node current = head!;
+    Node? previous;
+
+    // Check if the head needs to be deleted
+    if (current.value == value) {
+      if (current.next == head) {
+        head = null; // List becomes empty
+      } else {
+        while (current.next != head) {
+          current = current.next!;
+        }
+        current.next = head!.next; // Remove head
+        head = head!.next; // Update head
+      }
+      return value;
+    }
+
+    do {
+      previous = current;
+      current = current.next!;
+    } while (current != head && current.value != value);
+
+    if (current.value == value) {
+      previous!.next = current.next; // Remove the node
+      return value;
+    }
+
+    return null; // Value not found
+  }
+
+  List<int> getElements() {
+    List<int> elements = [];
+    if (head == null) return elements;
+
+    Node current = head!;
+    do {
+      elements.add(current.value);
+      current = current.next!;
+    } while (current != head);
+
+    return elements;
+  }
+
+  void clear() {
+    head = null;
+  }
+}
+
+class CircularLinkedListVisualizerApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Circular Linked List Visualizer',
+      theme: ThemeData(
+        primarySwatch: Colors.purple,
+      ),
+      home: CircularLinkedListScreen(),
+    );
+  }
+}
+
+class CircularLinkedListScreen extends StatefulWidget {
+  @override
+  _CircularLinkedListScreenState createState() =>
+      _CircularLinkedListScreenState();
+}
+
+class _CircularLinkedListScreenState extends State<CircularLinkedListScreen> {
+  late CircularLinkedList linkedList;
+  String currentOutput = "";
+
+  @override
+  void initState() {
+    super.initState();
+    linkedList = CircularLinkedList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Circular Linked List Visualizer'),
+        backgroundColor: Colors.purple,
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: Colors.grey.shade300,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Circular Linked List Algorithm',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purple,
+                          ),
+                        ),
+                        Divider(),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Text(
+                              _getAlgorithmDescription(),
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20), // Spacing between sections
+                        Text(
+                          'Step-by-Step Output',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purple,
+                          ),
+                        ),
+                        Divider(),
+                        Expanded(
+                          child: Container(
+                            constraints: BoxConstraints(
+                              minHeight: 100, // Minimum height
+                            ),
+                            child: SingleChildScrollView(
+                              child: Text(
+                                currentOutput,
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Circular Linked List Visualizer',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purple,
+                          ),
+                        ),
+                        Divider(),
+                        Expanded(
+                          child: Center(
+                            child: _buildLinkedListVisualization(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            color: Colors.grey.shade100,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  onPressed: () => _showInsertDialog(context),
+                  child: Text('Insert'),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () => _showDeleteDialog(context),
+                  child: Text('Delete'),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: _clearList,
+                  child: Text('Clear List'),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _getAlgorithmDescription() {
+    return "1. **Insert**:\n"
+        "   - Add a new node to the circular linked list at a specified index.\n"
+        "   - If the list is empty, set the head to the new node.\n"
+        "   - Otherwise, traverse to the specified index and link it to the new node.\n\n"
+        "2. **Delete**:\n"
+        "   - Remove a node with the specified value from the circular linked list.\n"
+        "   - If the node is the head, update the head to the next node.\n\n"
+        "3. **Clear List**:\n"
+        "   - Remove all nodes from the list and set head to null.\n";
+  }
+
+  Widget _buildLinkedListVisualization() {
+    List<int> elements = linkedList.getElements();
+
+    if (elements.isEmpty) {
+      return Text(
+        'List is empty',
+        style: TextStyle(fontSize: 18, color: Colors.grey),
+      );
+    }
+
+    List<Widget> nodes = [];
+    for (int i = 0; i < elements.length; i++) {
+      int value = elements[i];
+      nodes.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5.0),
+          child: Column(
+            children: [
+              Container(
+                height: 80,
+                width: 120, // Width adjusted to fit both parts
+                color: Colors.purple,
+                child: Column(
+                  children: [
+                    // Value section
+                    Expanded(
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          value.toString(),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Divider(color: Colors.white, height: 1), // Divider between value and address
+                    // Display the memory address of the next node
+                    Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Next: ${linkedList.getNodeAddress(elements[(i + 1) % elements.length])}',
+                        style: TextStyle(color: Colors.white, fontSize: 12),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.arrow_forward,
+                size: 40,
+                color: Colors.purple,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: nodes,
+      ),
+    );
+  }
+
+  Future<void> _showInsertDialog(BuildContext context) async {
+    int? value = await _showInputDialogForValue(context, 'Insert Value');
+    int? index = await _showInputDialogForIndex(context, 'Insert Index');
+    if (value != null && index != null) {
+      setState(() {
+        linkedList.insert(value, index);
+        currentOutput += "Inserted $value at index $index.\n";
+      });
+    }
+  }
+
+  Future<void> _showDeleteDialog(BuildContext context) async {
+    int? value = await _showInputDialogForValue(context, 'Delete Value');
+    if (value != null) {
+      setState(() {
+        var deletedValue = linkedList.delete(value);
+        if (deletedValue != null) {
+          currentOutput += "Deleted $deletedValue from the list.\n";
+        } else {
+          currentOutput += "$value not found in the list.\n";
+        }
+      });
+    }
+  }
+
+  Future<int?> _showInputDialogForValue(BuildContext context, String title) {
+    TextEditingController valueController = TextEditingController();
+    return showDialog<int?>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                TextField(
+                  controller: valueController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(labelText: 'Enter value'),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                int? value = int.tryParse(valueController.text);
+                Navigator.of(context).pop(value);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<int?> _showInputDialogForIndex(BuildContext context, String title) {
+    TextEditingController indexController = TextEditingController();
+    return showDialog<int?>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                TextField(
+                  controller: indexController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(labelText: 'Enter index'),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                int? index = int.tryParse(indexController.text);
+                Navigator.of(context).pop(index);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _clearList() {
+    setState(() {
+      linkedList.clear();
+      currentOutput += "Cleared the list.\n";
+    });
+  }
+}
+
+extension on CircularLinkedList {
+  String getNodeAddress(int value) {
+    Node? current = head;
+    if (current == null) return "null";
+
+    do {
+      if (current?.value == value) {
+        return current?.next?.hashCode.toString() ?? "null"; // Return address of the next node
+      }
+      current = current?.next;
+    } while (current != head);
+
+    return "not found";
+  }
+}
+
+
 
 // Question model
 class Question {

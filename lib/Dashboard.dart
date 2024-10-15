@@ -293,11 +293,11 @@ final List<Function(BuildContext)> VisualizerBtn = [
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => ArrayVisualizer())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => StackVisualizer())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueVisualizer())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueVisualizer())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueVisualizer())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueVisualizer())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueVisualizer())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueVisualizer())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => CircularQueueVisualizerApp())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => PriorityQueueVisualizerApp())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => LinkedListVisualizerApp())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => DoublyLinkedListVisualizerApp())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => CircularLinkedListVisualizerApp())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => LinearSearch())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BinarySearch())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BubbleSort())),
@@ -305,8 +305,8 @@ final List<Function(BuildContext)> VisualizerBtn = [
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => InsertionSort())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => MergeSort())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QuickSort())),
-
-
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QuickSort())),
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BSTVisualizer())),
 
 ];
 

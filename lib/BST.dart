@@ -8,6 +8,550 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'dart:math';
 import 'package:flutter/material.dart';
 
+
+
+
+
+void main() => runApp(BSTVisualizer());
+
+class BSTVisualizer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Binary Search Tree Visualizer',
+      theme: ThemeData(
+        primarySwatch: Colors.purple,
+      ),
+      home: BSTScreen(),
+    );
+  }
+}
+
+class BSTScreen extends StatefulWidget {
+  @override
+  _BSTScreenState createState() => _BSTScreenState();
+}
+
+class _BSTScreenState extends State<BSTScreen> {
+  BSTree? tree; // BST object
+  String currentAlgorithm = ""; // Holds the current algorithm
+  String currentOutput = ""; // Holds the step-by-step output
+  List<int> traversalNodes = []; // Nodes to highlight during traversal
+
+  @override
+  void initState() {
+    super.initState();
+    tree = BSTree(); // Initialize empty tree
+    currentAlgorithm = """
+Binary Search Tree Operations:
+1. Insertion: Insert a value in the correct position.
+2. Deletion: Remove a value and re-structure the tree.
+3. Search: Find if a value exists in the tree.
+4. Traversal: Visit all nodes in various orders (Inorder, Preorder, Postorder).
+""";
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Binary Search Tree Visualizer'),
+        backgroundColor: Colors.purple,
+        titleTextStyle: TextStyle(color: Colors.white),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                // Left Panel: Algorithm and Output
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: Colors.grey.shade300,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        // Algorithm section
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Algorithm',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple,
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentAlgorithm,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        // Output section
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Step-by-Step Output',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple,
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentOutput,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                // Right Panel: BST Visualizer
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Binary Search Tree Visualizer',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purple,
+                          ),
+                        ),
+                        Divider(),
+                        Expanded(
+                          child: Center(
+                            child: _buildTree(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Bottom Panel: Buttons
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            color: Colors.grey.shade100,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  onPressed: _insertValue,
+                  child: Text('Insert'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: _removeValue,
+                  child: Text('Remove'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: _searchValue,
+                  child: Text('Search'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: _traverseTree,
+                  child: Text('Traverse'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: _clearTree,
+                  child: Text('Clear'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Build tree visualization
+  Widget _buildTree() {
+    return tree == null || tree!.root == null
+        ? Text(
+            'Tree is empty',
+            style: TextStyle(fontSize: 18, color: Colors.red),
+          )
+        : CustomPaint(
+            painter: TreePainter(tree!.root!, traversalNodes),
+            size: Size.infinite,
+          );
+  }
+
+  // Insert value into BST
+  void _insertValue() async {
+    int? value = await _showInputDialog(context, 'Insert Value');
+    if (value != null) {
+      setState(() {
+        tree!.insert(value); // Insert value
+        currentOutput = "Inserted $value into the Binary Search Tree.";
+      });
+    }
+  }
+
+  // Remove value from BST
+  void _removeValue() async {
+    int? value = await _showInputDialog(context, 'Remove Value');
+    if (value != null) {
+      setState(() {
+        if (tree!.remove(value)) {
+          currentOutput = "Removed $value from the Binary Search Tree.";
+        } else {
+          currentOutput = "$value not found in the tree.";
+        }
+      });
+    }
+  }
+
+  // Search for a value in BST
+  void _searchValue() async {
+    int? value = await _showInputDialog(context, 'Search Value');
+    if (value != null) {
+      setState(() {
+        if (tree!.search(value)) {
+          currentOutput = "$value found in the Binary Search Tree.";
+        } else {
+          currentOutput = "$value not found in the tree.";
+        }
+      });
+    }
+  }
+
+  // Traverse the tree and display the result
+  void _traverseTree() async {
+    // Inorder Traversal
+    setState(() {
+      currentOutput = "Starting Inorder Traversal...";
+      traversalNodes.clear();
+    });
+    List<int> inOrderResult = await _performTraversal(tree!.inOrderTraversal(), "Inorder Traversal");
+    setState(() {
+      currentOutput += "\nFinal Inorder Result: ${inOrderResult.join(', ')}";
+    });
+    await Future.delayed(Duration(seconds: 3)); // 3 seconds delay before next traversal
+
+    // Postorder Traversal
+    setState(() {
+      currentOutput += "\n\nStarting Postorder Traversal...";
+      traversalNodes.clear();
+    });
+    List<int> postOrderResult = await _performTraversal(tree!.postOrderTraversal(), "Postorder Traversal");
+    setState(() {
+      currentOutput += "\nFinal Postorder Result: ${postOrderResult.join(', ')}";
+    });
+    await Future.delayed(Duration(seconds: 3)); // 3 seconds delay before next traversal
+
+    // Preorder Traversal
+    setState(() {
+      currentOutput += "\n\nStarting Preorder Traversal...";
+      traversalNodes.clear();
+    });
+    List<int> preOrderResult = await _performTraversal(tree!.preOrderTraversal(), "Preorder Traversal");
+    setState(() {
+      currentOutput += "\nFinal Preorder Result: ${preOrderResult.join(', ')}";
+    });
+  }
+
+  // Perform the specific traversal and highlight nodes
+  Future<List<int>> _performTraversal(List<int> nodes, String traversalType) async {
+    List<int> result = [];
+    for (int value in nodes) {
+      setState(() {
+        traversalNodes = [value]; // Highlight current node
+        currentOutput = "$traversalType: Visiting $value";
+      });
+      await Future.delayed(Duration(seconds: 2)); // Delay between highlighting nodes
+      result.add(value); // Add to result
+    }
+    setState(() {
+      traversalNodes.clear(); // Clear highlights after traversal
+    });
+    return result; // Return the result
+  }
+
+  // Clear the tree
+  void _clearTree() {
+    setState(() {
+      tree = BSTree(); // Reset the tree
+      currentOutput = "Tree has been cleared.";
+      traversalNodes.clear(); // Clear any highlights
+    });
+  }
+
+  // Show input dialog for value entry
+  Future<int?> _showInputDialog(BuildContext context, String title) {
+    TextEditingController controller = TextEditingController();
+    return showDialog<int>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: TextField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(hintText: "Enter a value"),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                int? value = int.tryParse(controller.text);
+                Navigator.of(context).pop(value); // Return the value
+              },
+              child: Text('OK'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(), // Cancel
+              child: Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+// Binary Search Tree Class
+class BSTree {
+  Node? root;
+
+  void insert(int value) {
+    root = _insertRecursive(root, value);
+  }
+
+  Node _insertRecursive(Node? node, int value) {
+    if (node == null) {
+      return Node(value);
+    }
+    if (value < node.value) {
+      node.left = _insertRecursive(node.left, value);
+    } else {
+      node.right = _insertRecursive(node.right, value);
+    }
+    return node;
+  }
+
+  bool remove(int value) {
+    int initialSize = _getSize(root);
+    root = _removeRecursive(root, value);
+    return _getSize(root) < initialSize;
+  }
+
+  Node? _removeRecursive(Node? node, int value) {
+    if (node == null) return null;
+    if (value < node.value) {
+      node.left = _removeRecursive(node.left, value);
+    } else if (value > node.value) {
+      node.right = _removeRecursive(node.right, value);
+    } else {
+      // Node to be removed found
+      if (node.left == null) return node.right;
+      if (node.right == null) return node.left;
+      node.value = _findMin(node.right!).value; // Replace with min from right subtree
+      node.right = _removeRecursive(node.right, node.value);
+    }
+    return node;
+  }
+
+  bool search(int value) {
+    return _searchRecursive(root, value);
+  }
+
+  bool _searchRecursive(Node? node, int value) {
+    if (node == null) return false;
+    if (node.value == value) return true;
+    return value < node.value
+        ? _searchRecursive(node.left, value)
+        : _searchRecursive(node.right, value);
+  }
+
+  List<int> inOrderTraversal() {
+    List<int> result = [];
+    _inOrderTraversal(root, result);
+    return result;
+  }
+
+  void _inOrderTraversal(Node? node, List<int> result) {
+    if (node != null) {
+      _inOrderTraversal(node.left, result);
+      result.add(node.value);
+      _inOrderTraversal(node.right, result);
+    }
+  }
+
+  List<int> postOrderTraversal() {
+    List<int> result = [];
+    _postOrderTraversal(root, result);
+    return result;
+  }
+
+  void _postOrderTraversal(Node? node, List<int> result) {
+    if (node != null) {
+      _postOrderTraversal(node.left, result);
+      _postOrderTraversal(node.right, result);
+      result.add(node.value);
+    }
+  }
+
+  List<int> preOrderTraversal() {
+    List<int> result = [];
+    _preOrderTraversal(root, result);
+    return result;
+  }
+
+  void _preOrderTraversal(Node? node, List<int> result) {
+    if (node != null) {
+      result.add(node.value);
+      _preOrderTraversal(node.left, result);
+      _preOrderTraversal(node.right, result);
+    }
+  }
+
+  int _getSize(Node? node) {
+    if (node == null) return 0;
+    return 1 + _getSize(node.left) + _getSize(node.right);
+  }
+
+  Node _findMin(Node node) {
+    while (node.left != null) {
+      node = node.left!;
+    }
+    return node;
+  }
+}
+
+// Node class
+class Node {
+  int value;
+  Node? left;
+  Node? right;
+
+  Node(this.value);
+}
+
+// TreePainter class for drawing the BST
+class TreePainter extends CustomPainter {
+  final Node root;
+  final List<int> highlightedNodes;
+
+  TreePainter(this.root, this.highlightedNodes);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (root == null) return;
+
+    double centerX = size.width / 2;
+    double offsetY = 40;
+    _drawNode(canvas, root, centerX, offsetY, size.width / 4);
+  }
+
+  void _drawNode(Canvas canvas, Node node, double x, double y, double offsetX) {
+    Paint paint = Paint()
+      ..color = highlightedNodes.contains(node.value)
+          ? Colors.yellow // Highlighted color
+          : Colors.blue; // Normal color
+
+    // Draw the node
+    canvas.drawCircle(Offset(x, y), 20, paint);
+    TextPainter textPainter = TextPainter(
+      text: TextSpan(
+        text: '${node.value}',
+        style: TextStyle(color: Colors.white, fontSize: 16),
+      ),
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout();
+    textPainter.paint(canvas, Offset(x - 10, y - 10));
+
+    // Draw left and right children
+    if (node.left != null) {
+      canvas.drawLine(Offset(x, y + 20), Offset(x - offsetX, y + 60), Paint()..color = Colors.black);
+      _drawNode(canvas, node.left!, x - offsetX, y + 60, offsetX / 2);
+    }
+    if (node.right != null) {
+      canvas.drawLine(Offset(x, y + 20), Offset(x + offsetX, y + 60), Paint()..color = Colors.black);
+      _drawNode(canvas, node.right!, x + offsetX, y + 60, offsetX / 2);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
+
+
 // Question model
 class Question {
   final String questionText;
