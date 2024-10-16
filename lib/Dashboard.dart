@@ -379,31 +379,40 @@ final List<Function(BuildContext)> VisualizerBtn = [
 
 
 //Test Quiz
-final List<Function(BuildContext)> TestBtn = [
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => ArrayQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => StackQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => CircularqueueQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => PriorityqueueQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => SinglylinkedlistQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => DoublylinkedlistQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => CircularlinkedlistQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => LinearSearchQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BinarySearchQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BubbleSortQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => SelectionSortQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => InsertionSortQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => MergesortQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QuickSortQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => HashingQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BinarySearchTreeQuiz())),
-  // (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BtreeQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => HeaptreeQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => AvltreeQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BfsQuiz())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => DfsQuiz())),
-  
+// List of quiz widget classes
+final List<Widget Function()> quizClasses = [
+  () => ArrayQuiz(),
+  () => StackQuiz(),
+  () => QueueQuiz(),
+  () => CircularqueueQuiz(),
+  () => PriorityqueueQuiz(),
+  () => SinglylinkedlistQuiz(),
+  () => DoublylinkedlistQuiz(),
+  () => CircularlinkedlistQuiz(),
+  () => LinearSearchQuiz(),
+  () => BinarySearchQuiz(),
+  () => BubbleSortQuiz(),
+  () => SelectionSortQuiz(),
+  () => InsertionSortQuiz(),
+  () => MergesortQuiz(),
+  () => QuickSortQuiz(),
+  () => HashingQuiz(),
+  () => BinarySearchTreeQuiz(),
+  // () => BtreeQuiz(), // Commented out as per the original
+  () => HeaptreeQuiz(),
+  () => AvltreeQuiz(),
+  () => BfsQuiz(),
+  () => DfsQuiz(),
 ];
+
+// Dynamically create the TestBtn list
+final List<Function(BuildContext)> TestBtn = List.generate(
+  quizClasses.length,
+  (index) => (context) => Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => quizClasses[index]()),
+  ),
+);
 
 
 
