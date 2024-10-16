@@ -368,7 +368,7 @@ final List<Function(BuildContext)> VisualizerBtn = [
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QuickSort())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => HashTable())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BSTVisualizer())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BSTVisualizer())),   //heaptree
+  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => HeapTree())),   //heaptree
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => AVLTreeVisualizer())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BSTVisualizer())),    //bfs
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BSTVisualizer())),  //dfs

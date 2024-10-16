@@ -37,6 +37,400 @@ class PDFViewerScreen extends StatelessWidget {
   }
 }
 
+//visualizer
+
+class HeapTree extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Heap Tree Visualizer',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: HeapTreeScreen(),
+    );
+  }
+}
+
+class HeapTreeScreen extends StatefulWidget {
+  @override
+  _HeapTreeScreenState createState() => _HeapTreeScreenState();
+}
+
+class _HeapTreeScreenState extends State<HeapTreeScreen> {
+  MinHeap? heap; // Min Heap object
+  String currentAlgorithm = ""; // Holds the current algorithm
+  String currentOutput = ""; // Holds the step-by-step output
+
+  @override
+  void initState() {
+    super.initState();
+    heap = MinHeap(); // Initialize empty heap
+    currentAlgorithm = """
+Min-Heap Insertion Algorithm:
+1. Insert the value at the end of the heap.
+2. "Bubble up" the new value to maintain heap property:
+   a. If the new value is less than its parent, swap them.
+   b. Repeat until the heap property is restored.
+
+Min-Heap Extraction Algorithm:
+1. Remove the root (minimum value).
+2. Replace the root with the last element in the heap.
+3. "Bubble down" the new root to restore heap property.
+""";
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Heap Tree Visualizer'),
+        backgroundColor: const Color.fromARGB(255, 214, 59, 198),
+        titleTextStyle: TextStyle(color: Colors.white),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                // Left Panel: Algorithm and Output
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: Colors.grey.shade300,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        // Algorithm section
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Algorithm',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: const Color.fromARGB(255, 194, 96, 232),
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentAlgorithm,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        // Output section
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Step-by-Step Output',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: const Color.fromARGB(255, 208, 75, 199),
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentOutput,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                // Right Panel: Heap Tree Visualizer
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Heap Tree Visualizer',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: const Color.fromARGB(255, 220, 79, 225),
+                          ),
+                        ),
+                        Divider(),
+                        Expanded(
+                          child: Center(
+                            child: _buildHeap(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Bottom Panel: Buttons
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            color: Colors.grey.shade100,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  onPressed: _insertValue,
+                  child: Text('Insert'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(const Color.fromARGB(255, 187, 52, 187)),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: _extractMinValue,
+                  child: Text('Extract Min'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(const Color.fromARGB(255, 215, 77, 192)),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: _clearHeap,
+                  child: Text('Clear'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(const Color.fromARGB(255, 228, 81, 186)),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Build heap visualization
+  Widget _buildHeap() {
+    return heap == null || heap!.size == 0
+        ? Text(
+            'Heap is empty',
+            style: TextStyle(fontSize: 18, color: Colors.red),
+          )
+        : CustomPaint(
+            painter: HeapPainter(heap!),
+            size: Size.infinite,
+          );
+  }
+
+  // Insert value into the heap
+  void _insertValue() async {
+    int? value = await _showInputDialog(context, 'Insert Value');
+    if (value != null) {
+      setState(() {
+        heap!.insert(value); // Insert value and maintain heap property
+        currentOutput = "Inserted $value into the Heap. Heap is balancing...";
+      });
+    }
+  }
+
+  // Extract minimum value from the heap
+  void _extractMinValue() {
+    setState(() {
+      if (heap!.size > 0) {
+        int minValue = heap!.extractMin();
+        currentOutput = "Extracted minimum value: $minValue";
+      } else {
+        currentOutput = "Heap is empty.";
+      }
+    });
+  }
+
+  // Clear the heap
+  void _clearHeap() {
+    setState(() {
+      heap = MinHeap(); // Reinitialize heap
+      currentOutput = "Heap cleared.";
+    });
+  }
+
+  // Generalized input dialog
+  Future<int?> _showInputDialog(BuildContext context, String title) async {
+    final TextEditingController controller = TextEditingController();
+
+    return showDialog<int>(context: context, builder: (context) {
+      return AlertDialog(
+        title: Text(title),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(hintText: 'Enter a number'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(), // Dismiss dialog
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              final value = int.tryParse(controller.text);
+              Navigator.of(context).pop(value); // Return value
+            },
+            child: Text('OK'),
+          ),
+        ],
+      );
+    });
+  }
+}
+
+// Min-Heap data structure and insert logic (with balancing)
+class MinHeap {
+  List<int> elements = [];
+
+  int get size => elements.length;
+
+  void insert(int value) {
+    elements.add(value);
+    _bubbleUp(size - 1);
+  }
+
+  int extractMin() {
+    if (size == 0) throw Exception("Heap is empty");
+    int minValue = elements[0];
+    elements[0] = elements[size - 1];
+    elements.removeLast();
+    _bubbleDown(0);
+    return minValue;
+  }
+
+  void _bubbleUp(int index) {
+    while (index > 0) {
+      int parentIndex = (index - 1) ~/ 2;
+      if (elements[index] >= elements[parentIndex]) break;
+      _swap(index, parentIndex);
+      index = parentIndex;
+    }
+  }
+
+  void _bubbleDown(int index) {
+    int leftChildIndex = 2 * index + 1;
+    int rightChildIndex = 2 * index + 2;
+    int smallestIndex = index;
+
+    if (leftChildIndex < size &&
+        elements[leftChildIndex] < elements[smallestIndex]) {
+      smallestIndex = leftChildIndex;
+    }
+
+    if (rightChildIndex < size &&
+        elements[rightChildIndex] < elements[smallestIndex]) {
+      smallestIndex = rightChildIndex;
+    }
+
+    if (smallestIndex != index) {
+      _swap(index, smallestIndex);
+      _bubbleDown(smallestIndex);
+    }
+  }
+
+  void _swap(int i, int j) {
+    int temp = elements[i];
+    elements[i] = elements[j];
+    elements[j] = temp;
+  }
+}
+
+// Painter class for drawing the Min Heap
+class HeapPainter extends CustomPainter {
+  final MinHeap heap;
+
+  HeapPainter(this.heap);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Custom heap drawing logic
+    if (heap.size > 0) {
+      _drawNode(canvas, 0, Offset(size.width / 2, 40), size.width / 4);
+    }
+  }
+
+  void _drawNode(Canvas canvas, int index, Offset position, double offset) {
+    if (index >= heap.size) return;
+
+    Paint paint = Paint()..color = Colors.blue;
+    TextPainter textPainter = TextPainter(
+      text: TextSpan(
+        text: heap.elements[index].toString(),
+        style: TextStyle(fontSize: 18, color: Colors.white),
+      ),
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout();
+    Offset textOffset = Offset(position.dx - textPainter.width / 2,
+        position.dy - textPainter.height / 2);
+
+    canvas.drawCircle(position, 20, paint);
+    textPainter.paint(canvas, textOffset);
+
+    // Calculate child indices
+    int leftChildIndex = 2 * index + 1;
+    int rightChildIndex = 2 * index + 2;
+
+    if (leftChildIndex < heap.size) {
+      Offset leftPosition = Offset(position.dx - offset, position.dy + 60);
+      canvas.drawLine(position, leftPosition, Paint()..color = Colors.black);
+      _drawNode(canvas, leftChildIndex, leftPosition, offset / 2);
+    }
+
+    if (rightChildIndex < heap.size) {
+      Offset rightPosition = Offset(position.dx + offset, position.dy + 60);
+      canvas.drawLine(position, rightPosition, Paint()..color = Colors.black);
+      _drawNode(canvas, rightChildIndex, rightPosition, offset / 2);
+    }
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
 
 // Question model
 class Question {
