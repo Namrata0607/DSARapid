@@ -29,7 +29,7 @@ import 'package:dsa_rapid/QuickSort.dart';
 import 'package:dsa_rapid/Stack.dart';
 import 'package:dsa_rapid/Queue.dart';
 import 'package:dsa_rapid/Array.dart';
-import 'package:dsa_rapid/MergeSort.dart';
+// import 'package:dsa_rapid/MergeSort.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 // import 'package:flutter_pdfview/flutter_pdfview.dart';
@@ -261,7 +261,6 @@ Widget myFunc() {
     "Bubble Sort",
     "Selection Sort",
     "Insertion Sort",
-    "Merge Sort",
     "Quick Sort",
     "Hashing",
     "Binary Search Tree",
@@ -366,7 +365,6 @@ final List<Function(BuildContext)> VisualizerBtn = [
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BubbleSort())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => SelectionSort())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => InsertionSort())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => MergeSort())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QuickSort())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => HashTable())),
   (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BSTVisualizer())),
