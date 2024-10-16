@@ -4,6 +4,39 @@ import 'package:dsa_rapid/Dashboard.dart';
 import 'package:flutter/services.dart';
 import 'dart:math';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+
+
+class CircularlinkedlistNotes extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'PDF Viewer',
+      home: PDFViewerScreen(),  // Directly open the PDF on load
+    );
+  }
+}
+
+class PDFViewerScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Automatically open the PDF when this screen is displayed
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      const url = 'assets/notes/array.pdf';  // Relative path to the PDF
+      await launch(url);  // This opens the PDF in a new browser tab
+    });
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('PDF Viewer'),
+      ),
+      body: Center(
+        child: Text('Opening PDF...'),
+      ),
+    );
+  }
+}
 
 void main() {
   runApp(CircularLinkedListVisualizerApp());
@@ -132,130 +165,130 @@ class _CircularLinkedListScreenState extends State<CircularLinkedListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Circular Linked List Visualizer'),
-        backgroundColor: Colors.purple,
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    color: Colors.grey.shade300,
-                    padding: EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Circular Linked List Algorithm',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.purple,
-                          ),
-                        ),
-                        Divider(),
-                        Expanded(
-                          child: SingleChildScrollView(
-                            child: Text(
-                              _getAlgorithmDescription(),
-                              style: TextStyle(fontSize: 16),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: appBack(context),
+        body: Column(
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      color: Colors.grey.shade300,
+                      padding: EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Text(
+                            'Circular Linked List Algorithm',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.purple,
                             ),
                           ),
-                        ),
-                        SizedBox(height: 20), // Spacing between sections
-                        Text(
-                          'Step-by-Step Output',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.purple,
-                          ),
-                        ),
-                        Divider(),
-                        Expanded(
-                          child: Container(
-                            constraints: BoxConstraints(
-                              minHeight: 100, // Minimum height
-                            ),
+                          Divider(),
+                          Expanded(
                             child: SingleChildScrollView(
                               child: Text(
-                                currentOutput,
+                                _getAlgorithmDescription(),
                                 style: TextStyle(fontSize: 16),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                          SizedBox(height: 20), // Spacing between sections
+                          Text(
+                            'Step-by-Step Output',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.purple,
+                            ),
+                          ),
+                          Divider(),
+                          Expanded(
+                            child: Container(
+                              constraints: BoxConstraints(
+                                minHeight: 100, // Minimum height
+                              ),
+                              child: SingleChildScrollView(
+                                child: Text(
+                                  currentOutput,
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    color: Colors.white,
-                    padding: EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Circular Linked List Visualizer',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.purple,
+                  SizedBox(width: 10),
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      color: Colors.white,
+                      padding: EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Text(
+                            'Circular Linked List Visualizer',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.purple,
+                            ),
                           ),
-                        ),
-                        Divider(),
-                        Expanded(
-                          child: Center(
-                            child: _buildLinkedListVisualization(),
+                          Divider(),
+                          Expanded(
+                            child: Center(
+                              child: _buildLinkedListVisualization(),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-            color: Colors.grey.shade100,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButton(
-                  onPressed: () => _showInsertDialog(context),
-                  child: Text('Insert'),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
-                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+              color: Colors.grey.shade100,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    onPressed: () => _showInsertDialog(context),
+                    child: Text('Insert'),
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
+                      foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                    ),
                   ),
-                ),
-                ElevatedButton(
-                  onPressed: () => _showDeleteDialog(context),
-                  child: Text('Delete'),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
-                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                  ElevatedButton(
+                    onPressed: () => _showDeleteDialog(context),
+                    child: Text('Delete'),
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
+                      foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                    ),
                   ),
-                ),
-                ElevatedButton(
-                  onPressed: _clearList,
-                  child: Text('Clear List'),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
-                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                  ElevatedButton(
+                    onPressed: _clearList,
+                    child: Text('Clear List'),
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
+                      foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -843,14 +876,15 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Circular Linked List Quiz'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: isSubmitted ? buildResultScreen() : buildQuizBody(),
+   Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: appBack(context),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: isSubmitted ? buildResultScreen() : buildQuizBody(),
+        ),
       ),
     );
   }
@@ -872,13 +906,24 @@ class _QuizScreenState extends State<QuizScreen> {
             },
           ),
         ),
-        ElevatedButton(
-          onPressed: selectedAnswers.length == quizQuestions.length
-              ? submitQuiz
-              : null, // Enable button only if all questions are answered
-          child: Text('Submit Quiz'),
-          style: ElevatedButton.styleFrom(
-            padding: EdgeInsets.all(16.0), backgroundColor: Color.fromARGB(255, 167, 69, 167),
+        Center(
+          child: SizedBox(
+            width: 600,
+            height: 60,
+            child: ElevatedButton(
+              onPressed: selectedAnswers.length == quizQuestions.length
+                  ? submitQuiz
+                  : null, // Enable button only if all questions are answered
+              child: Text('Submit Quiz',
+              style: TextStyle(
+                fontSize: 20
+              ),),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.all(16.0), 
+                backgroundColor: Color.fromARGB(255, 105, 1, 161),
+                foregroundColor: Colors.white,
+              ),
+            ),
           ),
         ),
       ],

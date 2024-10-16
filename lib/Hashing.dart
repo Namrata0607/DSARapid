@@ -4,6 +4,38 @@ import 'package:dsa_rapid/Dashboard.dart';
 import 'package:flutter/services.dart';
 import 'dart:math';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+class HashingNotes extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'PDF Viewer',
+      home: PDFViewerScreen(),  // Directly open the PDF on load
+    );
+  }
+}
+
+class PDFViewerScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Automatically open the PDF when this screen is displayed
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      const url = 'assets/notes/array.pdf';  // Relative path to the PDF
+      await launch(url);  // This opens the PDF in a new browser tab
+    });
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('PDF Viewer'),
+      ),
+      body: Center(
+        child: Text('Opening PDF...'),
+      ),
+    );
+  }
+}
+
 
 class HashTable extends StatefulWidget {
   @override
@@ -20,99 +52,102 @@ class _HashTableVisualizerState extends State<HashTable> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Hash Table Visualizer')),
-      body: Column(
-        children: [
-          // Display Algorithm and Output
-          Expanded(
-            flex: 1,
-            child: Row(
-              children: [
-                // Left side for Algorithm and Output
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    color: Colors.grey.shade300,
-                    padding: EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        // Algorithm Display
-                        Expanded(
-                          flex: 1,
-                          child: Container(
-                            color: Colors.white,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Algorithm', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.purple)),
-                                Divider(),
-                                Expanded(child: SingleChildScrollView(child: Text(currentAlgorithm))),
-                              ],
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: appBack(context),
+        body: Column(
+          children: [
+            // Display Algorithm and Output
+            Expanded(
+              flex: 1,
+              child: Row(
+                children: [
+                  // Left side for Algorithm and Output
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      color: Colors.grey.shade300,
+                      padding: EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          // Algorithm Display
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              color: Colors.white,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Algorithm', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.purple)),
+                                  Divider(),
+                                  Expanded(child: SingleChildScrollView(child: Text(currentAlgorithm))),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 10),
-                        // Output Display
-                        Expanded(
-                          flex: 1,
-                          child: Container(
-                            color: Colors.white,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Step-by-Step Output', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.purple)),
-                                Divider(),
-                                Expanded(child: SingleChildScrollView(child: Text(currentOutput))),
-                              ],
+                          SizedBox(height: 10),
+                          // Output Display
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              color: Colors.white,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Step-by-Step Output', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.purple)),
+                                  Divider(),
+                                  Expanded(child: SingleChildScrollView(child: Text(currentOutput))),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(width: 10),
-                // Right side for Hash Table Visualization
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    color: Colors.white,
-                    padding: EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Text('Hash Table Visualizer', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.purple)),
-                        Divider(),
-                        Expanded(
-                          child: Center(
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(children: _buildHashTable()),
+                  SizedBox(width: 10),
+                  // Right side for Hash Table Visualization
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      color: Colors.white,
+                      padding: EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Text('Hash Table Visualizer', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.purple)),
+                          Divider(),
+                          Expanded(
+                            child: Center(
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(children: _buildHashTable()),
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          // Bottom Container for Buttons
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-            color: Colors.grey.shade100,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButton(onPressed: _createDefaultTable, child: Text('Create Default Table')),
-                ElevatedButton(onPressed: _clearTable, child: Text('Clear Table')),
-                ElevatedButton(onPressed: () => _showInsertDialog(context), child: Text('Insert')),
-                ElevatedButton(onPressed: searching ? null : () => _showFindDialog(context), child: Text('Search')),
-              ],
+            // Bottom Container for Buttons
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+              color: Colors.grey.shade100,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(onPressed: _createDefaultTable, child: Text('Create Default Table')),
+                  ElevatedButton(onPressed: _clearTable, child: Text('Clear Table')),
+                  ElevatedButton(onPressed: () => _showInsertDialog(context), child: Text('Insert')),
+                  ElevatedButton(onPressed: searching ? null : () => _showFindDialog(context), child: Text('Search')),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -637,17 +672,19 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Tree Quiz'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: isSubmitted ? buildResultScreen() : buildQuizBody(),
+ Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: appBack(context),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: isSubmitted ? buildResultScreen() : buildQuizBody(),
+        ),
       ),
     );
   }
+
 
   Widget buildQuizBody() {
     return Column(
@@ -666,13 +703,24 @@ class _QuizScreenState extends State<QuizScreen> {
             },
           ),
         ),
-        ElevatedButton(
-          onPressed: selectedAnswers.length == quizQuestions.length
-              ? submitQuiz
-              : null, // Enable button only if all questions are answered
-          child: Text('Submit Quiz'),
-          style: ElevatedButton.styleFrom(
-            padding: EdgeInsets.all(16.0), backgroundColor: Color.fromARGB(255, 167, 69, 167),
+        Center(
+          child: SizedBox(
+            width: 600,
+            height: 60,
+            child: ElevatedButton(
+              onPressed: selectedAnswers.length == quizQuestions.length
+                  ? submitQuiz
+                  : null, // Enable button only if all questions are answered
+              child: Text('Submit Quiz',
+              style: TextStyle(
+                fontSize: 20
+              ),),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.all(16.0), 
+                backgroundColor: Color.fromARGB(255, 105, 1, 161),
+                foregroundColor: Colors.white,
+              ),
+            ),
           ),
         ),
       ],

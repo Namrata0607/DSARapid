@@ -14,7 +14,7 @@ class _ViewprofileState extends State<Viewprofile> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: mtext(),
+        appBar: appBack(context),
         body: Text("View Profile Data",
         style: TextStyle(
           fontSize: 30
@@ -41,7 +41,7 @@ class _UpdateprofileState extends State<Updateprofile> {
       debugShowCheckedModeBanner: false,
 
       home: Scaffold(
-        appBar: mtext(),
+        appBar: appBack(context),
         body: Text("Update Profile"),
       ),
     );

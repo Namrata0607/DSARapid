@@ -199,10 +199,13 @@ class _IndexState extends State<Index> {
                           MaterialPageRoute(builder: (context) => SignInPage()),
                         );
                       }, child: Text("Start Learning",
+                      
                           style: TextStyle(fontSize: 20.0),
+                          
+                          
                         ),
                   style: ElevatedButton.styleFrom(
-                    
+                    foregroundColor: Colors.white,
                     // alignment: Alignment.bottomCenter,
                     backgroundColor: Color.fromARGB(255, 105, 1, 161),
                   padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),

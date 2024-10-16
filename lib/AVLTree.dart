@@ -4,6 +4,40 @@ import 'package:dsa_rapid/Dashboard.dart';
 import 'package:flutter/services.dart';
 import 'dart:math';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+
+
+
+class AVLNotes extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'PDF Viewer',
+      home: PDFViewerScreen(),  // Directly open the PDF on load
+    );
+  }
+}
+
+class PDFViewerScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Automatically open the PDF when this screen is displayed
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      const url = 'assets/notes/avl_tree.pdf';  // Relative path to the PDF
+      await launch(url);  // This opens the PDF in a new browser tab
+    });
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('PDF Viewer'),
+      ),
+      body: Center(
+        child: Text('Opening PDF...'),
+      ),
+    );
+  }
+}
 
 //void main() => runApp(AVLTreeVisualizer());
 
@@ -50,185 +84,184 @@ AVL Tree Insertion Algorithm:
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('AVL Tree Visualizer'),
-        backgroundColor: Colors.purple,
-        titleTextStyle: TextStyle(color: Colors.white),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Row(
-              children: [
-                // Left Panel: Algorithm and Output
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    color: Colors.grey.shade300,
-                    padding: EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        // Algorithm section
-                        Expanded(
-                          flex: 1,
-                          child: Container(
-                            color: Colors.white,
-                            padding: EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Algorithm',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.purple,
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: appBack(context),
+        body: Column(
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  // Left Panel: Algorithm and Output
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      color: Colors.grey.shade300,
+                      padding: EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          // Algorithm section
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              color: Colors.white,
+                              padding: EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Algorithm',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.purple,
+                                    ),
                                   ),
-                                ),
-                                Divider(),
-                                Expanded(
-                                  child: SingleChildScrollView(
-                                    child: Text(
-                                      currentAlgorithm,
-                                      style: TextStyle(
-                                        fontSize: 16,
+                                  Divider(),
+                                  Expanded(
+                                    child: SingleChildScrollView(
+                                      child: Text(
+                                        currentAlgorithm,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 10),
-                        // Output section
-                        Expanded(
-                          flex: 1,
-                          child: Container(
-                            color: Colors.white,
-                            padding: EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Step-by-Step Output',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.purple,
+                          SizedBox(height: 10),
+                          // Output section
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              color: Colors.white,
+                              padding: EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Step-by-Step Output',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.purple,
+                                    ),
                                   ),
-                                ),
-                                Divider(),
-                                Expanded(
-                                  child: SingleChildScrollView(
-                                    child: Text(
-                                      currentOutput + rotationMessage,
-                                      style: TextStyle(
-                                        fontSize: 16,
+                                  Divider(),
+                                  Expanded(
+                                    child: SingleChildScrollView(
+                                      child: Text(
+                                        currentOutput + rotationMessage,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(width: 10),
-                // Right Panel: AVL Tree Visualizer
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    color: Colors.white,
-                    padding: EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Text(
-                          'AVL Tree Visualizer',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.purple,
+                  SizedBox(width: 10),
+                  // Right Panel: AVL Tree Visualizer
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      color: Colors.white,
+                      padding: EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Text(
+                            'AVL Tree Visualizer',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.purple,
+                            ),
                           ),
-                        ),
-                        Divider(),
-                        Expanded(
-                          child: Center(
-                            child: _buildTree(),
+                          Divider(),
+                          Expanded(
+                            child: Center(
+                              child: _buildTree(),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          // Bottom Panel: Buttons
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-            color: Colors.grey.shade100,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButton(
-                  onPressed: _insertValue,
-                  child: Text('Insert'),
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.purple),
-                    foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
+            // Bottom Panel: Buttons
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+              color: Colors.grey.shade100,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    onPressed: _insertValue,
+                    child: Text('Insert'),
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.purple),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white),
+                    ),
                   ),
-                ),
-                ElevatedButton(
-                  onPressed: _leftBalance,
-                  child: Text('Left Balance'),
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.purple),
-                    foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
+                  ElevatedButton(
+                    onPressed: _leftBalance,
+                    child: Text('Left Balance'),
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.purple),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white),
+                    ),
                   ),
-                ),
-                ElevatedButton(
-                  onPressed: _rightBalance,
-                  child: Text('Right Balance'),
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.purple),
-                    foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
+                  ElevatedButton(
+                    onPressed: _rightBalance,
+                    child: Text('Right Balance'),
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.purple),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white),
+                    ),
                   ),
-                ),
-                ElevatedButton(
-                  onPressed: _searchValue,
-                  child: Text('Search'),
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.purple),
-                    foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
+                  ElevatedButton(
+                    onPressed: _searchValue,
+                    child: Text('Search'),
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.purple),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white),
+                    ),
                   ),
-                ),
-                ElevatedButton(
-                  onPressed: _clearTree,
-                  child: Text('Clear'),
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.purple),
-                    foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
+                  ElevatedButton(
+                    onPressed: _clearTree,
+                    child: Text('Clear'),
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.purple),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -910,13 +943,14 @@ class _QuizScreenState extends State<QuizScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Tree Quiz'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: isSubmitted ? buildResultScreen() : buildQuizBody(),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: appBack(context),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: isSubmitted ? buildResultScreen() : buildQuizBody(),
+        ),
       ),
     );
   }
@@ -938,13 +972,24 @@ class _QuizScreenState extends State<QuizScreen> {
             },
           ),
         ),
-        ElevatedButton(
-          onPressed: selectedAnswers.length == quizQuestions.length
-              ? submitQuiz
-              : null, // Enable button only if all questions are answered
-          child: Text('Submit Quiz'),
-          style: ElevatedButton.styleFrom(
-            padding: EdgeInsets.all(16.0), backgroundColor: Color.fromARGB(255, 167, 69, 167),
+        Center(
+          child: SizedBox(
+            width: 600,
+            height: 60,
+            child: ElevatedButton(
+              onPressed: selectedAnswers.length == quizQuestions.length
+                  ? submitQuiz
+                  : null, // Enable button only if all questions are answered
+              child: Text('Submit Quiz',
+              style: TextStyle(
+                fontSize: 20
+              ),),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.all(16.0), 
+                backgroundColor: Color.fromARGB(255, 105, 1, 161),
+                foregroundColor: Colors.white,
+              ),
+            ),
           ),
         ),
       ],

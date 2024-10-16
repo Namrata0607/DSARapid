@@ -3,6 +3,7 @@ import 'package:dsa_rapid/UI_Helper/UI.dart';
 import 'package:flutter/material.dart';
 
 
+
 class SignInPage extends StatefulWidget {
   @override
   _SignInPageState createState() => _SignInPageState();
@@ -38,18 +39,18 @@ class _SignInPageState extends State<SignInPage> {
         children: [
           // Optionally add a background image
           
-          Column(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("assets/images/SplashDSA.jpeg"), // Add your background image here
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ],
-          ),
+          // Column(
+          //   children: [
+          //     Container(
+          //       decoration: BoxDecoration(
+          //         image: DecorationImage(
+          //           image: AssetImage("assets/images/SplashDSA.jpeg"), // Add your background image here
+          //           fit: BoxFit.cover,
+          //         ),
+          //       ),
+          //     ),
+          //   ],
+          // ),
           Center(
             child: SingleChildScrollView(
               child: Padding(
@@ -60,7 +61,7 @@ class _SignInPageState extends State<SignInPage> {
                     // App logo or title
                     Container(
                       margin: EdgeInsets.only(top: 40,bottom: 20),
-
+                      // color: Colors.white,
                       child: Text(
                         'Sign In Form',
                         style: TextStyle(
@@ -150,21 +151,25 @@ class _SignInPageState extends State<SignInPage> {
                                 ),
                                 SizedBox(height: 20.0),
                                 ElevatedButton(
+                                  
                                   onPressed: _handleSignIn,
                                   style: ElevatedButton.styleFrom(
+                                    
                                     padding: EdgeInsets.symmetric(
                                         horizontal: 40, vertical: 15),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     backgroundColor:Color.fromARGB(255, 105, 1, 161), // Border color
-
+                                    
                                   ),
                                   child: Text(
+                                    
                                     'Sign In',
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
+                                      color: Colors.white,
                                     ),
                                   ),
                                 ),
@@ -259,7 +264,6 @@ class _SignupPageState extends State<SignupPage> {
         context,
         MaterialPageRoute(builder: (context) => Home()),
       );
-
 
     }
   }
@@ -503,6 +507,7 @@ class _SignupPageState extends State<SignupPage> {
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
+                                        color: Colors.white,
                                       ),
                                     ),
                                   ),
