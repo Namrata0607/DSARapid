@@ -219,33 +219,33 @@ class _HomeState extends State<Home> {
   }
 }
 
-
 Widget myFunc() {
-  // List of colors
-  final List<Color> colorsList = [
-    Color.fromARGB(255, 250, 145, 138),//1
-    Color.fromARGB(255, 152, 248, 155),//2
-    Color.fromARGB(255, 155, 207, 250),//3
-    Color.fromARGB(255, 249, 240, 152),//4
-    Color.fromARGB(255, 55, 242, 236),
-    Color.fromARGB(255, 235, 153, 249),
-    Color.fromARGB(255, 250, 145, 138),
-    Color.fromARGB(255, 152, 248, 155),
+  // Base list of distinct colors
+  final List<Color> baseColorsList = [
     Color.fromARGB(255, 155, 207, 250),
-    Color.fromARGB(255, 249, 240, 152),
-    Color.fromARGB(255, 55, 242, 236),
-    Color.fromARGB(255, 235, 153, 249),
-    Color.fromARGB(255, 250, 145, 138),
-    Color.fromARGB(255, 152, 248, 155),
+    
+    // Color.fromARGB(255, 55, 242, 236),
+    Color.fromARGB(255, 189, 132, 199),
     Color.fromARGB(255, 155, 207, 250),
+
     Color.fromARGB(255, 188, 110, 198),
-    Color.fromARGB(162, 111, 182, 191),
-    Color.fromARGB(255, 152, 248, 155),
-    Color.fromARGB(255, 155, 207, 250),
-    Color.fromARGB(255, 183, 106, 154),
-    Color.fromARGB(255, 250, 145, 138),
-    // Color.fromARGB(255, 152, 248, 155),
+    // Color.fromARGB(255, 183, 106, 154),
+    // Color.fromARGB(255, 120, 26, 175),
+    // Color.fromARGB(255, 90, 0, 145), //1
+    // Color.fromARGB(255, 130, 45, 185), //2
+    // Color.fromARGB(255, 115, 30, 170), //4
+    // Color.fromARGB(255, 85, 0, 140), //5
+    // Color.fromARGB(255, 140, 60, 190),
+    // Color.fromARGB(255, 188, 110, 198),
+    // Color.fromARGB(162, 111, 182, 191),
+    // Color.fromARGB(255, 183, 106, 154),
   ];
+
+  // Dynamically generate the colorsList based on the index
+  final List<Color> colorsList = List.generate(
+    21, // Same size as textList and gifList
+    (index) => baseColorsList[index % baseColorsList.length], // Reuse colors in a cycle
+  );
 
   final List<String> textList = [
     "Array", //Done
@@ -261,14 +261,16 @@ Widget myFunc() {
     "Bubble Sort",
     "Selection Sort",
     "Insertion Sort",
+    "Merge Sort",
     "Quick Sort",
     "Hashing",
     "Binary Search Tree",
     "Heap tree",
     "AVL tree",
     "BFS",
-    "DFS"
+    "DFS"//21
   ];
+
   final List<String> gifList = [
     'assets/gifs/array.gif',
     'assets/gifs/stackop.gif',
@@ -290,93 +292,78 @@ Widget myFunc() {
     'assets/gifs/heaptree.gif',
     'assets/gifs/avltree.gif',
     'assets/gifs/bfs.gif',
-    'assets/gifs/dfs.gif',
+    'assets/gifs/dfs.gif',//21
   ];
-  // List of button texts
-  // final List<List<String>> buttonTextsList = [
-  //     ["Notes", "Visualizer", "Test"],
-  //     ["Notes", "Visualizer", "Test"],
-  //     ["Notes", "Visualizer", "Test"],
-  //     ["Notes", "Visualizer", "Test"],
-  //     ["Notes", "Visualizer", "Test"],
-  //     ["Notes", "Visualizer", "Test"],
-  //     ["Notes", "Visualizer", "Test"],
-  //     ["Notes", "Visualizer", "Test"],
-  //     ["Notes", "Visualizer", "Test"],
-  //     ["Notes", "Visualizer", "Test"],
-  //     ["Notes", "Visualizer", "Test"],
-  //     ["Notes", "Visualizer", "Test"],
-  //     ["Notes", "Visualizer", "Test"],
-  //     ["Notes", "Visualizer", "Test"],
-  //     ["Notes", "Visualizer", "Test"],
-  // ];
 
 final List<List<String>> buttonTextsList = List.generate(21, (_) => ["Notes", "Visualizer", "Test"]);
 
-// void openPdf(BuildContext context, String assetPath) {
-//   Navigator.push(
-//     context,
-//     MaterialPageRoute(
-//       builder: (context) => PdfViewerPage(assetPath: assetPath), // Pass assetPath correctly
-//     ),
-//   );
-// }
-
-final List<Function(BuildContext)> NotesBtn = [
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => ArrayNotes())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => StackNotes())),  // You can change this to another PDF if needed
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueNotes())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => CircularQNotes())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => PriorityQNotes())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => linkedlistNotes())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => DoublylinkedlistNotes())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => CircularlinkedlistNotes())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => LinearsearchNotes())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BinarysearchNotes())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BubblesortNotes())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => SelectionsortNotes())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => InsertionsortNotes())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => MergesortNotes())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QuicksortNotes())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => HashingNotes())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BSTNotes())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => HeaptreeNotes())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => AVLNotes())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BfsNotes())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => DfsNotes())),
-
-
-
-  // Add more here as needed
+// List of notes widget classes
+final List<Widget Function()> notesClasses = [
+  () => ArrayNotes(),
+  () => StackNotes(),
+  () => QueueNotes(),
+  () => CircularQNotes(),
+  () => PriorityQNotes(),
+  () => linkedlistNotes(),
+  () => DoublylinkedlistNotes(),
+  () => CircularlinkedlistNotes(),
+  () => LinearsearchNotes(),
+  () => BinarysearchNotes(),
+  () => BubblesortNotes(),
+  () => SelectionsortNotes(),
+  () => InsertionsortNotes(),
+  () => MergesortNotes(),
+  () => QuicksortNotes(),
+  () => HashingNotes(),
+  () => BSTNotes(),
+  () => HeaptreeNotes(),
+  () => AVLNotes(),
+  () => BfsNotes(),
+  () => DfsNotes(),
 ];
 
-// List of functions to call for the middle button
-final List<Function(BuildContext)> VisualizerBtn = [
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => ArrayVisualizer())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => StackVisualizer())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QueueVisualizer())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => CircularQueueVisualizerApp())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => PriorityQueueVisualizerApp())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => LinkedListVisualizerApp())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => DoublyLinkedListVisualizerApp())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => CircularLinkedListVisualizerApp())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => LinearSearch())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BinarySearch())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BubbleSort())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => SelectionSort())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => InsertionSort())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => QuickSort())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => HashTable())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BSTVisualizer())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => HeapTree())),   //heaptree
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => AVLTreeVisualizer())),
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BSTVisualizer())),    //bfs
-  (context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BSTVisualizer())),  //dfs
+// Dynamically create the NotesBtn list
+final List<Function(BuildContext)> NotesBtn = List.generate(
+  notesClasses.length,
+  (index) => (context) => Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => notesClasses[index]()),
+  ),
+);
 
 
-
+// List of visualizer widget classes
+final List<Widget Function()> visualizerClasses = [
+  () => ArrayVisualizer(),
+  () => StackVisualizer(),
+  () => QueueVisualizer(),
+  () => CircularQueueVisualizerApp(),
+  () => PriorityQueueVisualizerApp(),
+  () => LinkedListVisualizerApp(),
+  () => DoublyLinkedListVisualizerApp(),
+  () => CircularLinkedListVisualizerApp(),
+  () => LinearSearch(),
+  () => BinarySearch(),
+  () => BubbleSort(),
+  () => SelectionSort(),
+  () => InsertionSort(),
+  () => QuickSort(),
+  () => HashTable(),
+  () => BSTVisualizer(),
+  () => HeapTree(),  // Heap tree visualizer
+  () => AVLTreeVisualizer(),
+  () => BSTVisualizer(),  // BFS visualizer (replace with actual BFS if applicable)
+  () => BSTVisualizer(),  // DFS visualizer (replace with actual DFS if applicable)
 ];
 
+// Dynamically create the VisualizerBtn list
+final List<Function(BuildContext)> VisualizerBtn = List.generate(
+  visualizerClasses.length,
+  (index) => (context) => Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => visualizerClasses[index]()),
+  ),
+);
 
 //Test Quiz
 // List of quiz widget classes
@@ -398,7 +385,6 @@ final List<Widget Function()> quizClasses = [
   () => QuickSortQuiz(),
   () => HashingQuiz(),
   () => BinarySearchTreeQuiz(),
-  // () => BtreeQuiz(), // Commented out as per the original
   () => HeaptreeQuiz(),
   () => AvltreeQuiz(),
   () => BfsQuiz(),
