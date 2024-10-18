@@ -182,9 +182,13 @@ class _SignInPageState extends State<SignInPage> {
                                         password: password,
                                       );
                                       User? user = userCredential.user;
-
+                                      print("User: $user");
                                       if (user != null) {
                                         print('Sign in successful!');
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => Home()),
+                                        );
                                       } else {
                                         print('Sign in failed!');
                                       }
@@ -537,8 +541,13 @@ class _SignupPageState extends State<SignupPage> {
                                       final email = _emailController.text.trim();
                                       final password = _passwordController.text.trim();
                                       User? user = await _auth.signUpWithEmail(email, password);
+                                      print("User: $user");
                                       if (user != null) {
                                         print('Sign up successful!');
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => SignInPage()),
+                                        );
                                       } else {
                                         print('Sign up failed!');
                                       }

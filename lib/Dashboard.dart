@@ -34,8 +34,8 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 // import 'package:flutter_pdfview/flutter_pdfview.dart';
 // import 'package:pdfx/pdfx.dart';
-
-
+import 'auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 // void main() => runApp(
 //       Home()
 // );
@@ -48,7 +48,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
+  final FirebaseAuth _auth = FirebaseAuth.instance;
  void _Viewprofile(){
     Navigator.push(
       context,
@@ -63,6 +63,22 @@ class _HomeState extends State<Home> {
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+    // Set the persistence mode for web (for mobile this is not required)
+    _setAuthPersistence();
+  }
+
+  Future<void> _setAuthPersistence() async {
+    try {
+      // Set persistence to LOCAL for web applications
+      await _auth.setPersistence(Persistence.LOCAL);
+      print('Persistence set to LOCAL');
+    } catch (e) {
+      print('Failed to set persistence: $e');
+    }
+  }
 //   void openPdf(BuildContext context, String assetPath) {
 //     print("Opening: $assetPath");
 //   Navigator.push(
@@ -143,8 +159,20 @@ class _HomeState extends State<Home> {
                     leading: Icon(Icons.logout),
                     title: Text("Logout"),
                     // subtitle: Text("B.Tech"), // Replace with dynamic data if needed
-                    onTap: () {
-                      // Add onTap functionality if needed
+                    onTap: () async {
+                      try {
+                        // Sign out from Firebase
+                        await _auth.signOut();
+
+                        // Optionally, navigate to the login screen or show a confirmation message
+                        print('Sign out successful!');
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => SignInPage()), // Replace with your actual login screen widget
+                        );
+                      } catch (e) {
+                        print('Error during sign out: $e');
+                      }
                     },
                   ),
                 ],
