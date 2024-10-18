@@ -12,7 +12,6 @@ class AdminDash extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.purple,
-        scaffoldBackgroundColor: const Color.fromARGB(255, 234, 171, 248),
       ),
       home: LoginPage(),
     );
@@ -22,26 +21,28 @@ class AdminDash extends StatelessWidget {
 // Simulating password storage
 String currentPassword = 'admin123';
 
-class LoginPage extends StatefulWidget {
-  @override
-  _LoginPageState createState() => _LoginPageState();
-}
+class LoginPage extends StatelessWidget {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
-class _LoginPageState extends State<LoginPage> {
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  void _handleSignIn(BuildContext context) {
+    String email = _emailController.text;
+    String password = _passwordController.text;
 
-  void _login() {
-    if (usernameController.text == '' && passwordController.text == '') {
-      Navigator.pushReplacement(
+    // Authentication logic (for demonstration)
+    if (email == 'admin' && password == 'admin') {
+      Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => DashboardPage(adminName: 'Kalyani Lugade', adminEmail: 'lugadekalyani@gmail.com'),
+          builder: (context) => DashboardPage(
+            adminName: 'Admin', // Pass admin name here
+            adminEmail: email,
+          ),
         ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Invalid username or password')),
+        SnackBar(content: Text('Invalid credentials')),
       );
     }
   }
@@ -49,46 +50,119 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Admin Login')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Login to Admin Dashboard',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
-            TextField(
-              controller: usernameController,
-              decoration: InputDecoration(
-                labelText: 'Username',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person),
+      appBar: AppBar(
+        title: Text('Admin Login'),
+        backgroundColor: Colors.purple,
+      ),
+      body: Stack(
+        children: [
+          Center(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(top: 40, bottom: 20),
+                      child: Text(
+                        'Admin Login Form',
+                        style: TextStyle(
+                          fontSize: 32.0,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 105, 1, 161),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 450,
+                      width: 500,
+                      child: Card(
+                        color: Color.fromARGB(255, 244, 224, 255),
+                        elevation: 8.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(30.0),
+                          child: Column(
+                            children: <Widget>[
+                              SizedBox(height: 20.0),
+                              TextField(
+                                controller: _emailController,
+                                decoration: InputDecoration(
+                                  labelText: 'Email',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  prefixIcon: Icon(Icons.email),
+                                ),
+                                keyboardType: TextInputType.emailAddress,
+                              ),
+                              SizedBox(height: 20.0),
+                              TextField(
+                                controller: _passwordController,
+                                decoration: InputDecoration(
+                                  labelText: 'Password',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  prefixIcon: Icon(Icons.lock),
+                                ),
+                                obscureText: true,
+                              ),
+                              SizedBox(height: 20.0),
+                              ElevatedButton(
+                                onPressed: () => _handleSignIn(context),
+                                style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 40, vertical: 15),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  backgroundColor:
+                                      Color.fromARGB(255, 105, 1, 161),
+                                ),
+                                child: Text(
+                                  'Sign In',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 20.0),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text("Don't have an account? "),
+                                  GestureDetector(
+                                    onTap: () {
+                                      // Handle sign-up navigation here
+                                    },
+                                    child: Text(
+                                      'Sign Up',
+                                      style: TextStyle(
+                                        color:
+                                            Color.fromARGB(255, 105, 1, 161),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            SizedBox(height: 16),
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.lock),
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _login,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.purple,
-                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-              ),
-              child: Text('Login', style: TextStyle(fontSize: 18)),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -118,7 +192,10 @@ class DashboardPage extends StatelessWidget {
                 UserAccountsDrawerHeader(
                   accountName: Text(
                     adminName,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
                   ),
                   accountEmail: Text(
                     adminEmail,
@@ -134,21 +211,24 @@ class DashboardPage extends StatelessWidget {
                 ),
                 ListTile(
                   leading: Icon(Icons.lock, color: Colors.purple),
-                  title: Text('Change Password', style: TextStyle(color: Colors.purple)),
+                  title: Text('Change Password',
+                      style: TextStyle(color: Colors.purple)),
                   onTap: () {
                     _showChangePasswordDialog(context);
                   },
                 ),
                 ListTile(
                   leading: Icon(Icons.group, color: Colors.purple),
-                  title: Text('Manage Students', style: TextStyle(color: Colors.purple)),
+                  title: Text('Manage Students',
+                      style: TextStyle(color: Colors.purple)),
                   onTap: () {
                     _showManageStudentsDialog(context);
                   },
                 ),
                 ListTile(
                   leading: Icon(Icons.logout, color: Colors.purple),
-                  title: Text('Logout', style: TextStyle(color: Colors.purple)),
+                  title: Text('Logout',
+                      style: TextStyle(color: Colors.purple)),
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
@@ -217,17 +297,14 @@ class DashboardPage extends StatelessWidget {
               ),
               onPressed: () {
                 if (currentPasswordController.text == currentPassword) {
-                  if (newPasswordController.text == confirmPasswordController.text) {
+                  if (newPasswordController.text ==
+                      confirmPasswordController.text) {
                     currentPassword = newPasswordController.text;
 
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Password changed successfully')),
                     );
                     Navigator.of(context).pop();
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('New passwords do not match')),
-                    );
                   }
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -243,45 +320,13 @@ class DashboardPage extends StatelessWidget {
   }
 
   void _showManageStudentsDialog(BuildContext context) {
+    // Add your logic to manage students
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Manage Students'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ViewStudentsPage()),
-                  );
-                },
-                child: Text('View Students'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purple,
-                  foregroundColor: Colors.white,
-                ),
-              ),
-              SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ViewProgressPage()),
-                  );
-                },
-                child: Text('View Progress'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purple,
-                  foregroundColor: Colors.white,
-                ),
-              ),
-            ],
-          ),
+          content: Text('This feature is under development.'),
           actions: [
             TextButton(
               child: Text('Close'),
@@ -292,126 +337,6 @@ class DashboardPage extends StatelessWidget {
           ],
         );
       },
-    );
-  }
-}
-
-class ViewStudentsPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Students List')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Table(
-          border: TableBorder.all(color: Colors.purple),
-          children: [
-            TableRow(
-              decoration: BoxDecoration(color: Colors.purple),
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Student Name',
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Roll No',
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Division',
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
-            // Add rows for students data
-            TableRow(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('John Doe'),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('123'),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('A'),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ViewProgressPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('View Progress')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Table(
-          border: TableBorder.all(color: Colors.purple),
-          children: [
-            TableRow(
-              decoration: BoxDecoration(color: Colors.purple),
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Roll No',
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Division',
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Topic',
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
-            // Add rows for progress data
-            TableRow(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('123'),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('A'),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('Data Structures'),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
