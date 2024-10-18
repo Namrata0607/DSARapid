@@ -56,20 +56,6 @@ class _SignInPageState extends State<SignInPage> {
       // backgroundColor: Color.fromARGB(255, 244, 224, 255),
       body: Stack(
         children: [
-          // Optionally add a background image
-
-          // Column(
-          //   children: [
-          //     Container(
-          //       decoration: BoxDecoration(
-          //         image: DecorationImage(
-          //           image: AssetImage("assets/images/SplashDSA.jpeg"), // Add your background image here
-          //           fit: BoxFit.cover,
-          //         ),
-          //       ),
-          //     ),
-          //   ],
-          // ),
           Center(
             child: SingleChildScrollView(
               child: Padding(
@@ -122,15 +108,15 @@ class _SignInPageState extends State<SignInPage> {
                                     prefixIcon: Icon(Icons.email),
                                   ),
                                   keyboardType: TextInputType.emailAddress,
-                                  // validator: (value) {
-                                  //   if (value == null || value.isEmpty) {
-                                  //     return 'Please enter your email';
-                                  //   } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
-                                  //       .hasMatch(value)) {
-                                  //     return 'Please enter a valid email';
-                                  //   }
-                                  //   return null;
-                                  // },
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter your email';
+                                    } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                                        .hasMatch(value)) {
+                                      return 'Please enter a valid email';
+                                    }
+                                    return null;
+                                  },
                                 ),
                                 SizedBox(height: 20.0),
                                 TextFormField(
@@ -143,14 +129,14 @@ class _SignInPageState extends State<SignInPage> {
                                     prefixIcon: Icon(Icons.lock),
                                   ),
                                   obscureText: true,
-                                  // validator: (value) {
-                                  //   if (value == null || value.isEmpty) {
-                                  //     return 'Please enter your password';
-                                  //   } else if (value.length < 6) {
-                                  //     return 'Password must be at least 6 characters';
-                                  //   }
-                                  //   return null;
-                                  // },
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter your password';
+                                    } else if (value.length < 6) {
+                                      return 'Password must be at least 6 characters';
+                                    }
+                                    return null;
+                                  },
                                 ),
                                 SizedBox(height: 20.0),
                                 SizedBox(height: 20.0),

@@ -1,12 +1,7 @@
 import 'package:dsa_rapid/UI_Helper/UI.dart';
 import 'package:flutter/material.dart';
 import 'package:dsa_rapid/Dashboard.dart';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'dart:math';
-import 'dart:html' as html;
-import 'package:flutter_web_plugins/flutter_web_plugins.dart';
-import 'dart:ui' as ui;     // Correct import for platformViewRegistry in Flutter Web
-import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart'; 
 
 

@@ -36,6 +36,7 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 // import 'package:pdfx/pdfx.dart';
 import 'auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:dsa_rapid/SignInUp.dart';
 // void main() => runApp(
 //       Home()
 // );
@@ -96,152 +97,115 @@ class _HomeState extends State<Home> {
       home: Scaffold(
         appBar: mtext(),
         body: Container(
+          width: double.infinity,
+          height: double.infinity,
           child: Row(
             children: [
-              SingleChildScrollView(
-                child: Container(
-                  padding: EdgeInsets.all(10),
-                  color: Color.fromARGB(255, 199, 167, 255),
-                  height: 1000,
-                  width: 300,
-                        // margin: EdgeInsets.all(16.0), // Add margin around the Column
-                        child: Column(
-                          children: [
-                            Center(
-                child: Container(
-                  child: CircleAvatar(
-                    backgroundImage: AssetImage("assets/images/profile.png"),
-                    radius: 90,
+              // Left Profile Information Container
+              Container(
+                width: MediaQuery.of(context).size.width * 0.3, // 30% of screen width
+                color: Color.fromARGB(255, 199, 167, 255),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.02), // Spacing
+                      Center(
+                        child: CircleAvatar(
+                          backgroundImage: AssetImage("assets/images/profile.png"),
+                          radius: MediaQuery.of(context).size.width * 0.1, // Responsive radius
+                        ),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.02), // Spacing
+                      ListTile(
+                        leading: Icon(Icons.person),
+                        title: Text("Name:"),
+                        subtitle: Text("Namrata Daphale"),
+                      ),
+                      Divider(),
+                      ListTile(
+                        leading: Icon(Icons.confirmation_number),
+                        title: Text("Roll Number:"),
+                        subtitle: Text("66"),
+                      ),
+                      Divider(),
+                      ListTile(
+                        leading: Icon(Icons.group),
+                        title: Text("Division:"),
+                        subtitle: Text("C"),
+                      ),
+                      Divider(),
+                      ListTile(
+                        leading: Icon(Icons.class_),
+                        title: Text("Class:"),
+                        subtitle: Text("B.Tech"),
+                      ),
+                      Divider(),
+                      ListTile(
+                        leading: Icon(Icons.logout),
+                        title: Text("Logout"),
+                        onTap: () async {
+                          try {
+                            await _auth.signOut();
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => SignInPage()),
+                            );
+                          } catch (e) {
+                            print('Error during sign out: $e');
+                          }
+                        },
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromARGB(255, 105, 1, 161),
+                          minimumSize: Size(
+                            MediaQuery.of(context).size.width * 0.2,
+                            MediaQuery.of(context).size.height * 0.06,
+                          ),
+                        ),
+                        onPressed: _Viewprofile,
+                        child: Text(
+                          'View profile',
+                          style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.height * 0.025,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromARGB(255, 105, 1, 161),
+                          minimumSize: Size(
+                            MediaQuery.of(context).size.width * 0.2,
+                            MediaQuery.of(context).size.height * 0.06,
+                          ),
+                        ),
+                        onPressed: _Updateprofile,
+                        child: Text(
+                          'Update profile',
+                          style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.height * 0.025,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-                            // Profile information section
-              SizedBox(height: 16.0), // Adds spacing between the image and the next row
-              Column(
-                children: [
-                  ListTile(
-                    leading: Icon(Icons.person),
-                    title: Text("Name:"),
-                    subtitle: Text("Namrata Daphale"), // Replace with dynamic data if needed
-                    onTap: () {
-                      // Add onTap functionality if needed
-                    },
-                  ),
-                  Divider(), // Optional: Adds a divider line between items
-                  ListTile(
-                    leading: Icon(Icons.confirmation_number),
-                    title: Text("Roll Number:"),
-                    subtitle: Text("66"), // Replace with dynamic data if needed
-                    onTap: () {
-                      // Add onTap functionality if needed
-                    },
-                  ),
-                  Divider(), // Optional: Adds a divider line between items
-                  ListTile(
-                    leading: Icon(Icons.group),
-                    title: Text("Division:"),
-                    subtitle: Text("C"), // Replace with dynamic data if needed
-                    onTap: () {
-                      // Add onTap functionality if needed
-                    },
-                  ),
-                  Divider(), // Optional: Adds a divider line between items
-                  ListTile(
-                    leading: Icon(Icons.class_),
-                    title: Text("Class:"),
-                    subtitle: Text("B.Tech"), // Replace with dynamic data if needed
-                    onTap: () {
-                      // Add onTap functionality if needed
-                    },
-                  ),
-                  Divider(), // Optional: Adds a divider line between items
-                  ListTile(
-                    leading: Icon(Icons.logout),
-                    title: Text("Logout"),
-                    // subtitle: Text("B.Tech"), // Replace with dynamic data if needed
-                    onTap: () async {
-                      try {
-                        // Sign out from Firebase
-                        await _auth.signOut();
-
-                        // Optionally, navigate to the login screen or show a confirmation message
-                        print('Sign out successful!');
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => SignInPage()), // Replace with your actual login screen widget
-                        );
-                      } catch (e) {
-                        print('Error during sign out: $e');
-                      }
-                    },
-                  ),
-                ],
+              // Right Content Area
+              Expanded(
+                child: Container(
+                  color: Colors.white, // Main content background
+                  child: myFunc(), // Your main content widget
+                ),
               ),
-                
-                            SizedBox(height: 16.0), // Adds spacing between the rows
-                            Row(
-                 mainAxisAlignment: MainAxisAlignment.center, // Centers children vertically
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 50, // Set the desired height
-                    width: 250, // Set the desired width
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromARGB(255, 105, 1, 161), // Set the button's background color
-                      ),
-                      onPressed: _Viewprofile,
-                      child: Text(
-                        'View profile',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-                
-                            SizedBox(height: 16.0), // Adds spacing between the rows
-                            Row(
-                 mainAxisAlignment: MainAxisAlignment.center, // Centers children vertically
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 50, // Set the desired height
-                    width: 250, // Set the desired width
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromARGB(255, 105, 1, 161), // Set the button's background color
-                      ),
-                      onPressed: _Updateprofile,
-                      child: Text(
-                        'Update profile',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-                          // ElevatedButton(
-                          //   onPressed: () {
-                          //      (context) =>  openPdf(context, 'assets/files/array.pdf');
-                          //   },
-                          //   child: Text('Open Array PDF'),
-                          // ),  
-                          ],
-                        ),
-                      ),
-            ),
-            Expanded(child: myFunc(),)
             ],
           ),
         ),
+
       ),
     );
   }
