@@ -1,11 +1,15 @@
+import 'package:dsa_rapid/UI_Helper/UI.dart';
 import 'package:flutter/material.dart';
 import 'package:dsa_rapid/Dashboard.dart';
-import 'package:dsa_rapid/UI_Helper/UI.dart';
+import 'package:flutter/services.dart';
 import 'dart:math';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
+import 'dart:math';
+import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class SelectionsortNotes extends StatelessWidget {
+class PriorityQNotes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -20,7 +24,7 @@ class PDFViewerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Automatically open the PDF when this screen is displayed
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      const url = 'assets/notes/selection_sort.pdf';  // Relative path to the PDF
+      const url = 'assets/notes/array.pdf';  // Relative path to the PDF
       await launch(url);  // This opens the PDF in a new browser tab
     });
 
@@ -36,31 +40,44 @@ class PDFViewerScreen extends StatelessWidget {
 }
 
 
-class SelectionSort extends StatelessWidget {
+void main() {
+  runApp(PriorityQueueVisualizerApp());
+}
+
+class PriorityQueueVisualizerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Selection Sort Visualizer',
+      title: 'Priority Queue Visualizer',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.purple,
       ),
-      home: SelectionSortScreen(),
+      home: PriorityQueueScreen(),
     );
   }
 }
 
-class SelectionSortScreen extends StatefulWidget {
-  @override
-  _SelectionSortScreenState createState() => _SelectionSortScreenState();
+// Class representing a queue element with value and priority
+class QueueElement {
+  final int value;
+  final int priority;
+
+  QueueElement(this.value, this.priority);
 }
 
-class _SelectionSortScreenState extends State<SelectionSortScreen> {
-  List<int> array = []; // Initially empty array
-  int? currentIndex; // For visual representation of current index
-  int? minIndex; // Index of the minimum element
-  bool sorting = false; // State for sort animation
-  String currentAlgorithm = ""; // Holds the current algorithm
-  String currentOutput = ""; // Holds the step-by-step output
+class PriorityQueueScreen extends StatefulWidget {
+  @override
+  _PriorityQueueScreenState createState() => _PriorityQueueScreenState();
+}
+
+class _PriorityQueueScreenState extends State<PriorityQueueScreen> {
+  List<QueueElement?> queue = List.filled(7, null); // Priority Queue with 7 slots
+  int front = -1; // Points to the front of the queue
+  int rear = -1; // Points to the rear of the queue
+  final int maxSize = 7; // Max size of the queue
+  String currentAlgorithm = ""; // To display algorithm explanation
+  String currentOutput = ""; // To display step-by-step output
+  int? currentHighlight; // To highlight current operation element
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +90,7 @@ class _SelectionSortScreenState extends State<SelectionSortScreen> {
             Expanded(
               child: Row(
                 children: [
-                  // Left Container (for Algorithm and Output)
+                  // Left Container (Algorithm and Output sections)
                   Expanded(
                     flex: 1,
                     child: Container(
@@ -103,9 +120,7 @@ class _SelectionSortScreenState extends State<SelectionSortScreen> {
                                     child: SingleChildScrollView(
                                       child: Text(
                                         currentAlgorithm,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        ),
+                                        style: TextStyle(fontSize: 16),
                                       ),
                                     ),
                                   ),
@@ -114,7 +129,7 @@ class _SelectionSortScreenState extends State<SelectionSortScreen> {
                             ),
                           ),
                           SizedBox(height: 10),
-                          // Output/Step-by-step explanation section
+                          // Output section
                           Expanded(
                             flex: 1,
                             child: Container(
@@ -136,9 +151,7 @@ class _SelectionSortScreenState extends State<SelectionSortScreen> {
                                     child: SingleChildScrollView(
                                       child: Text(
                                         currentOutput,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        ),
+                                        style: TextStyle(fontSize: 16),
                                       ),
                                     ),
                                   ),
@@ -151,7 +164,7 @@ class _SelectionSortScreenState extends State<SelectionSortScreen> {
                     ),
                   ),
                   SizedBox(width: 10),
-                  // Right Container (for Array Visualizer)
+                  // Right Container (Queue Visualizer)
                   Expanded(
                     flex: 2,
                     child: Container(
@@ -160,7 +173,7 @@ class _SelectionSortScreenState extends State<SelectionSortScreen> {
                       child: Column(
                         children: [
                           Text(
-                            'Selection Sort Visualizer',
+                            'Priority Queue Visualizer',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -173,15 +186,8 @@ class _SelectionSortScreenState extends State<SelectionSortScreen> {
                               child: SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
                                 child: Row(
-                                  children: array.isEmpty
-                                      ? [
-                                          Text(
-                                            'Array is empty',
-                                            style: TextStyle(
-                                                fontSize: 18, color: Colors.red),
-                                          )
-                                        ]
-                                      : _buildBars(),
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: _buildQueueBars(),
                                 ),
                               ),
                             ),
@@ -193,7 +199,7 @@ class _SelectionSortScreenState extends State<SelectionSortScreen> {
                 ],
               ),
             ),
-            // Bottom Container (for Operation Buttons)
+            // Bottom Container (Operations buttons)
             Container(
               padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
               color: Colors.grey.shade100,
@@ -201,7 +207,7 @@ class _SelectionSortScreenState extends State<SelectionSortScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   ElevatedButton(
-                    onPressed: _createDefaultArray,
+                    onPressed: _createDefaultQueue,
                     child: Text('Create Default'),
                     style: ButtonStyle(
                       backgroundColor:
@@ -211,28 +217,38 @@ class _SelectionSortScreenState extends State<SelectionSortScreen> {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: _clearArray,
+                    onPressed: () => _showEnqueueDialog(context),
+                    child: Text('Enqueue'),
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.purple),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: _dequeue,
+                    child: Text('Dequeue'),
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.purple),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: _peek,
+                    child: Text('Peek'),
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.purple),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: _clearQueue,
                     child: Text('Clear'),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.purple),
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => _showInsertDialog(context),
-                    child: Text('Insert'),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.purple),
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: sorting ? null : () => _selectionSort(),
-                    child: Text('Sort'),
                     style: ButtonStyle(
                       backgroundColor:
                           MaterialStateProperty.all<Color>(Colors.purple),
@@ -249,164 +265,234 @@ class _SelectionSortScreenState extends State<SelectionSortScreen> {
     );
   }
 
-  // Create default array
-  void _createDefaultArray() {
+  // Create default priority queue
+  void _createDefaultQueue() {
     setState(() {
-      array = [64, 25, 12, 22, 11]; // Default array
-      currentIndex = null;
-      minIndex = null;
+      queue = [
+        QueueElement(10, 1),
+        QueueElement(20, 2),
+        QueueElement(30, 3),
+        null,
+        null,
+        null,
+        null
+      ]; // Initialize default values with priority
+      front = 0;
+      rear = 2;
+      currentHighlight = null;
       currentAlgorithm = """
-1. Start from the first element as the minimum.
-2. Compare the current minimum with the rest of the array.
-3. If a smaller element is found, update the minimum.
-4. After scanning the entire array, swap the minimum with the first unsorted element.
-5. Repeat until the entire array is sorted.
+1. A priority queue is a data structure where each element has a priority.
+2. The element with the highest priority is served before the others.
+3. In this visualizer, lower numbers represent higher priority (1 is the highest).
+4. Elements are inserted in priority order, with the highest priority at the front.
+5. Dequeue removes the element with the highest priority (lowest number).
+6. Peek shows the element with the highest priority.
 """;
-      currentOutput = "Default array created.";
+      currentOutput =
+          "Default priority queue created with values 10 (priority 1), 20 (priority 2), 30 (priority 3).\n";
     });
   }
 
-  // Clear the array
-  void _clearArray() {
-    setState(() {
-      array = []; // Clear the array
-      currentIndex = null;
-      minIndex = null;
-      currentAlgorithm = "";
-      currentOutput = "Array cleared.";
-    });
-  }
-
-  // Show dialog to input value for inserting into the array
-  Future<void> _showInsertDialog(BuildContext context) async {
-    int? value = await _showInputDialog(context, 'Insert Value');
-    if (value != null) {
-      setState(() {
-        array.add(value); // Add element to array
-        currentOutput = "Inserted $value into the array.";
-      });
-    }
-  }
-
-  // Build the visual bars for the array
-  List<Widget> _buildBars() {
-    return List<Widget>.generate(array.length, (index) {
+  // Build the queue bars for visualizing
+  List<Widget> _buildQueueBars() {
+    return List<Widget>.generate(queue.length, (index) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5.0),
         child: AnimatedContainer(
-          height: 100, // Fixed height for all bars
-          width: 60,
+          height: 70,
+          width: 50,
           duration: Duration(milliseconds: 300),
-          color: (index == currentIndex)
-              ? Colors.green // Highlight current index
-              : (index == minIndex ? Colors.red : Colors.purple), // Min index color
-          alignment: Alignment.bottomCenter,
-          child: Center(
-            child: Text(
-              array[index].toString(),
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+          color: (index == currentHighlight)
+              ? Colors.green
+              : (queue[index] == null ? Colors.grey : Colors.purple),
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                queue[index]?.value.toString() ?? '',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
+              if (queue[index] != null)
+                Text(
+                  "P${queue[index]?.priority.toString() ?? ''}",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                  ),
+                ),
+            ],
           ),
         ),
       );
     });
   }
 
-  // Perform selection sort with animation
-  Future<void> _selectionSort() async {
-    sorting = true;
-    currentOutput = ""; // Clear previous output
+  // Show dialog to input value and priority for enqueueing
+  Future<void> _showEnqueueDialog(BuildContext context) async {
+    if ((rear + 1) % maxSize == front) {
+      // Check for queue overflow
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Queue overflow! Max size of $maxSize reached."),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
 
-    for (int i = 0; i < array.length - 1; i++) {
-      int minIdx = i;
+    int? value = await _showInputDialog(context, 'Enqueue Value');
+    int? priority = await _showInputDialog(context, 'Enqueue Priority');
+    if (value != null && priority != null) {
       setState(() {
-        currentIndex = i; // Highlight the current index
-        currentOutput += "Step ${i + 1}: Starting from index $i. Current array: ${array.toString()}\n";
+        _insertInPriorityOrder(QueueElement(value, priority));
       });
+    }
+  }
 
-      await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
+  // Insert a new element in the queue based on its priority
+  Future<void> _insertInPriorityOrder(QueueElement newElement) async {
+    if (front == -1) {
+      // First element in an empty queue
+      front = rear = 0;
+      queue[rear] = newElement;
+      currentHighlight = rear;
+      currentOutput +=
+          "Enqueued ${newElement.value} with priority ${newElement.priority} as the first element.\n";
+      await Future.delayed(Duration(seconds: 1)); // Delay for visibility
+    } else {
+      // Inserting in a non-empty queue
+      int i = rear; // Start from the current rear position
+      while (i != (front - 1 + maxSize) % maxSize &&
+          queue[i]!.priority > newElement.priority) {
+        queue[(i + 1) % maxSize] = queue[i]; // Shift element right
+        i = (i - 1 + maxSize) % maxSize; // Move left in circular queue
 
-      for (int j = i + 1; j < array.length; j++) {
-        setState(() {
-          minIndex = minIdx; // Highlight the current minimum index
-          currentOutput += "Comparing ${array[minIdx]} (current min) and ${array[j]} at index $j.\n";
-        });
-
-        if (array[j] < array[minIdx]) {
-          minIdx = j; // Update the index of the minimum element
-          setState(() {
-            currentOutput += "Found a new minimum ${array[minIdx]} at index $minIdx.\n"; // Update output
-          });
-        }
-        await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
+        // Add delay to show shifting process
+        await Future.delayed(Duration(seconds: 1)); // Delay for visibility
       }
 
-      // Swap the found minimum element with the first element
-      if (minIdx != i) {
-        setState(() {
-          // Swap the elements
-          int temp = array[minIdx];
-          array[minIdx] = array[i];
-          array[i] = temp;
-          currentOutput += "Swapping ${array[i]} and ${array[minIdx]}.\n";
-        });
+      // Check for queue overflow (after incrementing rear)
+      if ((rear + 1) % maxSize == front) {
+        // Revert rear pointer if overflow happens
+        rear = (rear - 1 + maxSize) % maxSize;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Queue overflow! Max size of $maxSize reached."),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
       }
 
-      await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
+      // Insert the new element at the correct position
+      queue[(i + 1) % maxSize] = newElement;
+      currentHighlight = (i + 1) % maxSize;
+
+      // Adjust rear pointer
+      rear = (rear + 1) % maxSize;
+
+      currentOutput +=
+          "Enqueued ${newElement.value} with priority ${newElement.priority}.\n";
+      await Future.delayed(Duration(seconds: 1)); // Delay after insertion
+    }
+  }
+
+  // Dequeue operation
+  void _dequeue() {
+    if (front == -1) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Queue underflow! No elements to dequeue."),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
     }
 
     setState(() {
-      currentOutput += "Sorting complete! Final sorted array: ${array.toString()}.\n";
+      currentOutput +=
+          "Dequeued ${queue[front]?.value} with priority ${queue[front]?.priority}.\n";
+      queue[front] = null; // Remove the front element
+      if (front == rear) {
+        // Queue becomes empty
+        front = rear = -1;
+      } else {
+        front = (front + 1) % maxSize; // Move front pointer forward
+      }
+      currentHighlight = front;
     });
-
-    // Show result in a snackbar
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Sorting complete!'),
-      ),
-    );
-
-    sorting = false; // Reset sorting state
   }
 
-  // Generalized input dialog to get user input
-  Future<int?> _showInputDialog(BuildContext context, String title) async {
-    final TextEditingController controller = TextEditingController();
+  // Peek operation
+  void _peek() {
+    if (front == -1) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Queue is empty! Nothing to peek."),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
 
-    return showDialog<int>(
+    setState(() {
+      currentOutput +=
+          "Peeked at ${queue[front]?.value} with priority ${queue[front]?.priority}.\n";
+      currentHighlight = front;
+    });
+  }
+
+  // Clear the queue
+  void _clearQueue() {
+    setState(() {
+      queue = List.filled(maxSize, null);
+      front = rear = -1;
+      currentHighlight = null;
+      currentOutput += "Cleared the queue.\n";
+    });
+  }
+
+  // Helper function to show input dialog for value/priority
+  Future<int?> _showInputDialog(BuildContext context, String title) async {
+    int? result;
+    await showDialog<int>(
       context: context,
-      builder: (context) {
+      builder: (BuildContext context) {
+        final TextEditingController controller = TextEditingController();
         return AlertDialog(
           title: Text(title),
           content: TextField(
             controller: controller,
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(hintText: 'Enter a number'),
+            decoration: InputDecoration(hintText: "Enter $title"),
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(), // Dismiss dialog
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
               child: Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
-                final value = int.tryParse(controller.text);
-                Navigator.of(context).pop(value); // Return value
+                result = int.tryParse(controller.text);
+                Navigator.of(context).pop(); // Close the dialog
               },
-              child: Text('OK'),
+              child: Text('Submit'),
             ),
           ],
         );
       },
     );
+    return result;
   }
 }
 
-//Test
 
 // Question model
 class Question {
@@ -434,174 +520,199 @@ List<Question> getRandomQuestions(List<Question> allQuestions) {
   return selectedQuestions;
 }
 
-// List of questions (selection sort questions in data structure)
+//Questions 
 final List<Question> allQuestions = [
-Question(
-    questionText: 'What is the time complexity of selection sort in the worst case?',
-    options: ['O(n)', 'O(n log n)', 'O(n^2)', 'O(log n)'],
-    correctAnswerIndex: 2,
-),
-Question(
-    questionText: 'What is the primary operation performed in selection sort?',
-    options: ['Swapping adjacent elements', 'Finding the maximum element', 'Finding the minimum element', 'Dividing the array'],
-    correctAnswerIndex: 2,
-),
-Question(
-    questionText: 'What is the best-case time complexity of selection sort?',
-    options: ['O(n)', 'O(n log n)', 'O(n^2)', 'O(1)'],
-    correctAnswerIndex: 2,
-),
-Question(
-    questionText: 'Which of the following statements is true about selection sort?',
-    options: ['It is a stable sorting algorithm', 'It is not a stable sorting algorithm', 'It can sort linked lists', 'It is an in-place sorting algorithm'],
+  Question(
+    questionText: 'What is a priority queue?',
+    options: [
+      'A queue where elements are processed in the order they arrive',
+      'A queue where each element has a priority, and higher priority elements are dequeued first',
+      'A queue where elements can only be dequeued in reverse order',
+      'A queue where elements are processed alphabetically'
+    ],
     correctAnswerIndex: 1,
-),
-Question(
-    questionText: 'In selection sort, how many passes are required to sort an array of n elements?',
-    options: ['n', 'n-1', 'n/2', 'n^2'],
-    correctAnswerIndex: 1,
-),
-Question(
-    questionText: 'What is the space complexity of selection sort?',
-    options: ['O(1)', 'O(n)', 'O(n log n)', 'O(n^2)'],
-    correctAnswerIndex: 0,
-),
-Question(
-    questionText: 'Which of the following is a characteristic of selection sort?',
-    options: ['It performs better on small datasets', 'It is adaptive', 'It is recursive', 'It requires additional memory'],
-    correctAnswerIndex: 0,
-),
-Question(
-    questionText: 'Which sorting algorithm is often compared to selection sort due to its simplicity?',
-    options: ['Bubble sort', 'Insertion sort', 'Merge sort', 'Quick sort'],
-    correctAnswerIndex: 1,
-),
-Question(
-    questionText: 'Which of the following data structures does selection sort work best with?',
-    options: ['Linked lists', 'Trees', 'Arrays', 'Graphs'],
+  ),
+  Question(
+    questionText: 'Which data structure is commonly used to implement a priority queue?',
+    options: [
+      'Array',
+      'Linked list',
+      'Heap',
+      'Stack'
+    ],
     correctAnswerIndex: 2,
-),
-Question(
-    questionText: 'What does selection sort do during each pass through the array?',
-    options: ['Selects the smallest element and swaps it with the first unsorted element', 'Swaps adjacent elements if they are out of order', 'Finds the maximum element', 'Sorts the entire array in one pass'],
-    correctAnswerIndex: 0,
-),
-Question(
-    questionText: 'In selection sort, how is the minimum element found?',
-    options: ['By iterating through the entire array', 'By using a divide-and-conquer approach', 'By swapping adjacent elements', 'By using a binary search'],
-    correctAnswerIndex: 0,
-),
-Question(
-    questionText: 'What is the average-case time complexity of selection sort?',
-    options: ['O(n)', 'O(n log n)', 'O(n^2)', 'O(n^3)'],
-    correctAnswerIndex: 2,
-),
-Question(
-    questionText: 'What happens to the relative order of equal elements in selection sort?',
-    options: ['It is preserved', 'It is not preserved', 'It is random', 'It cannot be determined'],
+  ),
+  Question(
+    questionText: 'What is the time complexity of insertion in a priority queue using a binary heap?',
+    options: [
+      'O(1)',
+      'O(log n)',
+      'O(n)',
+      'O(n log n)'
+    ],
     correctAnswerIndex: 1,
-),
-Question(
-    questionText: 'Which type of algorithm is selection sort classified as?',
-    options: ['Comparison sort', 'Non-comparison sort', 'Hybrid sort', 'Distribution sort'],
+  ),
+  Question(
+    questionText: 'In a priority queue, which element is dequeued first?',
+    options: [
+      'The element with the highest priority',
+      'The element with the lowest priority',
+      'The element that was added last',
+      'The element with the middle priority'
+    ],
     correctAnswerIndex: 0,
-),
-Question(
-    questionText: 'If the array [7, 9, 1, 3, 5] is sorted using selection sort, what will be the result after the third pass?',
-    options: ['[1, 3, 5, 7, 9]', '[1, 3, 5, 9, 7]', '[1, 5, 3, 7, 9]', '[7, 1, 3, 5, 9]'],
-    correctAnswerIndex: 0,
-),
+  ),
+  Question(
+    questionText: 'What is the time complexity of deleting the maximum (or minimum) element in a priority queue implemented with a heap?',
+    options: [
+      'O(1)',
+      'O(log n)',
+      'O(n)',
+      'O(n log n)'
+    ],
+    correctAnswerIndex: 1,
+  ),
+  
+  Question(
+    questionText: 'What is the best data structure for implementing a priority queue when frequent access to the highest-priority element is required?',
+    options: [
+      'Stack',
+      'Binary heap',
+      'Queue',
+      'Linked list'
+    ],
+    correctAnswerIndex: 1,
+  ),
 
-Question(
-    questionText: 'Which of the following describes a disadvantage of selection sort?',
-    options: ['It is simple to implement', 'It is inefficient for large data sets', 'It can be implemented recursively', 'It uses less memory'],
-    correctAnswerIndex: 1,
-),
-Question(
-    questionText: 'What is the primary use case for selection sort?',
-    options: ['Sorting small datasets', 'Sorting large datasets', 'Searching for an element', 'Merging two arrays'],
+  Question(
+    questionText: 'Which of the following is an application of priority queues?',
+    options: [
+      'Job scheduling in operating systems',
+      'Breadth-first search',
+      'Quick sort',
+      'Depth-first search'
+    ],
     correctAnswerIndex: 0,
-),
-Question(
-    questionText: 'What is the main advantage of selection sort over other sorting algorithms?',
-    options: ['It is the fastest', 'It uses less memory', 'It is easy to understand and implement', 'It is stable'],
-    correctAnswerIndex: 2,
-),
-Question(
-    questionText: 'How does selection sort handle an already sorted array?',
-    options: ['It takes longer than unsorted arrays', 'It completes in the same time as for an unsorted array', 'It behaves differently', 'It throws an error'],
-    correctAnswerIndex: 1,
-),
-Question(
-    questionText: 'Which of the following best describes the operation of selection sort?',
-    options: ['It repeatedly compares adjacent elements and swaps them', 'It selects the minimum element from the unsorted portion and swaps it with the first unsorted element', 'It builds a sorted array by adding elements one by one', 'It divides the array into two halves and sorts each half'],
-    correctAnswerIndex: 1,
-),
-Question(
-    questionText: 'After applying selection sort on the array [3, 1, 2, 5, 4], what will be the state of the array after two passes?',
-    options: ['[1, 2, 3, 4, 5]', '[1, 2, 3, 5, 4]', '[1, 3, 2, 4, 5]', '[3, 2, 1, 5, 4]'],
-    correctAnswerIndex: 1,
-),
+  ),
+  
 
-Question(
-    questionText: 'What is the main goal of the outer loop in selection sort?',
-    options: ['To find the largest element', 'To iterate through all elements', 'To track the number of swaps', 'To ensure all elements are sorted'],
+  Question(
+    questionText: 'How is the priority determined in a priority queue?',
+    options: [
+      'By the order of insertion',
+      'By a predefined comparison of elements',
+      'By the user input during insertion',
+      'Randomly'
+    ],
+    correctAnswerIndex: 1,
+  ),
+
+  Question(
+    questionText: 'What is a major advantage of a priority queue over a regular queue?',
+    options: [
+      'It is faster for enqueuing operations',
+      'It allows elements to be dequeued based on their priority rather than their order of arrival',
+      'It can store more elements',
+      'It requires less memory'
+    ],
+    correctAnswerIndex: 1,
+  ),
+
+  Question(
+    questionText: 'Which operation is faster in a binary heap compared to a sorted array?',
+    options: [
+      'Insert',
+      'Find max',
+      'Delete max',
+      'Traversal'
+    ],
+    correctAnswerIndex: 0,
+  ),
+
+  Question(
+    questionText: 'Which operation is used to remove the highest-priority element from a priority queue?',
+    options: [
+      'Delete',
+      'Dequeue',
+      'Extract',
+      'Pop'
+    ],
+    correctAnswerIndex: 2,
+  ),
+  Question(
+    questionText: 'Which of the following is the most efficient way to implement a priority queue with frequent insertions?',
+    options: [
+      'Sorted array',
+      'Unsorted array',
+      'Binary heap',
+      'Linked list'
+    ],
+    correctAnswerIndex: 2,
+  ),
+  
+  Question(
+    questionText: 'In which of the following scenarios is a priority queue most useful?',
+    options: [
+      'Sorting data in ascending order',
+      'Finding the median of a set of elements',
+      'Managing job scheduling tasks',
+      'Performing depth-first search'
+    ],
+    correctAnswerIndex: 2,
+  ),
+  
+  Question(
+    questionText: 'In a priority queue, what is the time complexity of inserting an element when implemented using an unsorted array?',
+    options: [
+      'O(1)',
+      'O(log n)',
+      'O(n)',
+      'O(n log n)'
+    ],
+    correctAnswerIndex: 0,
+  ),
+  Question(
+    questionText: 'What is the primary difference between a regular queue and a priority queue?',
+    options: [
+      'Regular queues are faster than priority queues',
+      'Priority queues process elements based on priority rather than order of insertion',
+      'Regular queues can only store integers',
+      'Priority queues allow duplicates while regular queues do not'
+    ],
+    correctAnswerIndex: 1,
+  ),
+  Question(
+    questionText: 'What happens if two elements have the same priority in a priority queue?',
+    options: [
+      'One element is discarded',
+      'Both elements are removed at once',
+      'The order of insertion is preserved (FIFO)',
+      'They cannot be inserted into the queue'
+    ],
+    correctAnswerIndex: 2,
+  ),
+
+  Question(
+    questionText: 'Which of the following can be used to implement a priority queue with a time complexity of O(1) for insertion?',
+    options: [
+      'Binary heap',
+      'Fibonacci heap',
+      'Sorted array',
+      'Unsorted linked list'
+    ],
     correctAnswerIndex: 3,
-),
-Question(
-    questionText: 'What will the array [8, 7, 6, 5, 4] look like after the first pass of selection sort?',
-    options: ['[4, 7, 6, 5, 8]', '[8, 7, 6, 5, 4]', '[4, 8, 6, 5, 7]', '[7, 6, 5, 4, 8]'],
-    correctAnswerIndex: 0,
-),
-
-Question(
-    questionText: 'What happens when there are duplicate elements in the array?',
-    options: ['Selection sort treats them as unique', 'Selection sort ignores them', 'Selection sort may swap them', 'Selection sort can only sort unique elements'],
-    correctAnswerIndex: 2,
-),
-Question(
-    questionText: 'Which sorting algorithm is generally more efficient for larger datasets than selection sort?',
-    options: ['Bubble sort', 'Insertion sort', 'Merge sort', 'Selection sort'],
-    correctAnswerIndex: 2,
-),
-Question(
-    questionText: 'For the array [64, 25, 12, 22, 11], what is the final sorted array after applying selection sort?',
-    options: ['[11, 12, 22, 25, 64]', '[64, 25, 12, 11, 22]', '[12, 11, 22, 25, 64]', '[25, 11, 12, 22, 64]'],
-    correctAnswerIndex: 0,
-),
-
-Question(
-    questionText: 'How many comparisons does selection sort make in the worst case?',
-    options: ['n', 'n^2', 'n(n-1)/2', '1'],
-    correctAnswerIndex: 2,
-),
-Question(
-    questionText: 'If selection sort is applied to the array [5, 3, 6, 2, 4], what will be the result after the second pass?',
-    options: ['[2, 3, 5, 4, 6]', '[2, 4, 3, 5, 6]', '[3, 5, 2, 4, 6]', '[2, 3, 6, 5, 4]'],
-    correctAnswerIndex: 0,
-),
-
-Question(
-    questionText: 'In terms of stability, what does it mean for an algorithm to be stable?',
-    options: ['It sorts numbers only', 'It keeps equal elements in their original order', 'It uses less memory', 'It can sort both ascending and descending'],
-    correctAnswerIndex: 1,
-),
-Question(
-    questionText: 'Given the array [29, 10, 14, 37, 13], what will be the array after the first pass of selection sort?',
-    options: ['[10, 29, 14, 37, 13]', '[29, 10, 14, 37, 13]', '[14, 10, 29, 37, 13]', '[29, 10, 37, 14, 13]'],
-    correctAnswerIndex: 0,
-),
-
-
+  ),
 ];
 
-// void main() => runApp(QuizApp());
 
-class SelectionSortQuiz extends StatelessWidget {
+
+//void main() => runApp(QuizApp());
+
+class PriorityqueueQuiz extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Selection sort Quiz',
+      title: 'Queue Quiz',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: 'Montserrat',
@@ -656,7 +767,7 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+ Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -668,6 +779,7 @@ class _QuizScreenState extends State<QuizScreen> {
       ),
     );
   }
+
 
   Widget buildQuizBody() {
     return Column(
@@ -743,7 +855,7 @@ class _QuizScreenState extends State<QuizScreen> {
     );
   }
 
-Widget buildResultScreen() {
+  Widget buildResultScreen() {
   return Center(
     child: SizedBox(
       height: 300,
@@ -816,3 +928,6 @@ Widget buildResultScreen() {
   );
 }
 }
+
+
+

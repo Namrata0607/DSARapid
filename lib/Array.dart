@@ -1,11 +1,17 @@
 import 'package:dsa_rapid/UI_Helper/UI.dart';
 import 'package:flutter/material.dart';
 import 'package:dsa_rapid/Dashboard.dart';
-import 'package:flutter/services.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'dart:math';
+import 'dart:html' as html;
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'dart:ui' as ui;     // Correct import for platformViewRegistry in Flutter Web
+import 'package:flutter/foundation.dart';
+import 'package:url_launcher/url_launcher.dart'; 
+
+
 // import 'package:flutter_full_pdf_viewer/full_pdf_viewer_scaffold.dart';
 
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 // void main() => runApp(MyApp());
 // class PdfViewerPage extends StatelessWidget {
@@ -25,24 +31,20 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 //   }
 // }
 
-class PdfViewerPage extends StatelessWidget {
-  final String assetPath;
+// class PdfViewerPage extends StatelessWidget {
+//   final String assetPath;
 
-  PdfViewerPage({required this.assetPath});
+//   const PdfViewerPage({required this.assetPath});
 
-  @override
-  Widget build(BuildContext context) {
-    print("Loading PDF from: $assetPath");
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('PDF Viewer'),
-        backgroundColor: Colors.purple,
-      ),
-      body: SfPdfViewer.asset(assetPath), // Directly load the PDF
-    );
-  }
-}
-
+//   @override
+//   Widget build(BuildContext context) {
+//     print("Loading PDF from: $assetPath");
+//     return Scaffold(
+//       appBar: appBack(context), // Use the appBack function for back navigation
+//       body: SfPdfViewer.asset(assetPath), // Load the PDF from the provided path
+//     );
+//   }
+// }
 
 // class PdfViewerPage extends StatelessWidget {
 //   final String assetPath;
@@ -92,6 +94,46 @@ class PdfViewerPage extends StatelessWidget {
 // }
 
 
+//pdf final
+
+// void main() {
+//   runApp(MyApp());
+// }
+
+// import 'package:flutter/material.dart';
+// import 'package:url_launcher/url_launcher.dart'; // Import url_launcher
+
+class ArrayNotes extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'PDF Viewer',
+      home: PDFViewerScreen(),  // Directly open the PDF on load
+    );
+  }
+}
+
+class PDFViewerScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Automatically open the PDF when this screen is displayed
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      const url = 'assets/notes/array.pdf';  // Relative path to the PDF
+      await launch(url);  // This opens the PDF in a new browser tab
+    });
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('PDF Viewer'),
+      ),
+      body: Center(
+        child: Text('Opening PDF...'),
+      ),
+    );
+  }
+}
+
+//visualizer
 
 // void main() {
 //   runApp(ArrayVisualizer());
@@ -100,6 +142,7 @@ class ArrayVisualizer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Array Operations Visualizer',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -125,11 +168,7 @@ class _ArrayVisualizerScreenState extends State<ArrayVisualizerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Array Operations Visualizer'),
-        backgroundColor: Colors.purple,
-        titleTextStyle: TextStyle(color: Colors.white),
-      ),
+      appBar: appBack(context),
       body: Column(
         children: [
           Expanded(
@@ -788,6 +827,7 @@ class ArrayQuiz extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Array Quiz',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -845,9 +885,7 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Array Quiz'),
-      ),
+      appBar: appBack(context),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: isSubmitted ? buildResultScreen() : buildQuizBody(),
@@ -872,13 +910,24 @@ class _QuizScreenState extends State<QuizScreen> {
             },
           ),
         ),
-        ElevatedButton(
-          onPressed: selectedAnswers.length == quizQuestions.length
-              ? submitQuiz
-              : null, // Enable button only if all questions are answered
-          child: Text('Submit Quiz'),
-          style: ElevatedButton.styleFrom(
-            padding: EdgeInsets.all(16.0), backgroundColor: Color.fromARGB(255, 167, 69, 167),
+        Center(
+          child: SizedBox(
+            width: 600,
+            height: 60,
+            child: ElevatedButton(
+              onPressed: selectedAnswers.length == quizQuestions.length
+                  ? submitQuiz
+                  : null, // Enable button only if all questions are answered
+              child: Text('Submit Quiz',
+              style: TextStyle(
+                fontSize: 20
+              ),),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.all(16.0), 
+                backgroundColor: Color.fromARGB(255, 105, 1, 161),
+                foregroundColor: Colors.white,
+              ),
+            ),
           ),
         ),
       ],
@@ -919,26 +968,78 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   Widget buildResultScreen() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'Your Score: $score / ${quizQuestions.length}',
-            style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+  return Center(
+    child: SizedBox(
+      height: 300,
+      width: 400,
+      child: Card(
+        elevation: 8.0, // Adds shadow effect
+        color: Color.fromARGB(255, 244, 224, 255),
+        shape: RoundedRectangleBorder(
+          
+          borderRadius: BorderRadius.circular(15.0), // Rounded corners
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(20.0), // Adds padding inside the card
+          child: Column( 
+            mainAxisSize: MainAxisSize.min, // Keeps the card size minimal
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Your Score: $score / ${quizQuestions.length}',
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 20),
+              SizedBox(
+                height: 50,
+                width: 180,
+                child: ElevatedButton(
+                  onPressed: restartQuiz,
+                  child: Text('Restart Quiz',
+                  style: TextStyle(
+                    fontSize: 18
+                  ),),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.all(16.0),
+                    backgroundColor: Color.fromARGB(255, 105, 1, 161),
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              SizedBox(
+                height: 50,
+                width: 180,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Add your navigation or action for the second button
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Home()),
+                    );// For example, go back to the main menu
+                  },
+                  child: Text('Quit Quiz',
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.all(16.0),
+                    backgroundColor: Color.fromARGB(255, 105, 1, 161), 
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: restartQuiz,
-            child: Text('Restart Quiz'),
-            style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.all(16.0), backgroundColor: Colors.green,
-            ),
-          ),
-        ],
+        ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 }
 
 
