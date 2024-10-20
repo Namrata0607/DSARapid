@@ -163,22 +163,26 @@ class _IndexState extends State<Index> {
                   ),
 
                   // Start Learning Button
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SignInPage()),
-                      );
-                    },
-                    child: Text(
-                      "Start Learning",
-                      style: TextStyle(fontSize: 20.0),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 105, 1, 161),
-                      padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
+                  SizedBox(
+                    width: 300,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SignInPage()),
+                        );
+                      },
+                      child: Text(
+                        "Start Learning",
+                        style: TextStyle(fontSize: 20.0),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(255, 105, 1, 161),
+                        padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
                       ),
                     ),
                   ),
@@ -186,22 +190,26 @@ class _IndexState extends State<Index> {
                   SizedBox(height: 10),
 
                   // Admin Button (No overflow issue)
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => AdminDash()),
-                      );
-                    },
-                    child: Text(
-                      "Admin",
-                      style: TextStyle(fontSize: 20.0),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 105, 1, 161),
-                      padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
+                  SizedBox(
+                    width: 300,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => AdminDash()),
+                        );
+                      },
+                      child: Text(
+                        "Admin Login",
+                        style: TextStyle(fontSize: 20.0),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(255, 105, 1, 161),
+                        padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
                       ),
                     ),
                   ),

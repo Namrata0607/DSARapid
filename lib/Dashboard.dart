@@ -80,15 +80,7 @@ class _HomeState extends State<Home> {
       print('Failed to set persistence: $e');
     }
   }
-//   void openPdf(BuildContext context, String assetPath) {
-//     print("Opening: $assetPath");
-//   Navigator.push(
-//     context,
-//     MaterialPageRoute(
-//       builder: (context) => PdfViewerPage(assetPath: assetPath), // Pass assetPath correctly
-//     ),
-//   );
-// }
+
 
   @override
   Widget build(BuildContext context) {
@@ -97,114 +89,117 @@ class _HomeState extends State<Home> {
       home: Scaffold(
         appBar: mtext(),
         body: Container(
-          width: double.infinity,
-          height: double.infinity,
-          child: Row(
+          // padding: EdgeInsets.only(left: 5,right: 5),
+  width: double.infinity,
+  height: double.infinity,
+  child: Row(
+    children: [
+      // Left Profile Information Container
+      Container(
+        padding: EdgeInsets.only(left: 7,right: 7),
+        width: MediaQuery.of(context).size.width * 0.2, // Adjusted to 20% of screen width
+        color: Color.fromARGB(255, 199, 167, 255),
+        child: SingleChildScrollView(
+          child: Column(
             children: [
-              // Left Profile Information Container
-              Container(
-                width: MediaQuery.of(context).size.width * 0.3, // 30% of screen width
-                color: Color.fromARGB(255, 199, 167, 255),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.02), // Spacing
-                      Center(
-                        child: CircleAvatar(
-                          backgroundImage: AssetImage("assets/images/profile.png"),
-                          radius: MediaQuery.of(context).size.width * 0.1, // Responsive radius
-                        ),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.02), // Spacing
-                      ListTile(
-                        leading: Icon(Icons.person),
-                        title: Text("Name:"),
-                        subtitle: Text("Namrata Daphale"),
-                      ),
-                      Divider(),
-                      ListTile(
-                        leading: Icon(Icons.confirmation_number),
-                        title: Text("Roll Number:"),
-                        subtitle: Text("66"),
-                      ),
-                      Divider(),
-                      ListTile(
-                        leading: Icon(Icons.group),
-                        title: Text("Division:"),
-                        subtitle: Text("C"),
-                      ),
-                      Divider(),
-                      ListTile(
-                        leading: Icon(Icons.class_),
-                        title: Text("Class:"),
-                        subtitle: Text("B.Tech"),
-                      ),
-                      Divider(),
-                      ListTile(
-                        leading: Icon(Icons.logout),
-                        title: Text("Logout"),
-                        onTap: () async {
-                          try {
-                            await _auth.signOut();
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) => SignInPage()),
-                            );
-                          } catch (e) {
-                            print('Error during sign out: $e');
-                          }
-                        },
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(255, 105, 1, 161),
-                          minimumSize: Size(
-                            MediaQuery.of(context).size.width * 0.2,
-                            MediaQuery.of(context).size.height * 0.06,
-                          ),
-                        ),
-                        onPressed: _Viewprofile,
-                        child: Text(
-                          'View profile',
-                          style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.height * 0.025,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(255, 105, 1, 161),
-                          minimumSize: Size(
-                            MediaQuery.of(context).size.width * 0.2,
-                            MediaQuery.of(context).size.height * 0.06,
-                          ),
-                        ),
-                        onPressed: _Updateprofile,
-                        child: Text(
-                          'Update profile',
-                          style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.height * 0.025,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
+              SizedBox(height: MediaQuery.of(context).size.height * 0.02), // Spacing
+              Center(
+                child: CircleAvatar(
+                  backgroundImage: AssetImage("assets/images/profile.png"),
+                  radius: MediaQuery.of(context).size.width * 0.1, // Responsive radius
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.02), // Spacing
+              ListTile(
+                leading: Icon(Icons.person),
+                title: Text("Name:"),
+                subtitle: Text("Namrata Daphale"),
+              ),
+              Divider(),
+              ListTile(
+                leading: Icon(Icons.confirmation_number),
+                title: Text("Roll Number:"),
+                subtitle: Text("66"),
+              ),
+              Divider(),
+              ListTile(
+                leading: Icon(Icons.group),
+                title: Text("Division:"),
+                subtitle: Text("C"),
+              ),
+              Divider(),
+              ListTile(
+                leading: Icon(Icons.class_),
+                title: Text("Class:"),
+                subtitle: Text("B.Tech"),
+              ),
+              Divider(),
+              ListTile(
+                leading: Icon(Icons.logout),
+                title: Text("Logout"),
+                onTap: () async {
+                  try {
+                    await _auth.signOut();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => SignInPage()),
+                    );
+                  } catch (e) {
+                    print('Error during sign out: $e');
+                  }
+                },
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(255, 105, 1, 161),
+                  minimumSize: Size(
+                    MediaQuery.of(context).size.width * 0.2,
+                    MediaQuery.of(context).size.height * 0.06,
+                  ),
+                ),
+                onPressed: _Viewprofile,
+                child: Text(
+                  'View profile',
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.025,
+                    color: Colors.white,
                   ),
                 ),
               ),
-              // Right Content Area
-              Expanded(
-                child: Container(
-                  color: Colors.white, // Main content background
-                  child: myFunc(), // Your main content widget
+              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(255, 105, 1, 161),
+                  minimumSize: Size(
+                    MediaQuery.of(context).size.width * 0.2,
+                    MediaQuery.of(context).size.height * 0.06,
+                  ),
+                ),
+                onPressed: _Updateprofile,
+                child: Text(
+                  'Update profile',
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.025,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],
           ),
         ),
+      ),
+      // Right Content Area
+      Expanded(
+        child: Container(
+          color: Colors.white, // Main content background
+          child: myFunc(), // Your main content widget
+        ),
+      ),
+    ],
+  ),
+),
+
 
       ),
     );
@@ -215,22 +210,9 @@ Widget myFunc() {
   // Base list of distinct colors
   final List<Color> baseColorsList = [
     Color.fromARGB(255, 155, 207, 250),
-    
-    // Color.fromARGB(255, 55, 242, 236),
     Color.fromARGB(255, 189, 132, 199),
     Color.fromARGB(255, 155, 207, 250),
-
     Color.fromARGB(255, 188, 110, 198),
-    // Color.fromARGB(255, 183, 106, 154),
-    // Color.fromARGB(255, 120, 26, 175),
-    // Color.fromARGB(255, 90, 0, 145), //1
-    // Color.fromARGB(255, 130, 45, 185), //2
-    // Color.fromARGB(255, 115, 30, 170), //4
-    // Color.fromARGB(255, 85, 0, 140), //5
-    // Color.fromARGB(255, 140, 60, 190),
-    // Color.fromARGB(255, 188, 110, 198),
-    // Color.fromARGB(162, 111, 182, 191),
-    // Color.fromARGB(255, 183, 106, 154),
   ];
 
   // Dynamically generate the colorsList based on the index
@@ -339,6 +321,7 @@ final List<Widget Function()> visualizerClasses = [
   () => BubbleSort(),
   () => SelectionSort(),
   () => InsertionSort(),
+  () => MergeSort(),
   () => QuickSort(),
   () => HashTable(),
   () => BSTVisualizer(),
@@ -376,9 +359,9 @@ final List<Widget Function()> quizClasses = [
   () => MergesortQuiz(),
   () => QuickSortQuiz(),
   () => HashingQuiz(),
-  () => BinarySearchTreeQuiz(),
+  () => BSTQuiz(),
   () => HeaptreeQuiz(),
-  () => AvltreeQuiz(),
+  () => AvlTreeQuiz(),
   () => BfsQuiz(),
   () => DfsQuiz(),
 ];
@@ -448,20 +431,6 @@ return GridView.builder(
                   fit: BoxFit.contain,
                 ),
 
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.center, // Center the image horizontally
-              //   children: [
-              //     Container(
-              //       alignment: Alignment.center,
-              //       child: Image(
-              //         image: AssetImage("assets/images/profile.png"),
-              //         height: 100,
-              //         width: 100,
-              //       ),
-              //     ),
-              //   ],
-              // ),
-
               SizedBox(height: 10),
               Container(
                 margin: const EdgeInsets.only(top: 40.0,bottom: 20,left: 4,right: 4), // Add margin above the row of buttons
@@ -512,18 +481,3 @@ return GridView.builder(
     },
   );
 }
-
-// class GifPlayerWidget extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       alignment: Alignment.center,
-//       child: Image.asset(
-//         'assets/videos/stack.gif',  // Path to the GIF file
-//         height: 200,  // Set a specific height for the GIF container
-//         width: 200,   // Set a specific width for the GIF container
-//         fit: BoxFit.cover,  // Adjust the image's fit to cover the container
-//       ),
-//     );
-//   }
-// }
