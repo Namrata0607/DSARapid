@@ -570,6 +570,7 @@ Question(
 class SelectionSortQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
-    return QuizUI(quizQuestions: SelectionSortQuestions); // Use the common UI
+    List<Question> randomQuestions = getRandomQuestions(SelectionSortQuestions);
+    return QuizUI(quizQuestions: randomQuestions); // Use the common UI
   }
 }

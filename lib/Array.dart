@@ -795,7 +795,8 @@ final List<Question> arrayQuestions = [
 class ArrayQuiz extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return QuizUI(quizQuestions: arrayQuestions); // Use the common UI
+    List<Question> randomQuestions = getRandomQuestions(arrayQuestions);
+    return QuizUI(quizQuestions:randomQuestions ); // Use the common UI
   }
 }
 

@@ -858,7 +858,8 @@ final List<Question> avlTreeQuestions = [
 class AvlTreeQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
-    return QuizUI(quizQuestions: avlTreeQuestions); // Use the common UI
+     List<Question> randomQuestions = getRandomQuestions(avlTreeQuestions);
+    return QuizUI(quizQuestions:randomQuestions ); // Use the common UI
   }
 }
 

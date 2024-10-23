@@ -133,25 +133,7 @@ class LoginPage extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(height: 20.0),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text("Don't have an account? "),
-                                  GestureDetector(
-                                    onTap: () {
-                                      // Handle sign-up navigation here
-                                    },
-                                    child: Text(
-                                      'Sign Up',
-                                      style: TextStyle(
-                                        color:
-                                            Color.fromARGB(255, 105, 1, 161),
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              
                             ],
                           ),
                         ),

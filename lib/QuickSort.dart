@@ -575,6 +575,7 @@ Question(
 class QuickSortQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
-    return QuizUI(quizQuestions: QuickSortQuestions); // Use the common UI
+    List<Question> randomQuestions = getRandomQuestions(QuickSortQuestions);
+    return QuizUI(quizQuestions: randomQuestions); // Use the common UI
   }
 }

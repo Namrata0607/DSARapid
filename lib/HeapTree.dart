@@ -739,6 +739,7 @@ final List<Question> HeapTreeQuestions= [
 class HeaptreeQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
-    return QuizUI(quizQuestions: HeapTreeQuestions); // Use the common UI
+    List<Question> randomQuestions = getRandomQuestions(HeapTreeQuestions);
+    return QuizUI(quizQuestions: randomQuestions); // Use the common UI
   }
 }

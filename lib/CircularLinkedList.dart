@@ -791,6 +791,7 @@ final List<Question> CircularLinkedListQuestions = [
 class CircularlinkedlistQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
-    return QuizUI(quizQuestions: CircularLinkedListQuestions); // Use the common UI
+    List<Question> randomQuestions = getRandomQuestions(CircularLinkedListQuestions);
+    return QuizUI(quizQuestions:randomQuestions); // Use the common UI
   }
 }

@@ -559,6 +559,7 @@ Question(
 class LinearSearchQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
-    return QuizUI(quizQuestions: LinearSearchQuestions); // Use the common UI
+    List<Question> randomQuestions = getRandomQuestions(LinearSearchQuestions);
+    return QuizUI(quizQuestions: randomQuestions); // Use the common UI
   }
 }

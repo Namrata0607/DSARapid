@@ -3,8 +3,6 @@ import 'package:dsa_rapid/UI_Helper/UI.dart';
 import 'package:flutter/material.dart';
 import 'auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Ensure this is added
-
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class SignInPage extends StatefulWidget {

@@ -586,6 +586,7 @@ final List<Question> HashingQuestions = [
 class HashingQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
-    return QuizUI(quizQuestions: HashingQuestions); // Use the common UI
+    List<Question> randomQuestions = getRandomQuestions(HashingQuestions);
+    return QuizUI(quizQuestions:randomQuestions ); // Use the common UI
   }
 }

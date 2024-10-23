@@ -681,6 +681,7 @@ final List<Question> PriorityQueueQuestions = [
 class PriorityqueueQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
-    return QuizUI(quizQuestions: PriorityQueueQuestions); // Use the common UI
+    List<Question> randomQuestions = getRandomQuestions(PriorityQueueQuestions);
+    return QuizUI(quizQuestions: randomQuestions); // Use the common UI
   }
 }

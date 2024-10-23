@@ -539,6 +539,7 @@ Question(
 class MergesortQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
-    return QuizUI(quizQuestions: MergeSortQuestions); // Use the common UI
+  List<Question> randomQuestions = getRandomQuestions(MergeSortQuestions);
+    return QuizUI(quizQuestions: randomQuestions); // Use the common UI
   }
 }

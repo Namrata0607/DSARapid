@@ -829,6 +829,7 @@ final List<Question> BSTQuestions= [
 class BSTQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
-    return QuizUI(quizQuestions: BSTQuestions); // Use the common UI
+  List<Question> randomQuestions = getRandomQuestions(BSTQuestions);
+    return QuizUI(quizQuestions: randomQuestions); // Use the common UI
   }
 }

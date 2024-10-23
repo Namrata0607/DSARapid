@@ -555,6 +555,7 @@ Question(
 class InsertionSortQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
-    return QuizUI(quizQuestions: InsertionSortQuestions); // Use the common UI
+    List<Question> randomQuestions = getRandomQuestions(InsertionSortQuestions);
+    return QuizUI(quizQuestions: randomQuestions); // Use the common UI
   }
 }

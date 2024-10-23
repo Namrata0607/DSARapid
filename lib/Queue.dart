@@ -570,6 +570,7 @@ Question(
 class QueueQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
-    return QuizUI(quizQuestions: QueueQuestions); // Use the common UI
+    List<Question> randomQuestions = getRandomQuestions(QueueQuestions);
+    return QuizUI(quizQuestions: randomQuestions); // Use the common UI
   }
 }
