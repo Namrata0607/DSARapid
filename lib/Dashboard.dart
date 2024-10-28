@@ -37,6 +37,7 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:dsa_rapid/SignInUp.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 // void main() => runApp(
 //       Home()
 // );
@@ -49,7 +50,15 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+ final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  String? fullName = '';
+  String? collegeName = '';
+  String? rollNumber = '';
+  String? division = '';
+  String? className = '';
+
  void _Viewprofile(){
     Navigator.push(
       context,
@@ -69,6 +78,7 @@ class _HomeState extends State<Home> {
     super.initState();
     // Set the persistence mode for web (for mobile this is not required)
     _setAuthPersistence();
+    _getUserProfileData();
   }
 
   Future<void> _setAuthPersistence() async {
@@ -78,6 +88,27 @@ class _HomeState extends State<Home> {
       print('Persistence set to LOCAL');
     } catch (e) {
       print('Failed to set persistence: $e');
+    }
+  }
+
+
+   Future<void> _getUserProfileData() async {
+    User? user = _auth.currentUser;
+
+    if (user != null) {
+      try {
+        DocumentSnapshot<Map<String, dynamic>> userDoc = await _firestore.collection('user_db').doc(user.uid).get();
+        if (userDoc.exists) {
+          setState(() {
+            fullName = userDoc.data()?['full_name'];
+            rollNumber = userDoc.data()?['roll_no'];
+            division = userDoc.data()?['division'];
+            className = userDoc.data()?['class'];
+          });
+        }
+      } catch (e) {
+        print('Failed to load user data: $e');
+      }
     }
   }
 
@@ -113,25 +144,25 @@ class _HomeState extends State<Home> {
               ListTile(
                 leading: Icon(Icons.person),
                 title: Text("Name:"),
-                subtitle: Text("Namrata Daphale"),
+                subtitle: Text(fullName ?? 'Loading...'),
               ),
               Divider(),
               ListTile(
                 leading: Icon(Icons.confirmation_number),
                 title: Text("Roll Number:"),
-                subtitle: Text("66"),
+                 subtitle: Text(rollNumber ?? 'Loading...'),
               ),
               Divider(),
               ListTile(
                 leading: Icon(Icons.group),
                 title: Text("Division:"),
-                subtitle: Text("C"),
+                subtitle: Text(division ?? 'Loading...'),
               ),
               Divider(),
               ListTile(
                 leading: Icon(Icons.class_),
                 title: Text("Class:"),
-                subtitle: Text("B.Tech"),
+                 subtitle: Text(className ?? 'Loading...'),
               ),
               Divider(),
               ListTile(

@@ -2,9 +2,9 @@ import 'package:dsa_rapid/Dashboard.dart';
 import 'package:dsa_rapid/UI_Helper/UI.dart';
 import 'package:flutter/material.dart';
 import 'auth_service.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Ensure this is added
+// import 'package:firebase_auth/firebase_auth.dart'; // Ensure this is added
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 class SignInPage extends StatefulWidget {
   @override
   _SignInPageState createState() => _SignInPageState();
@@ -15,7 +15,7 @@ class _SignInPageState extends State<SignInPage> {
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  bool _isPasswordVisible = false; // Track password visibility
+  bool _isPasswordVisible = false; 
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +141,7 @@ class _SignInPageState extends State<SignInPage> {
                                         print('Sign in successful!');
                                         Navigator.push(
                                           context,
-                                          MaterialPageRoute(builder: (context) => Home()), // Make sure Home() is defined
+                                          MaterialPageRoute(builder: (context) => Home()), 
                                         );
                                       } else {
                                         print('Sign in failed!');
@@ -212,6 +212,7 @@ class _SignInPageState extends State<SignInPage> {
   }
 }
 
+
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
 
@@ -225,22 +226,36 @@ class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
   final _confirmPasswordController = TextEditingController();
   final _fullNameController = TextEditingController();
-  final _collegeNameController = TextEditingController();
-  bool _isPasswordVisible = false; // Track password visibility
-  bool _isConfirmPasswordVisible = false; // Track confirm password visibility
+  final _classController = TextEditingController();
+  final _divisionController = TextEditingController();
+  final _rollnoController = TextEditingController();
+
+  bool _isPasswordVisible = false; 
+  bool _isConfirmPasswordVisible = false; 
   final AuthService _auth = AuthService();
+
+  Future<void> _storeUserData(User user) async {
+    // Firestore storage
+    await FirebaseFirestore.instance.collection('user_db').doc(user.uid).set({
+      'full_name': _fullNameController.text.trim(),
+      'class': _classController.text.trim(),
+      'division': _divisionController.text.trim(),
+      'roll_no': _rollnoController.text.trim(),
+      'created_at': DateTime.now(),
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Sign Up")),
+      appBar: mtext(),
       body: Stack(
         children: [
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage("assets/images/bg.png"), // Your background image
+                  image: AssetImage("assets/images/bg.png"),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -299,23 +314,6 @@ class _SignupPageState extends State<SignupPage> {
                                 ),
                                 SizedBox(height: 20.0),
                                 TextFormField(
-                                  controller: _collegeNameController,
-                                  decoration: InputDecoration(
-                                    labelText: 'College Name',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    prefixIcon: Icon(Icons.school),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter your college name';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                SizedBox(height: 20.0),
-                                TextFormField(
                                   controller: _emailController,
                                   decoration: InputDecoration(
                                     labelText: 'Email',
@@ -328,9 +326,59 @@ class _SignupPageState extends State<SignupPage> {
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'Please enter your email';
-                                    } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
-                                        .hasMatch(value)) {
+                                    } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
                                       return 'Please enter a valid email';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                SizedBox(height: 20.0),
+                                TextFormField(
+                                  controller: _classController,
+                                  decoration: InputDecoration(
+                                    labelText: 'Class',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    prefixIcon: Icon(Icons.class_),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter your Class';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                SizedBox(height: 20.0),
+                                TextFormField(
+                                  controller: _divisionController,
+                                  decoration: InputDecoration(
+                                    labelText: 'Division',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    prefixIcon: Icon(Icons.group),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter your division';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                SizedBox(height: 20.0),
+                                TextFormField(
+                                  controller: _rollnoController,
+                                  decoration: InputDecoration(
+                                    labelText: 'Roll No',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    prefixIcon: Icon(Icons.confirmation_number),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter your roll number';
                                     }
                                     return null;
                                   },
@@ -346,9 +394,7 @@ class _SignupPageState extends State<SignupPage> {
                                     prefixIcon: Icon(Icons.lock),
                                     suffixIcon: IconButton(
                                       icon: Icon(
-                                        _isPasswordVisible
-                                            ? Icons.visibility
-                                            : Icons.visibility_off,
+                                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
                                       ),
                                       onPressed: () {
                                         setState(() {
@@ -378,9 +424,7 @@ class _SignupPageState extends State<SignupPage> {
                                     prefixIcon: Icon(Icons.lock_outline),
                                     suffixIcon: IconButton(
                                       icon: Icon(
-                                        _isConfirmPasswordVisible
-                                            ? Icons.visibility
-                                            : Icons.visibility_off,
+                                        _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
                                       ),
                                       onPressed: () {
                                         setState(() {
@@ -403,12 +447,14 @@ class _SignupPageState extends State<SignupPage> {
                                 ElevatedButton(
                                   onPressed: () async {
                                     if (_formKey.currentState!.validate()) {
-                                      // Proceed with signup
                                       final email = _emailController.text.trim();
                                       final password = _passwordController.text.trim();
+
+                                      // Sign up user
                                       User? user = await _auth.signUpWithEmail(email, password);
-                                      print("User: $user");
                                       if (user != null) {
+                                        // Store user data in Firestore
+                                        await _storeUserData(user);
                                         print('Sign up successful!');
                                         Navigator.pushReplacement(
                                           context,
@@ -424,7 +470,7 @@ class _SignupPageState extends State<SignupPage> {
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
                                     ),
-                                    backgroundColor: Color.fromARGB(255, 105, 1, 161), // Button color
+                                    backgroundColor: Color.fromARGB(255, 105, 1, 161),
                                   ),
                                   child: Text(
                                     'Sign Up',
@@ -448,10 +494,10 @@ class _SignupPageState extends State<SignupPage> {
                                         );
                                       },
                                       child: Text(
-                                        'Sign In',
+                                        "Sign In",
                                         style: TextStyle(
-                                          color: Color.fromARGB(255, 105, 1, 161),
                                           fontWeight: FontWeight.bold,
+                                          color: Color.fromARGB(255, 105, 1, 161),
                                         ),
                                       ),
                                     ),
@@ -471,15 +517,5 @@ class _SignupPageState extends State<SignupPage> {
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    _fullNameController.dispose();
-    _collegeNameController.dispose();
-    super.dispose();
   }
 }
