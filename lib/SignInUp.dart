@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:html' as html;
 import 'package:dsa_rapid/Dashboard.dart';
 import 'package:dsa_rapid/UI_Helper/UI.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +8,8 @@ import 'auth_service.dart';
 // import 'package:firebase_auth/firebase_auth.dart'; // Ensure this is added
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
 class SignInPage extends StatefulWidget {
   @override
   _SignInPageState createState() => _SignInPageState();
@@ -230,9 +235,63 @@ class _SignupPageState extends State<SignupPage> {
   final _divisionController = TextEditingController();
   final _rollnoController = TextEditingController();
 
-  bool _isPasswordVisible = false; 
-  bool _isConfirmPasswordVisible = false; 
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
   final AuthService _auth = AuthService();
+  File? _selectedImage;
+  String? _profileUrl;
+  static const String cloudName = 'dizb1hygb';
+  static const String apiKey = '434625396783416';
+  static const String apiSecret = 'lOMFEPBVqRzcZqT8C-EzEI1vL4k';
+
+  Future<void> _pickImage() async {
+    html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
+    uploadInput.accept = 'image/*';
+    uploadInput.click();
+
+    uploadInput.onChange.listen((e) async {
+      final files = uploadInput.files;
+      if (files?.isNotEmpty ?? false) {
+        final file = files!.first;
+        await _uploadImageToCloudinary(file);
+      }
+    });
+  }
+
+// Function to upload the image to Cloudinary
+  Future<void> _uploadImageToCloudinary(html.File imageFile) async {
+    // Cloudinary URL configuration with provided credentials
+    final uri = Uri.parse('https://api.cloudinary.com/v1_1/$cloudName/image/upload');
+    final request = http.MultipartRequest('POST', uri)
+      ..fields['upload_preset'] = 'profile_pics' // Ensure this preset exists in your Cloudinary
+      ..fields['api_key'] = apiKey; // Add your API key
+
+    // Using a FileReader to read the image data
+    final reader = html.FileReader();
+
+    reader.readAsArrayBuffer(imageFile); // Read the image as an ArrayBuffer
+    reader.onLoadEnd.listen((e) async {
+      final bytes = reader.result as List<int>;
+      request.files.add(http.MultipartFile.fromBytes(
+        'file',
+        bytes,
+        filename: imageFile.name,
+      ));
+
+      final response = await request.send();
+      if (response.statusCode == 200) {
+        final responseData = await response.stream.bytesToString();
+        setState(() {
+          _profileUrl = json.decode(responseData)['url'];
+          print('Uploaded image URL: $_profileUrl'); // Store Cloudinary URL
+        });
+      } else {
+        print("Failed to upload image: ${response.statusCode}");
+        final responseData = await response.stream.bytesToString();
+        print("Response: $responseData");
+      }
+    });
+  }
 
   Future<void> _storeUserData(User user) async {
     // Firestore storage
@@ -241,6 +300,7 @@ class _SignupPageState extends State<SignupPage> {
       'class': _classController.text.trim(),
       'division': _divisionController.text.trim(),
       'roll_no': _rollnoController.text.trim(),
+      'profile_url': _profileUrl,
       'created_at': DateTime.now(),
     });
   }
@@ -281,7 +341,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                     ),
                     SizedBox(
-                      height: 650,
+                      height: 1000,
                       width: 500,
                       child: Card(
                         color: Color.fromARGB(255, 244, 224, 255),
@@ -295,6 +355,15 @@ class _SignupPageState extends State<SignupPage> {
                             key: _formKey,
                             child: Column(
                               children: <Widget>[
+                                InkWell(
+                                  onTap: _pickImage,
+                                  child: CircleAvatar(
+                                    radius: 40,
+                                    backgroundImage: _selectedImage != null ? FileImage(_selectedImage!) : null,
+                                    child: _selectedImage == null ? Icon(Icons.camera_alt) : null,
+                                  ),
+                                ),
+                                Text("Upload Profile Picture"),
                                 SizedBox(height: 20.0),
                                 TextFormField(
                                   controller: _fullNameController,
