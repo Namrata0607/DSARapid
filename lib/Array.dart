@@ -129,11 +129,12 @@ class PDFViewerScreen extends StatelessWidget {
   }
 }
 
+
+
+
+
 //visualizer
 
-// void main() {
-//   runApp(ArrayVisualizer());
-// }
 class ArrayVisualizer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -141,7 +142,7 @@ class ArrayVisualizer extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Array Operations Visualizer',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.purple,
       ),
       home: ArrayVisualizerScreen(),
     );
@@ -153,18 +154,21 @@ class ArrayVisualizerScreen extends StatefulWidget {
   _ArrayVisualizerScreenState createState() => _ArrayVisualizerScreenState();
 }
 
-
 class _ArrayVisualizerScreenState extends State<ArrayVisualizerScreen> {
   List<int> array = [];
   int? highlightedIndex;
   String currentOperation = "";
-  String currentAlgorithm = ""; // Holds static algorithm for the current operation
+  String currentAlgorithm = "";
   bool isProcessing = false;
+  final int maxArraySize = 8; // Maximum size of the array
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBack(context),
+      appBar: AppBar(
+        title: Text('Array Operations Visualizer'),
+        backgroundColor: Colors.purple,
+      ),
       body: Column(
         children: [
           Expanded(
@@ -256,15 +260,6 @@ class _ArrayVisualizerScreenState extends State<ArrayVisualizerScreen> {
                     padding: EdgeInsets.all(8.0),
                     child: Column(
                       children: [
-                        Text(
-                          'Array Visualizer',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.purple,
-                          ),
-                        ),
-                        Divider(),
                         Expanded(
                           child: Center(
                             child: SingleChildScrollView(
@@ -427,14 +422,14 @@ Algorithm for Clear:
         highlightedIndex = i; // Highlight current index being processed
         currentOperation = "Current index: $i";
       });
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(Duration(seconds: 2)); // Increased delay
     }
   }
 
   // Insert value into the array step-by-step with highlighting
   Future<void> _showInsertDialog(BuildContext context) async {
     int? index = await _showInputDialog(context, 'Insert at Index');
-    if (index != null && index >= 0 && index <= array.length) {
+    if (index != null && index >= 0 && index <= array.length && array.length < maxArraySize) {
       int? value = await _showInputDialog(context, 'Value to Insert');
       if (value != null) {
         await _highlightInLoop(0, index); // Highlight until insert position
@@ -449,6 +444,13 @@ Algorithm for Insert:
 """;
           currentOperation = "Inserted $value at index $index.";
         });
+        await Future.delayed(Duration(milliseconds: 1500)); // Snackbar delay
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Inserted $value at index $index.'),
+            duration: Duration(milliseconds: 1500), // Snackbar duration
+          ),
+        );
         await Future.delayed(Duration(milliseconds: 500));
         setState(() {
           highlightedIndex = null;
@@ -457,7 +459,8 @@ Algorithm for Insert:
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Invalid index'),
+          content: Text('Invalid index or max size reached'),
+          duration: Duration(milliseconds: 1500), // Snackbar duration
         ),
       );
     }
@@ -471,43 +474,61 @@ Algorithm for Insert:
       if (index != -1) {
         await _highlightInLoop(0, index); // Highlight until delete position
         setState(() {
+          highlightedIndex = index;
           array.removeAt(index); // Remove element
           currentAlgorithm = """
 Algorithm for Delete:
-1. Find the index of the value.
-2. Remove the element at that index.
-3. Shift the remaining elements.
+1. Find the value in the array.
+2. Remove the value from the array.
 """;
-          currentOperation = "Deleted $value from index $index.";
+          currentOperation = "Deleted $value from the array.";
+        });
+        await Future.delayed(Duration(milliseconds: 1500)); // Snackbar delay
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Deleted $value from the array.'),
+            duration: Duration(milliseconds: 1500), // Snackbar duration
+          ),
+        );
+        await Future.delayed(Duration(milliseconds: 500));
+        setState(() {
           highlightedIndex = null;
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Value not found'),
+            content: Text('Value not found in the array.'),
+            duration: Duration(milliseconds: 1500), // Snackbar duration
           ),
         );
       }
     }
   }
 
-  // Show dialog for updating an array element at a specific index
+  // Update a value in the array with highlighting
   Future<void> _showUpdateDialog(BuildContext context) async {
-    int? index = await _showInputDialog(context, 'Update Index');
+    int? index = await _showInputDialog(context, 'Update at Index');
     if (index != null && index >= 0 && index < array.length) {
       int? value = await _showInputDialog(context, 'New Value');
       if (value != null) {
         await _highlightInLoop(0, index); // Highlight until update position
         setState(() {
-          array[index] = value; // Update element at index
           highlightedIndex = index;
+          array[index] = value; // Update element
           currentAlgorithm = """
 Algorithm for Update:
-1. Find the index of the element.
+1. Select the index.
 2. Update the value at the selected index.
 """;
           currentOperation = "Updated index $index to $value.";
         });
+        await Future.delayed(Duration(milliseconds: 1500)); // Snackbar delay
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Updated index $index to $value.'),
+            duration: Duration(milliseconds: 1500), // Snackbar duration
+          ),
+        );
         await Future.delayed(Duration(milliseconds: 500));
         setState(() {
           highlightedIndex = null;
@@ -517,40 +538,53 @@ Algorithm for Update:
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Invalid index'),
+          duration: Duration(milliseconds: 1500), // Snackbar duration
         ),
       );
     }
   }
 
-  // Show dialog to find the index of an element
+  // Find index of a value in the array with highlighting
   Future<void> _showFindIndexDialog(BuildContext context) async {
-    int? value = await _showInputDialog(context, 'Find Index of Value');
+    int? value = await _showInputDialog(context, 'Value to Find');
     if (value != null) {
-      await _highlightInLoop(0, array.length - 1);
       int index = array.indexOf(value);
-      setState(() {
-        highlightedIndex = index;
-        currentAlgorithm = """
-Algorithm for Find:
-1. Iterate through the array.
-2. Compare each element to the target value.
-3. Return the index if found.
+      if (index != -1) {
+        await _highlightInLoop(0, index); // Highlight until find position
+        setState(() {
+          highlightedIndex = index;
+          currentAlgorithm = """
+Algorithm for Find Index:
+1. Search for the value in the array.
+2. Return the index of the found value.
 """;
-        currentOperation = index >= 0
-            ? 'Element found at index: $index'
-            : 'Element not found';
-      });
-      await Future.delayed(Duration(milliseconds: 500));
-      setState(() {
-        highlightedIndex = null;
-      });
+          currentOperation = "Found $value at index $index.";
+        });
+        await Future.delayed(Duration(milliseconds: 1500)); // Snackbar delay
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Found $value at index $index.'),
+            duration: Duration(milliseconds: 1500), // Snackbar duration
+          ),
+        );
+        await Future.delayed(Duration(milliseconds: 500));
+        setState(() {
+          highlightedIndex = null;
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Value not found in the array.'),
+            duration: Duration(milliseconds: 1500), // Snackbar duration
+          ),
+        );
+      }
     }
   }
 
-  // Generalized input dialog to get user input
-  Future<int?> _showInputDialog(BuildContext context, String title) async {
-    final TextEditingController controller = TextEditingController();
-
+  // Function to show an input dialog and return the entered integer
+  Future<int?> _showInputDialog(BuildContext context, String title) {
+    TextEditingController controller = TextEditingController();
     return showDialog<int>(
       context: context,
       builder: (context) {
@@ -563,15 +597,16 @@ Algorithm for Find:
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(), // Dismiss dialog
-              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop(int.tryParse(controller.text));
+              },
+              child: Text('OK'),
             ),
             TextButton(
               onPressed: () {
-                final value = int.tryParse(controller.text);
-                Navigator.of(context).pop(value); // Return value
+                Navigator.of(context).pop();
               },
-              child: Text('OK'),
+              child: Text('Cancel'),
             ),
           ],
         );
@@ -579,6 +614,15 @@ Algorithm for Find:
     );
   }
 }
+
+
+
+
+
+
+
+
+
 
 
 //Test
