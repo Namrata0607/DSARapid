@@ -258,17 +258,14 @@ class _SignupPageState extends State<SignupPage> {
     });
   }
 
-// Function to upload the image to Cloudinary
   Future<void> _uploadImageToCloudinary(html.File imageFile) async {
-    // Cloudinary URL configuration with provided credentials
     final uri = Uri.parse('https://api.cloudinary.com/v1_1/$cloudName/image/upload');
     final request = http.MultipartRequest('POST', uri)
       ..fields['upload_preset'] = 'profile_pics' // Ensure this preset exists in your Cloudinary
-      ..fields['api_key'] = apiKey; // Add your API key
+      ..fields['api_key'] = apiKey // Add your API key
+      ..fields['api_secret'] = apiSecret;
 
-    // Using a FileReader to read the image data
     final reader = html.FileReader();
-
     reader.readAsArrayBuffer(imageFile); // Read the image as an ArrayBuffer
     reader.onLoadEnd.listen((e) async {
       final bytes = reader.result as List<int>;
@@ -341,7 +338,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                     ),
                     SizedBox(
-                      height: 1000,
+                      height: 750,
                       width: 500,
                       child: Card(
                         color: Color.fromARGB(255, 244, 224, 255),
@@ -359,11 +356,16 @@ class _SignupPageState extends State<SignupPage> {
                                   onTap: _pickImage,
                                   child: CircleAvatar(
                                     radius: 40,
-                                    backgroundImage: _selectedImage != null ? FileImage(_selectedImage!) : null,
-                                    child: _selectedImage == null ? Icon(Icons.camera_alt) : null,
+                                    backgroundImage: _profileUrl != null ? NetworkImage(_profileUrl!) : null,
+                                    child: _profileUrl == null
+                                        ? Icon(Icons.camera_alt)
+                                        : null , // Show tick icon
                                   ),
                                 ),
-                                Text("Upload Profile Picture"),
+                                Text(
+                                  _profileUrl != null ? "Image Uploaded Successfully" : "Upload Profile Picture",
+                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                ),
                                 SizedBox(height: 20.0),
                                 TextFormField(
                                   controller: _fullNameController,

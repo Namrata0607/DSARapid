@@ -54,7 +54,7 @@ class _HomeState extends State<Home> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   String? fullName = '';
-  String? collegeName = '';
+  String? profileUrl = '';
   String? rollNumber = '';
   String? division = '';
   String? className = '';
@@ -104,6 +104,7 @@ class _HomeState extends State<Home> {
             rollNumber = userDoc.data()?['roll_no'];
             division = userDoc.data()?['division'];
             className = userDoc.data()?['class'];
+            profileUrl = userDoc.data()?['profile_url'];
           });
         }
       } catch (e) {
@@ -133,11 +134,11 @@ class _HomeState extends State<Home> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: MediaQuery.of(context).size.height * 0.02), // Spacing
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05), // Spacing
               Center(
                 child: CircleAvatar(
-                  backgroundImage: AssetImage("assets/images/profile.png"),
-                  radius: MediaQuery.of(context).size.width * 0.1, // Responsive radius
+                  backgroundImage: profileUrl != null ? NetworkImage(profileUrl!) : AssetImage("assets/images/profile.png") as ImageProvider, // Use NetworkImage if profileUrl is not null
+                  radius: MediaQuery.of(context).size.width * 0.05, // Responsive radius
                 ),
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.02), // Spacing
