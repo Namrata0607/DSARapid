@@ -6,103 +6,11 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:dsa_rapid/UI_Helper/UI.dart'; // Import the helper
 
 
-// import 'package:flutter_full_pdf_viewer/full_pdf_viewer_scaffold.dart';
-
-
-// void main() => runApp(MyApp());
-// class PdfViewerPage extends StatelessWidget {
-//   final String assetPath;
-
-//   PdfViewerPage({required this.assetPath});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('PDF Viewer'),
-//         backgroundColor: Colors.purple,
-//       ),
-//       body: SfPdfViewer.asset(assetPath),
-//     );
-//   }
-// }
-
-// class PdfViewerPage extends StatelessWidget {
-//   final String assetPath;
-
-//   const PdfViewerPage({required this.assetPath});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     print("Loading PDF from: $assetPath");
-//     return Scaffold(
-//       appBar: appBack(context), // Use the appBack function for back navigation
-//       body: SfPdfViewer.asset(assetPath), // Load the PDF from the provided path
-//     );
-//   }
-// }
-
-// class PdfViewerPage extends StatelessWidget {
-//   final String assetPath;
-
-//   PdfViewerPage({required this.assetPath});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     print("Loading PDF from: $assetPath");
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('PDF Viewer'),
-//         backgroundColor: Colors.purple,
-//       ),
-//       body: FutureBuilder(
-//         future: Future.delayed(Duration(milliseconds: 500)), // Replace with your actual future
-//         builder: (context, snapshot) {
-//           if (snapshot.connectionState == ConnectionState.waiting) {
-//             return Center(child: CircularProgressIndicator());
-//           } else if (snapshot.hasError) {
-//             return Center(
-//               child: Text(
-//                 'Error: ${snapshot.error}',
-//                 textAlign: TextAlign.center,
-//                 style: TextStyle(fontSize: 18, color: Colors.red),
-//               ),
-//             );
-//           } else {
-//             try {
-//               return SfPdfViewer.asset(assetPath);
-//             } catch (e) {
-//               return Center(
-//                 child: Text(
-//                   'Error loading PDF. Please make sure the asset path is correct.',
-//                   textAlign: TextAlign.center,
-//                   style: TextStyle(fontSize: 18, color: Colors.red),
-//                 ),
-//               );
-//             }
-//           }
-//         },
-//       ),
-
-
-//     );
-//   }
-// }
-
-
-//pdf final
-
-// void main() {
-//   runApp(MyApp());
-// }
-
-// import 'package:flutter/material.dart';
-// import 'package:url_launcher/url_launcher.dart'; // Import url_launcher
-
 class ArrayNotes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'PDF Viewer',
       home: PDFViewerScreen(),  // Directly open the PDF on load
     );
@@ -112,16 +20,16 @@ class ArrayNotes extends StatelessWidget {
 class PDFViewerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    
     // Automatically open the PDF when this screen is displayed
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       const url = 'assets/notes/array.pdf';  // Relative path to the PDF
       await launch(url);  // This opens the PDF in a new browser tab
     });
-
+    
     return Scaffold(
-      appBar: AppBar(
-        title: Text('PDF Viewer'),
-      ),
+      
+      appBar: appBack(context),
       body: Center(
         child: Text('Opening PDF...'),
       ),

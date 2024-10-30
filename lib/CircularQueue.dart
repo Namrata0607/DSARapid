@@ -11,6 +11,7 @@ class CircularQNotes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'PDF Viewer',
       home: PDFViewerScreen(),  // Directly open the PDF on load
     );
@@ -27,9 +28,7 @@ class PDFViewerScreen extends StatelessWidget {
     });
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('PDF Viewer'),
-      ),
+      appBar: appBack(context),
       body: Center(
         child: Text('Opening PDF...'),
       ),

@@ -16,31 +16,21 @@ import 'package:dsa_rapid/QuickSort.dart';
 import 'package:dsa_rapid/SelectionSort.dart';
 import 'package:dsa_rapid/SinglyLinkedList.dart';
 import 'package:dsa_rapid/Stack.dart';
-// import 'package:video_player/video_player.dart';
 
 import 'SignInUp.dart';
 import 'package:flutter/material.dart';
 import 'package:dsa_rapid/UI_Helper/UI.dart';
 import 'package:dsa_rapid/ViewUpdateProfile.dart';
 import 'package:dsa_rapid/BinarySearch.dart';
-import 'package:dsa_rapid/LinearSearch.dart';
-import 'package:dsa_rapid/InsertionSort.dart';
-import 'package:dsa_rapid/QuickSort.dart';
-import 'package:dsa_rapid/Stack.dart';
 import 'package:dsa_rapid/Queue.dart';
 import 'package:dsa_rapid/Array.dart';
-// import 'package:dsa_rapid/MergeSort.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
-// import 'package:flutter_pdfview/flutter_pdfview.dart';
-// import 'package:pdfx/pdfx.dart';
 import 'auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:dsa_rapid/SignInUp.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-// void main() => runApp(
-//       Home()
-// );
+
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -122,10 +112,10 @@ class _HomeState extends State<Home> {
         appBar: mtext(),
         body: Container(
           // padding: EdgeInsets.only(left: 5,right: 5),
-  width: double.infinity,
-  height: double.infinity,
-  child: Row(
-    children: [
+        width: double.infinity,
+        height: double.infinity,
+        child: Row(
+          children: [
       // Left Profile Information Container
       Container(
         padding: EdgeInsets.only(left: 7,right: 7),
@@ -410,19 +400,20 @@ final List<Function(BuildContext)> TestBtn = List.generate(
 
 
 return GridView.builder(
-    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 3, // Number of items per row
-      crossAxisSpacing: 5, // Spacing between the items horizontally
-      mainAxisSpacing: 5, // Spacing between the items vertically
-      childAspectRatio: 0.9, // Aspect ratio of each grid item (width/height)
-    ),
+   padding: EdgeInsets.all(8), // Outer padding for the grid
+     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 3,          // Number of items per row
+    crossAxisSpacing: 10,       // Horizontal spacing
+    mainAxisSpacing: 10,        // Vertical spacing
+    childAspectRatio: 1.0,      // Square items
+  ),
     itemCount: colorsList.length, // Number of items (colors)
-    padding: EdgeInsets.all(10),
+    // padding: EdgeInsets.all(10),
     itemBuilder: (context, index) {
       return FittedBox(
         //height: 350, // Increased height
         child: Container(
-          margin: EdgeInsets.all(10),
+          // margin: EdgeInsets.all(10),
           // height: 500, // Increased height
           // width: double.infinity, // Takes the full width of the parent (optional)
           decoration: BoxDecoration(

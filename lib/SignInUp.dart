@@ -20,7 +20,60 @@ class _SignInPageState extends State<SignInPage> {
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  bool _isPasswordVisible = false; 
+  bool _isPasswordVisible = false;
+
+  // Function to send password reset email
+  Future<void> _resetPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Password reset email sent. Please check your inbox.')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${e.toString()}')),
+      );
+    }
+  }
+
+  // Dialog to prompt for email
+  void _showForgotPasswordDialog() {
+    final _forgotPasswordController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Forgot Password'),
+        content: TextField(
+          controller: _forgotPasswordController,
+          decoration: InputDecoration(
+            labelText: 'Enter your email',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              final email = _forgotPasswordController.text.trim();
+              if (email.isNotEmpty && RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(email)) {
+                _resetPassword(email);
+                Navigator.pop(context);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Please enter a valid email.')),
+                );
+              }
+            },
+            child: Text('Send Reset Email'),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,9 +148,7 @@ class _SignInPageState extends State<SignInPage> {
                                   prefixIcon: Icon(Icons.lock),
                                   suffixIcon: IconButton(
                                     icon: Icon(
-                                      _isPasswordVisible
-                                          ? Icons.visibility
-                                          : Icons.visibility_off,
+                                      _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
                                     ),
                                     onPressed: () {
                                       setState(() {
@@ -120,9 +171,7 @@ class _SignInPageState extends State<SignInPage> {
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: TextButton(
-                                  onPressed: () {
-                                    // Add forgot password logic here
-                                  },
+                                  onPressed: _showForgotPasswordDialog,
                                   child: Text(
                                     'Forgot Password?',
                                     style: TextStyle(color: Color.fromARGB(255, 105, 1, 161)),
@@ -218,6 +267,7 @@ class _SignInPageState extends State<SignInPage> {
 }
 
 
+
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
 
@@ -238,6 +288,7 @@ class _SignupPageState extends State<SignupPage> {
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
   final AuthService _auth = AuthService();
+  
   File? _selectedImage;
   String? _profileUrl;
   static const String cloudName = 'dizb1hygb';
@@ -306,21 +357,11 @@ class _SignupPageState extends State<SignupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: mtext(),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/images/bg.png"),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
-          Center(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Stack(
+          children: [
+            Center(
               child: Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Column(
@@ -340,241 +381,262 @@ class _SignupPageState extends State<SignupPage> {
                     SizedBox(
                       height: 750,
                       width: 500,
-                      child: Card(
-                        color: Color.fromARGB(255, 244, 224, 255),
-                        elevation: 8.0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(30.0),
-                          child: Form(
-                            key: _formKey,
-                            child: Column(
-                              children: <Widget>[
-                                InkWell(
-                                  onTap: _pickImage,
-                                  child: CircleAvatar(
-                                    radius: 40,
-                                    backgroundImage: _profileUrl != null ? NetworkImage(_profileUrl!) : null,
-                                    child: _profileUrl == null
-                                        ? Icon(Icons.camera_alt)
-                                        : null , // Show tick icon
-                                  ),
-                                ),
-                                Text(
-                                  _profileUrl != null ? "Image Uploaded Successfully" : "Upload Profile Picture",
-                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(height: 20.0),
-                                TextFormField(
-                                  controller: _fullNameController,
-                                  decoration: InputDecoration(
-                                    labelText: 'Full Name',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Card(
+                          color: Color.fromARGB(255, 244, 224, 255),
+                          elevation: 8.0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(30.0),
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
+                                children: <Widget>[
+                                  InkWell(
+                                    onTap: _pickImage,
+                                    child: CircleAvatar(
+                                      radius: 40,
+                                      backgroundImage: _profileUrl != null ? NetworkImage(_profileUrl!) : null,
+                                      child: _profileUrl == null
+                                          ? Icon(Icons.camera_alt)
+                                          : null , // Show tick icon
                                     ),
-                                    prefixIcon: Icon(Icons.person),
                                   ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter your full name';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                SizedBox(height: 20.0),
-                                TextFormField(
-                                  controller: _emailController,
-                                  decoration: InputDecoration(
-                                    labelText: 'Email',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    prefixIcon: Icon(Icons.email),
+                                  Text(
+                                    _profileUrl != null ? "Image Uploaded Successfully" : "Upload Profile Picture",
+                                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                   ),
-                                  keyboardType: TextInputType.emailAddress,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter your email';
-                                    } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                                      return 'Please enter a valid email';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                SizedBox(height: 20.0),
-                                TextFormField(
-                                  controller: _classController,
-                                  decoration: InputDecoration(
-                                    labelText: 'Class',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    prefixIcon: Icon(Icons.class_),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter your Class';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                SizedBox(height: 20.0),
-                                TextFormField(
-                                  controller: _divisionController,
-                                  decoration: InputDecoration(
-                                    labelText: 'Division',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    prefixIcon: Icon(Icons.group),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter your division';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                SizedBox(height: 20.0),
-                                TextFormField(
-                                  controller: _rollnoController,
-                                  decoration: InputDecoration(
-                                    labelText: 'Roll No',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    prefixIcon: Icon(Icons.confirmation_number),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter your roll number';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                SizedBox(height: 20.0),
-                                TextFormField(
-                                  controller: _passwordController,
-                                  decoration: InputDecoration(
-                                    labelText: 'Password',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    prefixIcon: Icon(Icons.lock),
-                                    suffixIcon: IconButton(
-                                      icon: Icon(
-                                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                  SizedBox(height: 20.0),
+                                  TextFormField(
+                                    controller: _fullNameController,
+                                    decoration: InputDecoration(
+                                      labelText: 'Full Name',
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
-                                      onPressed: () {
-                                        setState(() {
-                                          _isPasswordVisible = !_isPasswordVisible;
-                                        });
-                                      },
+                                      prefixIcon: Icon(Icons.person),
                                     ),
-                                  ),
-                                  obscureText: !_isPasswordVisible,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter your password';
-                                    } else if (value.length < 6) {
-                                      return 'Password must be at least 6 characters';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                SizedBox(height: 20.0),
-                                TextFormField(
-                                  controller: _confirmPasswordController,
-                                  decoration: InputDecoration(
-                                    labelText: 'Confirm Password',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    prefixIcon: Icon(Icons.lock_outline),
-                                    suffixIcon: IconButton(
-                                      icon: Icon(
-                                        _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                                      ),
-                                      onPressed: () {
-                                        setState(() {
-                                          _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                  obscureText: !_isConfirmPasswordVisible,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please confirm your password';
-                                    } else if (value != _passwordController.text) {
-                                      return 'Passwords do not match';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                SizedBox(height: 20.0),
-                                ElevatedButton(
-                                  onPressed: () async {
-                                    if (_formKey.currentState!.validate()) {
-                                      final email = _emailController.text.trim();
-                                      final password = _passwordController.text.trim();
-
-                                      // Sign up user
-                                      User? user = await _auth.signUpWithEmail(email, password);
-                                      if (user != null) {
-                                        // Store user data in Firestore
-                                        await _storeUserData(user);
-                                        print('Sign up successful!');
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => SignInPage()),
-                                        );
-                                      } else {
-                                        print('Sign up failed!');
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please enter your full name';
                                       }
+                                      return null;
+                                    },
+                                  ),
+                                  SizedBox(height: 20.0),
+                                  TextFormField(
+                                    controller: _emailController,
+                                    decoration: InputDecoration(
+                                      labelText: 'Email',
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      prefixIcon: Icon(Icons.email),
+                                    ),
+                                    keyboardType: TextInputType.emailAddress,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please enter your email';
+                                      } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                                        return 'Please enter a valid email';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  SizedBox(height: 20.0),
+                                  TextFormField(
+                                    controller: _classController,
+                                    decoration: InputDecoration(
+                                      labelText: 'Class',
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      prefixIcon: Icon(Icons.class_),
+                                    ),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please enter your Class';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  SizedBox(height: 20.0),
+                                  TextFormField(
+                                    controller: _divisionController,
+                                    decoration: InputDecoration(
+                                      labelText: 'Division',
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      prefixIcon: Icon(Icons.group),
+                                    ),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please enter your division';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  SizedBox(height: 20.0),
+                                  TextFormField(
+                                    controller: _rollnoController,
+                                    decoration: InputDecoration(
+                                      labelText: 'Roll No',
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      prefixIcon: Icon(Icons.confirmation_number),
+                                    ),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please enter your roll number';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  SizedBox(height: 20.0),
+                                  TextFormField(
+                                    controller: _passwordController,
+                                    decoration: InputDecoration(
+                                      labelText: 'Password',
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      prefixIcon: Icon(Icons.lock),
+                                      suffixIcon: IconButton(
+                                        icon: Icon(
+                                          _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            _isPasswordVisible = !_isPasswordVisible;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    obscureText: !_isPasswordVisible,
+                                    validator: (value) {
+                                    if (value == null || value.isEmpty) return 'Please enter your password';
+                                      
+                                    final validations = {
+                                      r'.{6,}': 'Password must be at least 6 characters long',
+                                      r'[A-Z]': 'Password must contain at least one uppercase letter',
+                                      r'[a-z]': 'Password must contain at least one lowercase letter',
+                                      r'[0-9]': 'Password must contain at least one digit',
+                                      r'[!@#\$&*~]': 'Password must contain at least one special character (e.g., !, @, #, \$, &, *)'
+                                    };
+                                      
+                                    for (var validation in validations.entries) {
+                                      if (!RegExp(validation.key).hasMatch(value)) return validation.value;
                                     }
+                                      
+                                    return null;
                                   },
-                                  style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    backgroundColor: Color.fromARGB(255, 105, 1, 161),
                                   ),
-                                  child: Text(
-                                    'Sign Up',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                                  SizedBox(height: 20.0),
+                                  TextFormField(
+                                    controller: _confirmPasswordController,
+                                    decoration: InputDecoration(
+                                      labelText: 'Confirm Password',
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      prefixIcon: Icon(Icons.lock_outline),
+                                      suffixIcon: IconButton(
+                                        icon: Icon(
+                                          _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    obscureText: !_isConfirmPasswordVisible,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please confirm your password';
+                                      } else if (value != _passwordController.text) {
+                                        return 'Passwords do not match';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  SizedBox(height: 20.0),
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                       if (_profileUrl == null) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text('Please upload a profile picture before signing up.'),
+                                          backgroundColor: Colors.black,
+                                        ),
+                                      );
+                                      return;
+                                    }
+                                      if (_formKey.currentState!.validate()) {
+                                        final email = _emailController.text.trim();
+                                        final password = _passwordController.text.trim();
+                                      
+                                        // Sign up user
+                                        User? user = await _auth.signUpWithEmail(email, password);
+                                        if (user != null) {
+                                          // Store user data in Firestore
+                                          await _storeUserData(user);
+                                          print('Sign up successful!');
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => SignInPage()),
+                                          );
+                                        } else {
+                                          print('Sign up failed!');
+                                        }
+                                      }
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      backgroundColor: Color.fromARGB(255, 105, 1, 161),
+                                    ),
+                                    child: Text(
+                                      'Sign Up',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                SizedBox(height: 20.0),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text("Already have an account? "),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => SignInPage()),
-                                        );
-                                      },
-                                      child: Text(
-                                        "Sign In",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Color.fromARGB(255, 105, 1, 161),
+                                  SizedBox(height: 20.0),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text("Already have an account? "),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => SignInPage()),
+                                          );
+                                        },
+                                        child: Text(
+                                          "Sign In",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Color.fromARGB(255, 105, 1, 161),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -584,8 +646,8 @@ class _SignupPageState extends State<SignupPage> {
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
