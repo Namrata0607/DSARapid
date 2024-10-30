@@ -75,7 +75,7 @@ class LoginPage extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
-                      height: 450,
+                      height: 350,
                       width: 500,
                       child: Card(
                         color: Color.fromARGB(255, 244, 224, 255),
@@ -149,7 +149,6 @@ class LoginPage extends StatelessWidget {
     );
   }
 }
-
 class DashboardPage extends StatelessWidget {
   final String adminName;
   final String adminEmail;
@@ -161,56 +160,56 @@ class DashboardPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('DSA RAPID'),
-        backgroundColor: Colors.purple,
+        backgroundColor: Color(0xFF6901A1), // Dark purple color
       ),
       body: Row(
         children: [
           Container(
             width: 250,
-            color: Colors.purple[100],
+            color: Color.fromARGB(255, 199, 167, 255), // Light purple background
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
                 UserAccountsDrawerHeader(
-                  accountName: Text(
-                    adminName,
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black),
-                  ),
-                  accountEmail: Text(
-                    adminEmail,
-                    style: TextStyle(color: Colors.black54),
-                  ),
-                  currentAccountPicture: CircleAvatar(
-                    backgroundColor: Colors.white,
-                    child: Icon(Icons.person, color: Colors.purple, size: 40),
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.purple[100],
-                  ),
-                ),
+  accountName: Text(
+    adminName,
+    style: TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.bold,
+      color: Color(0xFF6901A1),
+    ),
+  ),
+  accountEmail: adminEmail != 'admin' ? Text(
+    adminEmail,
+    style: TextStyle(color: Color(0xFF6901A1),),
+  ) : null, // Hide email if it is 'admin'
+  currentAccountPicture: CircleAvatar(
+    backgroundColor: Colors.white,
+    child: Icon(Icons.person, color: Color(0xFF6901A1), size: 40),
+  ),
+  decoration: BoxDecoration(
+    color: Color.fromARGB(255, 199, 167, 255),
+  ),
+),
                 ListTile(
-                  leading: Icon(Icons.lock, color: Colors.purple),
+                  leading: Icon(Icons.lock, color: Color(0xFF6901A1)),
                   title: Text('Change Password',
-                      style: TextStyle(color: Colors.purple)),
+                      style: TextStyle(color: Color(0xFF6901A1))),
                   onTap: () {
                     _showChangePasswordDialog(context);
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.group, color: Colors.purple),
+                  leading: Icon(Icons.group, color: Color(0xFF6901A1)),
                   title: Text('Manage Students',
-                      style: TextStyle(color: Colors.purple)),
+                      style: TextStyle(color: Color(0xFF6901A1))),
                   onTap: () {
                     _showManageStudentsDialog(context);
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.logout, color: Colors.purple),
-                  title: Text('Logout',
-                      style: TextStyle(color: Colors.purple)),
+                  leading: Icon(Icons.logout, color: Color(0xFF6901A1)),
+                  title: Text('Logout', style: TextStyle(color: Color(0xFF6901A1))),
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
@@ -275,7 +274,7 @@ class DashboardPage extends StatelessWidget {
             ElevatedButton(
               child: Text('Submit'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.purple,
+                backgroundColor: Color(0xFF6901A1),
               ),
               onPressed: () {
                 if (currentPasswordController.text == currentPassword) {
@@ -302,7 +301,6 @@ class DashboardPage extends StatelessWidget {
   }
 
   void _showManageStudentsDialog(BuildContext context) {
-    // Add your logic to manage students
     showDialog(
       context: context,
       builder: (BuildContext context) {
