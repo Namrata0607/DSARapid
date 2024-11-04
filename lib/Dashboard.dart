@@ -388,6 +388,30 @@ final List<Widget Function()> quizClasses = [
   () => DfsQuiz(),
 ];
 
+// final Map<String, Widget Function()> quizClassesWithId = {
+//   'QZ001': () => ArrayQuiz(),
+//   'QZ002': () => StackQuiz(),
+//   'QZ003': () => QueueQuiz(),
+//   'QZ004': () => CircularqueueQuiz(),
+//   'QZ005': () => PriorityqueueQuiz(),
+//   'QZ006': () => SinglylinkedlistQuiz(),
+//   'QZ007': () => DoublylinkedlistQuiz(),
+//   'QZ008': () => CircularlinkedlistQuiz(),
+//   'QZ009': () => LinearSearchQuiz(),
+//   'QZ010': () => BinarySearchQuiz(),
+//   'QZ011': () => BubbleSortQuiz(),
+//   'QZ012': () => SelectionSortQuiz(),
+//   'QZ013': () => InsertionSortQuiz(),
+//   'QZ014': () => MergesortQuiz(),
+//   'QZ015': () => QuickSortQuiz(),
+//   'QZ016': () => HashingQuiz(),
+//   'QZ017': () => BSTQuiz(),
+//   'QZ018': () => HeaptreeQuiz(),
+//   'QZ019': () => AvlTreeQuiz(),
+//   'QZ020': () => BfsQuiz(),
+//   'QZ021': () => DfsQuiz(),
+// };
+
 // Dynamically create the TestBtn list
 final List<Function(BuildContext)> TestBtn = List.generate(
   quizClasses.length,

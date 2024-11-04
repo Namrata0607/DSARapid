@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:dsa_rapid/Dashboard.dart';
@@ -84,8 +86,9 @@ List<Question> getRandomQuestions(List<Question> allQuestions) {
 
 class QuizUI extends StatefulWidget {
   final List<Question> quizQuestions; // Pass the questions from the topic file
-
-  QuizUI({required this.quizQuestions});
+  final String testId;
+  
+  QuizUI({required this.quizQuestions,required this.testId});
 
   @override
   _QuizUIState createState() => _QuizUIState();
@@ -102,17 +105,81 @@ class _QuizUIState extends State<QuizUI> {
     });
   }
 
-  void submitQuiz() {
+  
+Future<void> submitQuiz() async {
+  // Access the testId from the widget
+  String quizId = widget.testId;
+  int score = calculateScore(); // Method to calculate score based on selected answers
+
+  try {
+    await submitTest(quizId, score);
+    // Show the result screen in a dialog
     setState(() {
-      score = 0;
-      for (var i = 0; i < widget.quizQuestions.length; i++) {
-        if (selectedAnswers[i] == widget.quizQuestions[i].correctAnswerIndex) {
-          score++;
-        }
-      }
       isSubmitted = true;
+      this.score = score;
     });
+  } catch (e) {
+    // Handle any errors here
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Failed to submit quiz: $e')),
+    );
   }
+}
+
+
+// Method to calculate score
+int calculateScore() {
+  int score = 0;
+  for (int i = 0; i < widget.quizQuestions.length; i++) {
+    if (selectedAnswers[i] == widget.quizQuestions[i].correctAnswerIndex) {
+      score++;
+    }
+  }
+  return score;
+}
+
+// submitTest function
+Future<void> submitTest(String quizId, int score) async {
+  // Get the user ID from Firebase Authentication
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
+
+  // Reference to the test document for the specific user
+  final testDocument = FirebaseFirestore.instance.collection('user_db').doc(userId);
+
+  try {
+    // Retrieve current document data
+    final snapshot = await testDocument.get();
+    if (snapshot.exists) {
+      List<dynamic> existingTestIds = snapshot['test_id'] ?? [];
+      List<dynamic> existingMarks = snapshot['marks'] ?? [];
+      List<dynamic> existingTimes = snapshot['time'] ?? [];
+
+      // Manually add the new entries to each array
+      existingTestIds.add(quizId);
+      existingMarks.add(score);
+      existingTimes.add(DateTime.now().toString());
+
+      // Update the document with the modified arrays
+      await testDocument.update({
+        'test_id': existingTestIds,
+        'marks': existingMarks,
+        'time': existingTimes,
+      });
+    } else {
+      // If document doesn't exist, create it with initial arrays
+      await testDocument.set({
+        'test_id': [quizId],
+        'marks': [score],
+        'time': [DateTime.now().toString()],
+      });
+    }
+  } catch (e) {
+    print('Error updating test data: $e'); // Log the error if the update fails
+    throw e; // Optionally re-throw the error for further handling
+  }
+}
+
+
 
   void restartQuiz() {
     setState(() {
@@ -131,7 +198,7 @@ class _QuizUIState extends State<QuizUI> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: isSubmitted ? buildResultScreen() : buildQuizBody(),
+        child: isSubmitted ? buildResultScreen(score) : buildQuizBody(),
       ),
     );
   }
@@ -159,14 +226,17 @@ class _QuizUIState extends State<QuizUI> {
             height: 60,
             child: ElevatedButton(
               onPressed: selectedAnswers.length == widget.quizQuestions.length
-                  ? submitQuiz
+                  ? () async {
+                      // Call the submitQuiz function
+                      await submitQuiz();
+                    }
                   : null, // Enable button only if all questions are answered
-              child: Text('Submit Quiz',
-              style: TextStyle(
-                fontSize: 20
-              ),),
+              child: Text(
+                'Submit Quiz',
+                style: TextStyle(fontSize: 20),
+              ),
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.all(16.0), 
+                padding: EdgeInsets.all(16.0),
                 backgroundColor: Color.fromARGB(255, 105, 1, 161),
                 foregroundColor: Colors.white,
               ),
@@ -210,7 +280,7 @@ class _QuizUIState extends State<QuizUI> {
     );
   }
 
-  Widget buildResultScreen() {
+  Widget buildResultScreen(int score) {
     return Center(
       child: SizedBox(
         height: 300,
@@ -223,7 +293,7 @@ class _QuizUIState extends State<QuizUI> {
           ),
           child: Padding(
             padding: EdgeInsets.all(20.0), // Adds padding inside the card
-            child: Column( 
+            child: Column(
               mainAxisSize: MainAxisSize.min, // Keeps the card size minimal
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -240,10 +310,10 @@ class _QuizUIState extends State<QuizUI> {
                   width: 180,
                   child: ElevatedButton(
                     onPressed: restartQuiz,
-                    child: Text('Restart Quiz',
-                    style: TextStyle(
-                      fontSize: 18
-                    ),),
+                    child: Text(
+                      'Restart Quiz',
+                      style: TextStyle(fontSize: 18),
+                    ),
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.all(16.0),
                       backgroundColor: Color.fromARGB(255, 105, 1, 161),
@@ -259,13 +329,13 @@ class _QuizUIState extends State<QuizUI> {
                     onPressed: () {
                       Navigator.pop(context); // Go back to previous screen
                     },
-                    child: Text('Quit Quiz',
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),),
+                    child: Text(
+                      'Quit Quiz',
+                      style: TextStyle(fontSize: 18),
+                    ),
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.all(16.0),
-                      backgroundColor: Color.fromARGB(255, 105, 1, 161), 
+                      backgroundColor: Color.fromARGB(255, 105, 1, 161),
                       foregroundColor: Colors.white,
                     ),
                   ),

@@ -335,7 +335,8 @@ class BfsQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
     List<Question> randomBfsQuestions = getRandomQuestions(BfsQuestions);
-    return QuizUI(quizQuestions: randomBfsQuestions); // Use the common UI
+    String testId = '20_bfs'; // Example test_id, modify as needed
+    return QuizUI(quizQuestions: randomBfsQuestions, testId: testId); // Use the common UI
   }
 }
 

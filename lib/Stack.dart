@@ -569,6 +569,7 @@ class StackQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
     List<Question> randomQuestions = getRandomQuestions(StackQuestions);
-    return QuizUI(quizQuestions: randomQuestions); // Use the common UI
+    String testId = '2_stack'; // Example test_id, modify as needed
+    return QuizUI(quizQuestions: randomQuestions, testId: testId); // Use the common UI
   }
 }

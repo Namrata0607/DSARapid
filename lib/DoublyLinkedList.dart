@@ -682,6 +682,7 @@ class DoublylinkedlistQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
     List<Question> randomQuestions = getRandomQuestions(DoublyLinkedListQuestions);
-    return QuizUI(quizQuestions: randomQuestions); // Use the common UI
+    String testId = '7_doublyLL'; // Example test_id, modify as needed
+    return QuizUI(quizQuestions: randomQuestions, testId: testId); // Use the common UI
   }
 }

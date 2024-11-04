@@ -661,6 +661,7 @@ class SinglylinkedlistQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
     List<Question> randomQuestions = getRandomQuestions(SinglyLinkedListQuestions);
-    return QuizUI(quizQuestions: randomQuestions); // Use the common UI
+    String testId = '6_singlyLL'; // Example test_id, modify as needed
+    return QuizUI(quizQuestions: randomQuestions, testId: testId); // Use the common UI
   }
 }

@@ -551,6 +551,7 @@ class BubbleSortQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
     List<Question> randomQuestions = getRandomQuestions(bubblesortQuestions);
-    return QuizUI(quizQuestions: randomQuestions); // Use the common UI
+    String testId = '11_bubblesort'; // Example test_id, modify as needed
+    return QuizUI(quizQuestions: randomQuestions, testId: testId); // Use the common UI
   }
 }

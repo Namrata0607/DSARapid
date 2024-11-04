@@ -328,6 +328,7 @@ class DfsQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
     List<Question> randomQuestions = getRandomQuestions(DfsQuestions);
-    return QuizUI(quizQuestions:randomQuestions ); // Use the common UI
+    String testId = '21_dfs'; // Example test_id, modify as needed
+    return QuizUI(quizQuestions:randomQuestions, testId: testId ); // Use the common UI
   }
 }

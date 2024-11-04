@@ -4,6 +4,8 @@ import 'package:dsa_rapid/Dashboard.dart';
 import 'dart:math';
 import 'package:url_launcher/url_launcher.dart'; 
 import 'package:dsa_rapid/UI_Helper/UI.dart'; // Import the helper
+import 'package:dsa_rapid/SignInUp.dart';
+
 
 
 class ArrayNotes extends StatelessWidget {
@@ -748,8 +750,23 @@ class ArrayQuiz extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Question> randomQuestions = getRandomQuestions(arrayQuestions);
-    return QuizUI(quizQuestions:randomQuestions ); // Use the common UI
+    String testId = '1_array'; // Example test_id, modify as needed
+    return QuizUI(quizQuestions:randomQuestions , testId: testId); // Use the common UI
   }
 }
+
+// Future<void> submitTest(String quizId, int score) async {
+//   // Assume testCollection is a reference to the Firebase collection
+//   final testDocument = FirebaseFirestore.instance.collection('test').doc(userId);
+  
+//   await testDocument.update({
+//     'test_id': FieldValue.arrayUnion([quizId]),
+//     'marks': FieldValue.arrayUnion([score]),
+//     'time': FieldValue.arrayUnion([DateTime.now().toString()]),
+//   });
+// }
+
+// Usage
+// submitTest('QZ001', 80); // For ArrayQuiz with a score of 80
 
 // Question model
