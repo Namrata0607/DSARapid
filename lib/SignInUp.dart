@@ -349,7 +349,13 @@ class _SignupPageState extends State<SignupPage> {
       'division': _divisionController.text.trim(),
       'roll_no': _rollnoController.text.trim(),
       'profile_url': _profileUrl,
+      'final': null,
+      'flag' : 0,
+      'marks':[],
+      'test_id':[],
+      'time':[],
       'created_at': DateTime.now(),
+
     });
   }
 

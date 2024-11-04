@@ -49,14 +49,14 @@ class _HomeState extends State<Home> {
   String? division = '';
   String? className = '';
 
- void _Viewprofile(){
+ void _Viewprogress(){
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => Viewprofile()),
     );
   }
 
-  void _Updateprofile(){
+  void _FinalTest(){
      Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => Updateprofile()),
@@ -180,9 +180,9 @@ class _HomeState extends State<Home> {
                     MediaQuery.of(context).size.height * 0.06,
                   ),
                 ),
-                onPressed: _Viewprofile,
+                onPressed: _Viewprogress,
                 child: Text(
-                  'View profile',
+                  'View Progress',
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.height * 0.025,
                     color: Colors.white,
@@ -198,9 +198,9 @@ class _HomeState extends State<Home> {
                     MediaQuery.of(context).size.height * 0.06,
                   ),
                 ),
-                onPressed: _Updateprofile,
+                onPressed: _FinalTest,
                 child: Text(
-                  'Update profile',
+                  'Final Test',
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.height * 0.025,
                     color: Colors.white,
