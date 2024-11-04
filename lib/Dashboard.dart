@@ -59,7 +59,7 @@ class _HomeState extends State<Home> {
   void _FinalTest(){
      Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Updateprofile()),
+      MaterialPageRoute(builder: (context) => FinalQuiz()),
     );
   }
 

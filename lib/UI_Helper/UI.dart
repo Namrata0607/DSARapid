@@ -5,6 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:dsa_rapid/Dashboard.dart';
 import 'dart:math';
  
+
+
+   final String userId = FirebaseAuth.instance.currentUser!.uid;
+
+  // Reference to the test document for the specific user
+  final testDocument = FirebaseFirestore.instance.collection('user_db').doc(userId);
 AppBar mtext(){
           return AppBar(
             title: Text("DSA Rapid",
@@ -111,6 +117,20 @@ Future<void> submitQuiz() async {
   String quizId = widget.testId;
   int score = calculateScore(); // Method to calculate score based on selected answers
 
+  if(quizId == 'final_test')
+  {
+    try {
+    await testDocument.update({
+      'final': score,
+      'flag' : 1, // Replace 100 with the desired number
+    });
+    print("Field updated successfully!");
+  } catch (e) {
+    print("Failed to update field: $e");
+  }
+  }
+  else
+  {
   try {
     await submitTest(quizId, score);
     // Show the result screen in a dialog
@@ -124,6 +144,8 @@ Future<void> submitQuiz() async {
       SnackBar(content: Text('Failed to submit quiz: $e')),
     );
   }
+  }
+
 }
 
 
@@ -141,10 +163,7 @@ int calculateScore() {
 // submitTest function
 Future<void> submitTest(String quizId, int score) async {
   // Get the user ID from Firebase Authentication
-  final String userId = FirebaseAuth.instance.currentUser!.uid;
 
-  // Reference to the test document for the specific user
-  final testDocument = FirebaseFirestore.instance.collection('user_db').doc(userId);
 
   try {
     // Retrieve current document data
