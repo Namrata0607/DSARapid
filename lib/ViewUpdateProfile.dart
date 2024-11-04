@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dsa_rapid/Dashboard.dart';
 import 'package:dsa_rapid/UI_Helper/UI.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -321,11 +322,66 @@ final List<Question> arrayQuestions = [
   ),//30
 ];
 
+
+
+
+
+
+
 class FinalQuiz extends StatelessWidget {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // Fetch both flags from Firestore
+  Future<Map<String, dynamic>> fetchFlags() async {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    int? flag1;
+    bool flag2 = false;
+
+    try {
+      DocumentSnapshot snapshot = await _firestore.collection('user_db')
+          .doc(userId)
+          .get();
+
+      if (snapshot.exists) {
+        var data = snapshot.data() as Map<String, dynamic>;
+        flag1 = data['flag'] as int?;
+
+        // Check for test_id array containing "1", "2", "3" as strings
+        List<dynamic>? testIdArray = data['test_id'];
+        if (testIdArray != null && testIdArray.contains("1") && testIdArray.contains("2") && testIdArray.contains("3")) {
+          flag2 = true;
+        }
+      }
+    } catch (e) {
+      print('Error fetching flag values: $e');
+    }
+
+    return {'flag1': flag1, 'flag2': flag2};
+  }
+
   @override
   Widget build(BuildContext context) {
-    //List<Question> randomQuestions = getRandomQuestions(arrayQuestions);
-    String testId = 'final_test'; // Example test_id, modify as needed
-    return QuizUI(quizQuestions: arrayQuestions , testId: testId); // Use the common UI
+    return FutureBuilder<Map<String, dynamic>>(
+      future: fetchFlags(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasData) {
+          int? flag1 = snapshot.data?['flag1'];
+          bool flag2 = snapshot.data?['flag2'] ?? false;
+
+          if (flag1 == 0 && flag2) {
+            String testId = 'final_test';
+            return QuizUI(quizQuestions: arrayQuestions, testId: testId);
+          } else {
+            return Home();
+          }
+        } else {
+          return Center(child: Text('Error loading data'));
+        }
+      },
+    );
   }
 }

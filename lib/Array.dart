@@ -750,7 +750,7 @@ class ArrayQuiz extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Question> randomQuestions = getRandomQuestions(arrayQuestions);
-    String testId = '1_array'; // Example test_id, modify as needed
+    String testId = '1'; // Example test_id, modify as needed
     return QuizUI(quizQuestions:randomQuestions , testId: testId); // Use the common UI
   }
 }
