@@ -59,6 +59,7 @@ class _IndexState extends State<Index> {
                             style: const TextStyle(
                               fontSize: 60.0,
                               fontFamily: 'Horizon',
+                              color: Color.fromARGB(255, 105, 1, 161),
                             ),
                             child: AnimatedTextKit(
                               repeatForever: true,

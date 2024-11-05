@@ -150,117 +150,218 @@ class _adminLoginState extends State<adminLogin> {
 //   }
 // }
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends StatefulWidget {
   final String adminName;
   final String adminEmail;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   DashboardPage({required this.adminName, required this.adminEmail});
 
-  void _showAddAdminDialog(BuildContext context) {
-    final nameController = TextEditingController();
-    final emailController = TextEditingController();
-    final passwordController = TextEditingController();
+  @override
+  _DashboardPageState createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  String? division;
+  String? rollNumber;
+  List<dynamic> testIds = [];
+  List<dynamic> marks = [];
+  List<dynamic> times = [];
+
+  void fetchStudentProgress() async {
+    if (division != null && rollNumber != null) {
+      // Fetch the document based on division and roll number
+      QuerySnapshot snapshot = await _firestore.collection('user_db')
+          .where('division', isEqualTo: division)
+          .where('roll_no', isEqualTo: rollNumber)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        // Get the first matching document
+        final data = snapshot.docs.first.data() as Map<String, dynamic>?;
+        setState(() {
+          testIds = data?['test_id'] ?? [];
+          marks = data?['marks'] ?? [];
+          times = data?['time'] ?? [];
+        });
+      } else {
+        // Clear data if no document is found
+        setState(() {
+          testIds = [];
+          marks = [];
+          times = [];
+        });
+      }
+    }
   }
 
   @override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: mtext(),
-    body: Container(
-      width: double.infinity,
-      height: double.infinity,
-      child: Row(
-        children: [
-          // Left Profile Information Container
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 7),
-            width: MediaQuery.of(context).size.width * 0.20, // Increased to 25% of screen width
-            color: Color.fromARGB(255, 199, 167, 255),
-            child: Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        SizedBox(height: MediaQuery.of(context).size.height * 0.05), // Spacing
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: mtext(),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        child: Row(
+          children: [
+            // Left Profile Information Container
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 7),
+              width: MediaQuery.of(context).size.width * 0.20, // Increased to 20% of screen width
+              color: Color.fromARGB(255, 199, 167, 255),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.05), // Spacing
 
-                        // Profile CircleAvatar
-                        Center(
-                          child: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            child: Icon(Icons.person, color: Color(0xFF6901A1), size: 30), // Adjust icon size
-                            radius: MediaQuery.of(context).size.width * 0.05, // Reduced radius
+                          // Profile CircleAvatar
+                          Center(
+                            child: CircleAvatar(
+                              backgroundColor: Colors.white,
+                              backgroundImage: AssetImage("assets/images/profile.png"), // Add profile image
+                              radius: MediaQuery.of(context).size.width * 0.05, // Adjust radius as needed
+                            ),
                           ),
-                        ),
-                        SizedBox(height: MediaQuery.of(context).size.height * 0.02), // Spacing
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.02), // Spacing
 
-                        // Admin Name
-                        Text(
-                          adminName,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF6901A1),
+                          // Admin Name
+                          ListTile(
+                            leading: Icon(Icons.person),
+                            title: Text("Name:"),
+                            subtitle: Text(widget.adminName ?? 'Loading...'),
                           ),
-                          textAlign: TextAlign.center,
-                        ),
+                          Divider(),
+                          ListTile(
+                            leading: Icon(Icons.email),
+                            title: Text("Email:"),
+                            subtitle: Text(widget.adminEmail ?? 'Loading...'),
+                          ),
+                          Divider(),
+                          ListTile(
+                            leading: Icon(Icons.logout),
+                            title: Text('Logout'),
+                            onTap: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => adminLogin()),
+                              );
+                            },
+                          ),
 
-                        // Admin Email
-                        Text(
-                          adminEmail,
-                          style: TextStyle(color: Color(0xFF6901A1)),
-                          textAlign: TextAlign.center,
-                        ),
-
-                        Divider(),
-
-                        // List of Options
-                        ListTile(
-                          leading: Icon(Icons.add, color: Color(0xFF6901A1)),
-                          title: Text('Add Admin', style: TextStyle(color: Color(0xFF6901A1))),
-                          onTap: () {
-                            _showAddAdminDialog(context);
-                          },
-                        ),
-                        Divider(),
-                        ListTile(
-                          leading: Icon(Icons.logout, color: Color(0xFF6901A1)),
-                          title: Text('Logout', style: TextStyle(color: Color(0xFF6901A1))),
-                          onTap: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) => adminLogin()),
-                            );
-                          },
-                        ),
-
-                        SizedBox(height: MediaQuery.of(context).size.height * 0.05), // Increased final spacing
-                      ],
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.05), // Increased final spacing
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
 
+            // Right Content Area
+            Expanded(
+              child: Container(
+                color: Colors.white, // Main content background
+                child: Padding(
+                  padding: EdgeInsets.all(16.0), // Add some padding
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start, // Align to start
+                    crossAxisAlignment: CrossAxisAlignment.stretch, // Stretch the children to fit the width
+                    children: [
+                      Text(
+                        'View Students Progress',
+                        style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 20), // Space between the title and text fields
 
-          // Right Content Area
-          Expanded(
-            child: Container(
-              color: Colors.white, // Main content background
-              child: Center(
-                child: Text(
-                  'Welcome to DSA RAPID Dashboard!',
-                  style: TextStyle(fontSize: 24),
+                      // Row for TextFields
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween, // Space between TextFields
+                        children: [
+                          // Division TextField
+                          Expanded(
+                            child: TextField(
+                              onChanged: (value) {
+                                division = value; // Capture division input
+                              },
+                              decoration: InputDecoration(
+                                labelText: 'Division:', // Label for the TextField
+                                border: OutlineInputBorder(), // Outline border
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 10), // Space between TextFields
+                          // Roll Number TextField
+                          Expanded(
+                            child: TextField(
+                              onChanged: (value) {
+                                rollNumber = value; // Capture roll number input
+                              },
+                              decoration: InputDecoration(
+                                labelText: 'Roll Number:', // Label for the TextField
+                                border: OutlineInputBorder(), // Outline border
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20), // Space before the button
+
+                      // Centered Button
+                      Center(
+                        child: SizedBox(
+                          width: 140, // Set the button width
+                          height: 40,
+                          child: ElevatedButton(
+                            onPressed: fetchStudentProgress, // Call function on button press
+                            child: Text(
+                              'View Progress',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color.fromARGB(255, 105, 1, 161), // Button color
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 20), // Space before the DataTable
+
+                      // DataTable to display results
+                      if (testIds.isNotEmpty) ...[
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: DataTable(
+                              columns: const [
+                                DataColumn(label: Text('Test ID', style: TextStyle(fontWeight: FontWeight.bold))),
+                                DataColumn(label: Text('Marks', style: TextStyle(fontWeight: FontWeight.bold))),
+                                DataColumn(label: Text('Time', style: TextStyle(fontWeight: FontWeight.bold))),
+                              ],
+                              rows: List<DataRow>.generate(testIds.length, (index) {
+                                return DataRow(cells: [
+                                  DataCell(Text(testIds[index]?.toString() ?? 'N/A')),
+                                  DataCell(Text(marks[index]?.toString() ?? 'N/A')),
+                                  DataCell(Text(times[index]?.toString() ?? 'N/A')),
+                                ]);
+                              }),
+                            ),
+                          ),
+                        ),
+                      ] else if (rollNumber != null && division != null) ...[
+                        Center(child: Text('No records found for this student.')),
+                      ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 }
