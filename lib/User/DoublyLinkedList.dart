@@ -1,12 +1,13 @@
 import 'package:dsa_rapid/UI_Helper/UI.dart';
 import 'package:flutter/material.dart';
-import 'package:dsa_rapid/Dashboard.dart';
+import 'package:dsa_rapid/User/Dashboard.dart';
 import 'package:flutter/services.dart';
 import 'dart:math';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class linkedlistNotes extends StatelessWidget {
+
+class DoublylinkedlistNotes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -37,37 +38,38 @@ class PDFViewerScreen extends StatelessWidget {
 
 
 void main() {
-  runApp(LinkedListVisualizerApp());
+  runApp(DoublyLinkedListVisualizerApp());
 }
 
-class LinkedListVisualizerApp extends StatelessWidget {
+class DoublyNode {
+  final int value;
+  DoublyNode? next;
+  DoublyNode? prev;
+
+  DoublyNode(this.value);
+}
+
+class DoublyLinkedListVisualizerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Linked List Visualizer',
+      title: 'Doubly Linked List Visualizer',
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
-      home: LinkedListScreen(),
+      home: DoublyLinkedListScreen(),
     );
   }
 }
 
-class Node {
-  final int value;
-  Node? next;
-
-  Node(this.value);
-}
-
-class LinkedListScreen extends StatefulWidget {
+class DoublyLinkedListScreen extends StatefulWidget {
   @override
-  _LinkedListScreenState createState() => _LinkedListScreenState();
+  _DoublyLinkedListScreenState createState() => _DoublyLinkedListScreenState();
 }
 
-class _LinkedListScreenState extends State<LinkedListScreen>
+class _DoublyLinkedListScreenState extends State<DoublyLinkedListScreen>
     with SingleTickerProviderStateMixin {
-  Node? head;
+  DoublyNode? head;
   String currentOutput = "";
   bool isAnimating = false;
   late AnimationController _controller;
@@ -107,7 +109,7 @@ class _LinkedListScreenState extends State<LinkedListScreen>
                         children: [
                           // Container for Algorithm Description
                           Text(
-                            'Linked List Algorithm',
+                            'Doubly Linked List Algorithm',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -159,7 +161,7 @@ class _LinkedListScreenState extends State<LinkedListScreen>
                       child: Column(
                         children: [
                           Text(
-                            'Linked List Visualizer',
+                            'Doubly Linked List Visualizer',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -169,7 +171,7 @@ class _LinkedListScreenState extends State<LinkedListScreen>
                           Divider(),
                           Expanded(
                             child: Center(
-                              child: _buildAnimatedLinkedList(),
+                              child: _buildAnimatedDoublyLinkedList(),
                             ),
                           ),
                         ],
@@ -229,7 +231,7 @@ class _LinkedListScreenState extends State<LinkedListScreen>
         "   - Otherwise, traverse the list to find the node with the specified value and remove it.\n";
   }
 
-  Widget _buildAnimatedLinkedList() {
+  Widget _buildAnimatedDoublyLinkedList() {
     if (head == null) {
       return Text(
         'List is empty',
@@ -238,7 +240,7 @@ class _LinkedListScreenState extends State<LinkedListScreen>
     }
 
     List<Widget> nodes = [];
-    Node? currentNode = head;
+    DoublyNode? currentNode = head;
 
     while (currentNode != null) {
       nodes.add(
@@ -248,7 +250,7 @@ class _LinkedListScreenState extends State<LinkedListScreen>
             children: [
               Container(
                 height: 80,
-                width: 120, // Width adjusted to fit both parts
+                width: 120,
                 color: Colors.purple,
                 child: Column(
                   children: [
@@ -266,16 +268,30 @@ class _LinkedListScreenState extends State<LinkedListScreen>
                         ),
                       ),
                     ),
-                    Divider(color: Colors.white, height: 1), // Divider between value and address
-                    // Address section
-                    Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        'Next: ${currentNode.next != null ? currentNode.next.hashCode.toString() : 'null'}',
-                        style: TextStyle(color: Colors.white, fontSize: 12),
-                      ),
-                    ),
+                    Divider(color: Colors.white, height: 1), // Divider between value and addresses
                   ],
+                ),
+              ),
+              // Previous Address section
+              Container(
+                height: 30,
+                width: 120,
+                color: Colors.blue,
+                alignment: Alignment.center,
+                child: Text(
+                  'Prev: ${currentNode.prev != null ? currentNode.prev.hashCode.toString() : 'null'}',
+                  style: TextStyle(color: Colors.white, fontSize: 12),
+                ),
+              ),
+              // Next Address section
+              Container(
+                height: 30,
+                width: 120,
+                color: Colors.green,
+                alignment: Alignment.center,
+                child: Text(
+                  'Next: ${currentNode.next != null ? currentNode.next.hashCode.toString() : 'null'}',
+                  style: TextStyle(color: Colors.white, fontSize: 12),
                 ),
               ),
               if (currentNode.next != null)
@@ -324,8 +340,8 @@ class _LinkedListScreenState extends State<LinkedListScreen>
     return head == null;
   }
 
-  Node? _traverseTo(int position) {
-    Node? current = head;
+  DoublyNode? _traverseTo(int position) {
+    DoublyNode? current = head;
     for (int i = 1; i < position; i++) {
       if (current == null) {
         return null;
@@ -339,7 +355,7 @@ class _LinkedListScreenState extends State<LinkedListScreen>
     if (isAnimating) return;
 
     isAnimating = true;
-    Node newNode = Node(value);
+    DoublyNode newNode = DoublyNode(value);
 
     // Start with the algorithm description
     currentOutput = "Algorithm for Add Node:\n"
@@ -349,16 +365,23 @@ class _LinkedListScreenState extends State<LinkedListScreen>
 
     if (position <= 1 || _isListEmpty()) {
       newNode.next = head;
+      if (head != null) {
+        head!.prev = newNode;
+      }
       head = newNode;
-      currentOutput += "Added node with value $value at position 1.\n";
+      currentOutput += "Added node with value $value at position 1 (as head).\n";
     } else {
-      Node? current = _traverseTo(position - 1);
+      DoublyNode? current = _traverseTo(position - 1);
       if (current != null) {
         newNode.next = current.next;
+        newNode.prev = current;
         current.next = newNode;
+        if (newNode.next != null) {
+          newNode.next!.prev = newNode;
+        }
         currentOutput += "Added node with value $value at position $position.\n";
       } else {
-        currentOutput += "Position $position is out of bounds. Node not added.\n";
+        currentOutput += "Position $position is out of bounds.\n";
       }
     }
 
@@ -370,10 +393,12 @@ class _LinkedListScreenState extends State<LinkedListScreen>
   }
 
   Future<void> _removeNode(int value) async {
+    if (isAnimating) return;
+
     if (_isListEmpty()) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('List is empty! Cannot remove node.'),
-      ));
+      setState(() {
+        currentOutput = "List is empty! Cannot remove node.";
+      });
       return;
     }
 
@@ -386,14 +411,22 @@ class _LinkedListScreenState extends State<LinkedListScreen>
     // Handle removal
     if (head!.value == value) {
       head = head!.next;
+      if (head != null) {
+        head!.prev = null;
+      }
       currentOutput += "Removed node with value $value from the head.\n";
     } else {
-      Node? current = head;
-      while (current!.next != null && current.next!.value != value) {
-        current = current.next!;
+      DoublyNode? current = head;
+      while (current != null && current.value != value) {
+        current = current.next;
       }
-      if (current.next != null) {
-        current.next = current.next!.next;
+      if (current != null) {
+        if (current.next != null) {
+          current.next!.prev = current.prev;
+        }
+        if (current.prev != null) {
+          current.prev!.next = current.next;
+        }
         currentOutput += "Removed node with value $value from the list.\n";
       } else {
         currentOutput += "Node with value $value not found.\n";
@@ -503,165 +536,153 @@ class _LinkedListScreenState extends State<LinkedListScreen>
 }
 
 
-//Test
 
-final List<Question> SinglyLinkedListQuestions = [
+// Test
+
+
+final List<Question> DoublyLinkedListQuestions = [
 Question(
-  questionText: 'What is the time complexity to insert a new node at the beginning of a singly linked list?',
+  questionText: 'What is a doubly linked list?',
+  options: ['A list where each node has two pointers', 'A list with one pointer per node', 'A circular list', 'A list with no pointers'],
+  correctAnswerIndex: 0,
+),
+Question(
+  questionText: 'What are the advantages of using a doubly linked list over a singly linked list?',
+  options: ['Easier to traverse backwards', 'Easier to insert and delete nodes', 'Both A and B', 'None of the above'],
+  correctAnswerIndex: 2,
+),
+Question(
+  questionText: 'What is the time complexity to insert a new node at the beginning of a doubly linked list?',
   options: ['O(1)', 'O(n)', 'O(log n)', 'O(n^2)'],
   correctAnswerIndex: 0,
 ),
 Question(
-  questionText: 'What is the time complexity to insert a new node at the end of a singly linked list?',
+  questionText: 'What is the time complexity to delete a node from a doubly linked list?',
+  options: ['O(1)', 'O(n)', 'O(log n)', 'O(n^2)'],
+  correctAnswerIndex: 0,
+),
+Question(
+  questionText: 'In a doubly linked list, what does the next pointer in a node point to?',
+  options: ['The next node in the list', 'The previous node', 'Null', 'The head node'],
+  correctAnswerIndex: 0,
+),
+Question(
+  questionText: 'In a doubly linked list, what does the previous pointer in the head node point to?',
+  options: ['Null', 'The tail node', 'The next node', 'The middle node'],
+  correctAnswerIndex: 0,
+),
+Question(
+  questionText: 'What is the time complexity to search for an element in a doubly linked list?',
   options: ['O(n)', 'O(1)', 'O(log n)', 'O(n^2)'],
   correctAnswerIndex: 0,
 ),
 Question(
-  questionText: 'What is the structure of a node in a singly linked list?',
-  options: ['Data and one pointer to the next node', 'Data and two pointers to the next and previous nodes', 'Only data', 'Only pointer'],
+  questionText: 'How do you traverse a doubly linked list in reverse?',
+  options: ['Use the previous pointer', 'Use the next pointer', 'Start from the head', 'None of the above'],
   correctAnswerIndex: 0,
 ),
 Question(
-  questionText: 'What is the time complexity to access an element at the nth position in a singly linked list?',
-  options: ['O(n)', 'O(1)', 'O(n log n)', 'O(n^2)'],
-  correctAnswerIndex: 0,
-),
-Question(
-  questionText: 'In a singly linked list, how do you traverse the list?',
-  options: ['Start from the head and move through each node using the next pointer', 'Start from the tail and move backwards', 'Access the middle node and move in both directions', 'All of the above'],
-  correctAnswerIndex: 0,
-),
-Question(
-  questionText: 'How do you check if a singly linked list is empty?',
-  options: ['Check if the head is null', 'Check if the tail is null', 'Check if the next pointer is null', 'Check if all nodes have data'],
-  correctAnswerIndex: 0,
-),
-Question(
-  questionText: 'What is the time complexity of deleting the first node in a singly linked list?',
-  options: ['O(1)', 'O(n)', 'O(log n)', 'O(n^2)'],
-  correctAnswerIndex: 0,
-),
-Question(
-  questionText: 'Which operation is not possible in a singly linked list?',
-  options: ['Deleting a node', 'Traversing the list', 'Reversing the list', 'Accessing the previous node from a given node'],
+  questionText: 'Which of the following operations can be performed on a doubly linked list?',
+  options: ['Insertion', 'Deletion', 'Traversal', 'All of the above'],
   correctAnswerIndex: 3,
 ),
 Question(
-  questionText: 'How do you reverse a singly linked list?',
-  options: ['By changing the next pointers of each node in the list', 'By swapping data between nodes', 'By creating a new linked list', 'By using a queue'],
-  correctAnswerIndex: 0,
-),
-Question(
-  questionText: 'What is the time complexity to reverse a singly linked list?',
+  questionText: 'What is the space complexity of a doubly linked list with n nodes?',
   options: ['O(n)', 'O(1)', 'O(log n)', 'O(n^2)'],
   correctAnswerIndex: 0,
 ),
 Question(
-  questionText: 'Given a singly linked list, what is the time complexity to find the length of the list?',
-  options: ['O(n)', 'O(1)', 'O(log n)', 'O(n^2)'],
+  questionText: 'How do you insert a new node at the end of a doubly linked list?',
+  options: ['Traverse to the last node and update its pointers', 'Insert at the head', 'Use the middle node', 'None of the above'],
   correctAnswerIndex: 0,
 ),
 Question(
-  questionText: 'What is the head of a singly linked list?',
-  options: ['The first node', 'The last node', 'The middle node', 'None of the above'],
+  questionText: 'What happens when you delete the tail node of a doubly linked list?',
+  options: ['The second last node’s next pointer will be set to null', 'The list becomes empty', 'The head node will be removed', 'None of the above'],
   correctAnswerIndex: 0,
 ),
 Question(
-  questionText: 'What does the next pointer in the last node of a singly linked list point to?',
-  options: ['Null', 'Head', 'The second node', 'None of the above'],
+  questionText: 'How do you find the length of a doubly linked list?',
+  options: ['Traverse the list and count nodes', 'Use the head pointer', 'All nodes have fixed sizes', 'None of the above'],
   correctAnswerIndex: 0,
 ),
 Question(
-  questionText: 'What happens when you try to access an element beyond the length of a singly linked list?',
-  options: ['Returns null', 'Throws an error', 'Returns the last element', 'Returns the first element'],
+  questionText: 'What is the main disadvantage of a doubly linked list?',
+  options: ['More memory usage due to extra pointers', 'Slower traversal', 'More complex implementation', 'None of the above'],
+  correctAnswerIndex: 0,
+),
+Question(
+  questionText: 'Which of the following is true about the first node in a doubly linked list?',
+  options: ['It has a null previous pointer', 'It has a null next pointer', 'Both A and B', 'None of the above'],
+  correctAnswerIndex: 0,
+),
+Question(
+  questionText: 'How do you delete a specific node in a doubly linked list?',
+  options: ['Update the next and previous pointers of adjacent nodes', 'Set the node’s next pointer to null', 'Set the node’s previous pointer to null', 'None of the above'],
+  correctAnswerIndex: 0,
+),
+Question(
+  questionText: 'What happens if you try to access a node that is out of bounds in a doubly linked list?',
+  options: ['Returns null', 'Throws an error', 'Returns the head', 'Returns the tail'],
   correctAnswerIndex: 1,
 ),
 Question(
-  questionText: 'What is the space complexity of a singly linked list with n nodes?',
+  questionText: 'What is a common application of doubly linked lists?',
+  options: ['Undo functionality in applications', 'Implementation of stacks', 'Queue operations', 'None of the above'],
+  correctAnswerIndex: 0,
+),
+Question(
+  questionText: 'Which pointer in a doubly linked list is used to traverse forward?',
+  options: ['Next pointer', 'Previous pointer', 'Both pointers', 'None of the above'],
+  correctAnswerIndex: 0,
+),
+Question(
+  questionText: 'How do you detect a cycle in a doubly linked list?',
+  options: ['Use two pointers (slow and fast)', 'Check the previous pointer', 'Use a hash table', 'None of the above'],
+  correctAnswerIndex: 0,
+),
+Question(
+  questionText: 'In a doubly linked list, which pointer is updated when a new node is inserted at the beginning?',
+  options: ['Both previous and next pointers of the new node', 'Only the next pointer', 'Only the previous pointer', 'None of the above'],
+  correctAnswerIndex: 0,
+),
+Question(
+  questionText: 'What is the result of deleting the head node in a doubly linked list?',
+  options: ['The second node becomes the new head', 'The list remains unchanged', 'All nodes are deleted', 'None of the above'],
+  correctAnswerIndex: 0,
+),
+Question(
+  questionText: 'Which operation is NOT efficient in a doubly linked list?',
+  options: ['Accessing elements by index', 'Inserting at the beginning', 'Inserting at the end', 'Traversing the list'],
+  correctAnswerIndex: 0,
+),
+Question(
+  questionText: 'Given a doubly linked list, what will be the previous node of the head in a list [10 <-> 20 <-> 30]?',
+  options: ['20', '30', 'Null', 'None of the above'],
+  correctAnswerIndex: 2,
+),
+Question(
+  questionText: 'How do you implement a doubly linked list in memory?',
+  options: ['Using nodes with two pointers', 'Using arrays', 'Using stacks', 'None of the above'],
+  correctAnswerIndex: 0,
+),
+Question(
+  questionText: 'What is the time complexity of reversing a doubly linked list?',
   options: ['O(n)', 'O(1)', 'O(log n)', 'O(n^2)'],
   correctAnswerIndex: 0,
 ),
 Question(
-  questionText: 'What is a common use case for a singly linked list?',
-  options: ['Dynamic memory allocation', 'Binary search implementation', 'Stack implementation', 'None of the above'],
+  questionText: 'What type of traversal can you perform on a doubly linked list?',
+  options: ['Forward only', 'Backward only', 'Both forward and backward', 'None of the above'],
   correctAnswerIndex: 2,
-),
-Question(
-  questionText: 'How do you add a node after a specific node in a singly linked list?',
-  options: ['Update the next pointer of the specific node to point to the new node', 'Update the previous node\'s pointer', 'Swap the data', 'None of the above'],
-  correctAnswerIndex: 0,
-),
-Question(
-  questionText: 'Which of the following is NOT a valid operation in a singly linked list?',
-  options: ['Insert at the beginning', 'Delete from the middle', 'Access by index in O(1)', 'Traverse through all nodes'],
-  correctAnswerIndex: 2,
-),
-Question(
-  questionText: 'In a singly linked list, what will happen if you remove the last node?',
-  options: ['The second last node’s next pointer will be set to null', 'The list will break', 'The first node will be removed', 'All nodes will be deleted'],
-  correctAnswerIndex: 0,
-),
-Question(
-  questionText: 'Which of the following data structures can be implemented using a singly linked list?',
-  options: ['Stack', 'Queue', 'Both Stack and Queue', 'Binary Tree'],
-  correctAnswerIndex: 2,
-),
-Question(
-  questionText: 'How do you insert a new node at the end of a singly linked list?',
-  options: ['Traverse the list to the last node and update its next pointer', 'Insert it at the head', 'Swap it with the middle node', 'None of the above'],
-  correctAnswerIndex: 0,
-),
-Question(
-  questionText: 'How do you check if a singly linked list has a cycle?',
-  options: ['Use two pointers (slow and fast)', 'Check if the head is null', 'Check if all nodes have the same data', 'None of the above'],
-  correctAnswerIndex: 0,
-),
-Question(
-  questionText: 'What is the time complexity to search for an element in a singly linked list?',
-  options: ['O(n)', 'O(1)', 'O(log n)', 'O(n^2)'],
-  correctAnswerIndex: 0,
-),
-Question(
-  questionText: 'Given a singly linked list, what will be the next node after head in a list [10 -> 20 -> 30 -> 40]?',
-  options: ['20', '30', '40', 'None'],
-  correctAnswerIndex: 0,
-),
-Question(
-  questionText: 'What happens if you delete the head of a singly linked list?',
-  options: ['The second node becomes the new head', 'The list is destroyed', 'All nodes are deleted', 'None of the above'],
-  correctAnswerIndex: 0,
-),
-Question(
-  questionText: 'What is the last node of a singly linked list typically called?',
-  options: ['Tail', 'Head', 'Middle', 'None of the above'],
-  correctAnswerIndex: 0,
-),
-Question(
-  questionText: 'Which of the following operations is slow in a singly linked list compared to an array?',
-  options: ['Accessing elements by index', 'Inserting at the head', 'Inserting at the tail', 'All of the above'],
-  correctAnswerIndex: 0,
-),
-Question(
-  questionText: 'How do you detect the middle element of a singly linked list?',
-  options: ['Use two pointers (slow and fast)', 'Traverse the list twice', 'Use the head pointer', 'None of the above'],
-  correctAnswerIndex: 0,
-),
-Question(
-  questionText: 'What happens when you try to access the tail’s next pointer in a singly linked list?',
-  options: ['It points to null', 'It points to the head', 'It points to the second last node', 'None of the above'],
-  correctAnswerIndex: 0,
-),
-Question(
-  questionText: 'What is the advantage of a singly linked list over an array?',
-  options: ['Dynamic size allocation', 'Constant time access to elements', 'Less memory usage', 'None of the above'],
-  correctAnswerIndex: 0,
 ),
 ];
-class SinglylinkedlistQuiz extends StatelessWidget {
+
+class DoublylinkedlistQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
-    List<Question> randomQuestions = getRandomQuestions(SinglyLinkedListQuestions);
-    String testId = '6_singlyLL'; // Example test_id, modify as needed
+    List<Question> randomQuestions = getRandomQuestions(DoublyLinkedListQuestions);
+    String testId = '7_doublyLL'; // Example test_id, modify as needed
     return QuizUI(quizQuestions: randomQuestions, testId: testId); // Use the common UI
   }
 }

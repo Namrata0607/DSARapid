@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:dsa_rapid/UI_Helper/UI.dart';
 
-void main() {
-  runApp(AdminDash());
-}
+// void main() {
+//   runApp(adminLogin());
+// }
 
-class AdminDash extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Admin Dashboard',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-      ),
-      home: LoginPage(),
-    );
-  }
-}
+// class AdminDash extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Admin Dashboard',
+//       debugShowCheckedModeBanner: false,
+//       theme: ThemeData(
+//         primarySwatch: Colors.purple,
+//       ),
+//       home: LoginPage(),
+//     );
+//   }
+// }
 
 // Simulating password storage
 String currentPassword = 'admin123';
 
-class LoginPage extends StatelessWidget {
+class adminLogin extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -50,10 +51,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Admin Login'),
-        backgroundColor: Colors.purple,
-      ),
+      appBar:  mtext(),
       body: Stack(
         children: [
           Center(
@@ -66,7 +64,7 @@ class LoginPage extends StatelessWidget {
                     Container(
                       margin: EdgeInsets.only(top: 40, bottom: 20),
                       child: Text(
-                        'Admin Login Form',
+                        'Admin Login',
                         style: TextStyle(
                           fontSize: 32.0,
                           fontWeight: FontWeight.bold,
@@ -109,7 +107,7 @@ class LoginPage extends StatelessWidget {
                                   ),
                                   prefixIcon: Icon(Icons.lock),
                                 ),
-                                obscureText: true,
+                                // obscureText: true,
                               ),
                               SizedBox(height: 20.0),
                               ElevatedButton(
@@ -213,7 +211,7 @@ class DashboardPage extends StatelessWidget {
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginPage()),
+                      MaterialPageRoute(builder: (context) => adminLogin()),
                     );
                   },
                 ),

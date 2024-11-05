@@ -1,34 +1,34 @@
-import 'package:dsa_rapid/AVLTree.dart';
-import 'package:dsa_rapid/BFS.dart';
-import 'package:dsa_rapid/BST.dart';
-import 'package:dsa_rapid/BubbleSort.dart';
-import 'package:dsa_rapid/CircularLinkedList.dart';
-import 'package:dsa_rapid/CircularQueue.dart';
-import 'package:dsa_rapid/DFS.dart';
-import 'package:dsa_rapid/DoublyLinkedList.dart';
-import 'package:dsa_rapid/Hashing.dart';
-import 'package:dsa_rapid/HeapTree.dart';
-import 'package:dsa_rapid/InsertionSort.dart';
-import 'package:dsa_rapid/LinearSearch.dart';
-import 'package:dsa_rapid/MergeSort.dart';
-import 'package:dsa_rapid/PriorityQueue.dart';
-import 'package:dsa_rapid/QuickSort.dart';
-import 'package:dsa_rapid/SelectionSort.dart';
-import 'package:dsa_rapid/SinglyLinkedList.dart';
-import 'package:dsa_rapid/Stack.dart';
+import 'package:dsa_rapid/User/AVLTree.dart';
+import 'package:dsa_rapid/User/BFS.dart';
+import 'package:dsa_rapid/User/BST.dart';
+import 'package:dsa_rapid/User/BubbleSort.dart';
+import 'package:dsa_rapid/User/CircularLinkedList.dart';
+import 'package:dsa_rapid/User/CircularQueue.dart';
+import 'package:dsa_rapid/User/DFS.dart';
+import 'package:dsa_rapid/User/DoublyLinkedList.dart';
+import 'package:dsa_rapid/User/Hashing.dart';
+import 'package:dsa_rapid/User/HeapTree.dart';
+import 'package:dsa_rapid/User/InsertionSort.dart';
+import 'package:dsa_rapid/User/LinearSearch.dart';
+import 'package:dsa_rapid/User/MergeSort.dart';
+import 'package:dsa_rapid/User/PriorityQueue.dart';
+import 'package:dsa_rapid/User/QuickSort.dart';
+import 'package:dsa_rapid/User/SelectionSort.dart';
+import 'package:dsa_rapid/User/SinglyLinkedList.dart';
+import 'package:dsa_rapid/User/Stack.dart';
 
 import 'SignInUp.dart';
 import 'package:flutter/material.dart';
 import 'package:dsa_rapid/UI_Helper/UI.dart';
-import 'package:dsa_rapid/ViewUpdateProfile.dart';
-import 'package:dsa_rapid/BinarySearch.dart';
-import 'package:dsa_rapid/Queue.dart';
-import 'package:dsa_rapid/Array.dart';
+import 'package:dsa_rapid/User/ViewUpdateProfile.dart';
+import 'package:dsa_rapid/User/BinarySearch.dart';
+import 'package:dsa_rapid/User/Queue.dart';
+import 'package:dsa_rapid/User/Array.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import 'auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:dsa_rapid/SignInUp.dart';
+import 'package:dsa_rapid/User/SignInUp.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 

@@ -1,6 +1,6 @@
 import 'package:dsa_rapid/UI_Helper/UI.dart';
 import 'package:flutter/material.dart';
-import 'package:dsa_rapid/Dashboard.dart';
+import 'package:dsa_rapid/User/Dashboard.dart';
 import 'package:flutter/services.dart';
 import 'dart:math';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';

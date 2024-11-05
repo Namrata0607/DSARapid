@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:dsa_rapid/Dashboard.dart';
 import 'package:dsa_rapid/UI_Helper/UI.dart';
+import 'package:dsa_rapid/User/Dashboard.dart';
 import 'dart:math';
 
 import 'package:url_launcher/url_launcher.dart';
 
-class InsertionsortNotes extends StatelessWidget {
+class MergesortNotes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,7 +21,7 @@ class PDFViewerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Automatically open the PDF when this screen is displayed
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      const url = 'assets/notes/insertion_sort.pdf';  // Relative path to the PDF
+      const url = 'assets/notes/merge_sort.pdf';  // Relative path to the PDF
       await launch(url);  // This opens the PDF in a new browser tab
     });
 
@@ -35,27 +35,28 @@ class PDFViewerScreen extends StatelessWidget {
 }
 
 
-class InsertionSort extends StatelessWidget {
+class MergeSort extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Insertion Sort Visualizer',
+      title: 'Merge Sort Visualizer',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: InsertionSortScreen(),
+      home: MergeSortScreen(),
     );
   }
 }
 
-class InsertionSortScreen extends StatefulWidget {
+class MergeSortScreen extends StatefulWidget {
   @override
-  _InsertionSortScreenState createState() => _InsertionSortScreenState();
+  _MergeSortScreenState createState() => _MergeSortScreenState();
 }
 
-class _InsertionSortScreenState extends State<InsertionSortScreen> {
+class _MergeSortScreenState extends State<MergeSortScreen> {
   List<int> array = []; // Initially empty array
-  int? currentIndex; // For visual representation of current index
+  int? currentLeft; // Left index for visual representation
+  int? currentRight; // Right index for visual representation
   bool sorting = false; // State for sort animation
   String currentAlgorithm = ""; // Holds the current algorithm
   String currentOutput = ""; // Holds the step-by-step output
@@ -158,7 +159,7 @@ class _InsertionSortScreenState extends State<InsertionSortScreen> {
                       child: Column(
                         children: [
                           Text(
-                            'Insertion Sort Visualizer',
+                            'Merge Sort Visualizer',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -229,7 +230,7 @@ class _InsertionSortScreenState extends State<InsertionSortScreen> {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: sorting ? null : () => _insertionSort(),
+                    onPressed: sorting ? null : _startMergeSort,
                     child: Text('Sort'),
                     style: ButtonStyle(
                       backgroundColor:
@@ -251,12 +252,13 @@ class _InsertionSortScreenState extends State<InsertionSortScreen> {
   void _createDefaultArray() {
     setState(() {
       array = [40, 20, 30, 10]; // Default array
-      currentIndex = null;
+      currentLeft = null;
+      currentRight = null;
       currentAlgorithm = """
-1. Start with the first element as a sorted subarray.
-2. Take the next element and insert it into the sorted subarray.
-3. Shift all larger elements to the right to make space for the new element.
-4. Repeat until the entire array is sorted.
+1. Split the array into two halves.
+2. Recursively split each half until each subarray contains a single element.
+3. Merge the sorted subarrays by comparing the smallest elements.
+4. Repeat until the entire array is merged and sorted.
 """;
       currentOutput = "Default array created.";
     });
@@ -266,7 +268,8 @@ class _InsertionSortScreenState extends State<InsertionSortScreen> {
   void _clearArray() {
     setState(() {
       array = []; // Clear the array
-      currentIndex = null;
+      currentLeft = null;
+      currentRight = null;
       currentAlgorithm = "";
       currentOutput = "Array cleared.";
     });
@@ -292,8 +295,8 @@ class _InsertionSortScreenState extends State<InsertionSortScreen> {
           height: 100, // Fixed height for all bars
           width: 60,
           duration: Duration(milliseconds: 300),
-          color: (index == currentIndex)
-              ? Color.fromARGB(255, 85, 255, 227) // Highlight current index
+          color: (index == currentLeft || index == currentRight)
+              ? Color.fromARGB(255, 85, 255, 227) // Highlight current comparison
               : Colors.purple, // Default bar color
           alignment: Alignment.bottomCenter,
           child: Center(
@@ -311,56 +314,75 @@ class _InsertionSortScreenState extends State<InsertionSortScreen> {
     });
   }
 
-  // Perform insertion sort with animation
-  Future<void> _insertionSort() async {
+  // Perform merge sort with animation
+  Future<void> _startMergeSort() async {
     sorting = true;
     currentOutput = ""; // Clear previous output
 
-    for (int i = 1; i < array.length; i++) {
-      int key = array[i];
-      int j = i - 1;
-
-      setState(() {
-        currentIndex = i; // Highlight current index
-        currentOutput += "Step $i: Key = $key\n"; // Update output
-      });
-
-      await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
-
-      while (j >= 0 && array[j] > key) {
-        setState(() {
-          currentOutput += "Comparing ${array[j]} and $key: ${array[j]} is greater, shifting ${array[j]} to the right.\n"; // Update output
-          currentIndex = j; // Highlight the current element being compared
-        });
-
-        await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
-        array[j + 1] = array[j]; // Shift the element to the right
-        j--;
-
-        setState(() {
-          currentOutput += "Current array: ${array.toString()}\n"; // Show current state of the array
-        });
-      }
-
-      array[j + 1] = key; // Insert the key in its correct position
-      setState(() {
-        currentOutput += "Inserted $key at index ${j + 1}\n"; // Update output
-        currentOutput += "Current array: ${array.toString()}\n"; // Show current state of the array
-      });
-
-      await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
-    }
+    await _mergeSort(0, array.length - 1); // Start merge sort
 
     currentOutput += "Sorting complete! Final array: ${array.toString()}\n"; // Final output
-
-    // Show result in a snackbar
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Sorting complete!'),
       ),
     );
 
-    sorting = false; // Reset sorting state
+    sorting = false;
+  }
+
+  Future<void> _mergeSort(int left, int right) async {
+    if (left < right) {
+      int mid = (left + right) ~/ 2;
+
+      currentOutput += "Splitting array from index $left to $mid and $mid to $right\n";
+      await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
+
+      await _mergeSort(left, mid);
+      await _mergeSort(mid + 1, right);
+      await _merge(left, mid, right);
+    }
+  }
+
+  Future<void> _merge(int left, int mid, int right) async {
+    int i = left, j = mid + 1;
+    List<int> temp = [];
+
+    while (i <= mid && j <= right) {
+      setState(() {
+        currentLeft = i;
+        currentRight = j;
+        currentOutput += "Comparing index $i and index $j\n";
+      });
+      await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
+
+      if (array[i] < array[j]) {
+        temp.add(array[i]);
+        i++;
+      } else {
+        temp.add(array[j]);
+        j++;
+      }
+    }
+
+    while (i <= mid) {
+      temp.add(array[i]);
+      i++;
+    }
+
+    while (j <= right) {
+      temp.add(array[j]);
+      j++;
+    }
+
+    for (int k = 0; k < temp.length; k++) {
+      array[left + k] = temp[k];
+    }
+
+    setState(() {
+      currentOutput += "Merged subarray: ${temp.toString()}\n";
+    });
+    await Future.delayed(Duration(seconds: 3)); // Pause for visual effect
   }
 
   // Generalized input dialog to get user input
@@ -398,164 +420,126 @@ class _InsertionSortScreenState extends State<InsertionSortScreen> {
 
 //Test
 
-
-final List<Question> InsertionSortQuestions = [
+final List<Question> MergeSortQuestions = [
  Question(
-    questionText: 'What is the time complexity of insertion sort in the worst case?',
-    options: ['O(n)', 'O(n log n)', 'O(n^2)', 'O(log n)'],
-    correctAnswerIndex: 2,
-),//1
+  questionText: 'Which of the following is true about merge sort?',
+  options: ['It is a divide-and-conquer algorithm', 'It is not stable', 'It can sort linked lists in O(n log n)', 'Both A and C'],
+  correctAnswerIndex: 3,
+),
 Question(
-    questionText: 'What is the primary operation performed in insertion sort?',
-    options: ['Finding the maximum element', 'Inserting elements in the correct position', 'Swapping adjacent elements', 'Dividing the array'],
-    correctAnswerIndex: 1,
-),//2
+  questionText: 'What is the space complexity of merge sort?',
+  options: ['O(n)', 'O(1)', 'O(log n)', 'O(n^2)'],
+  correctAnswerIndex: 0,
+),
 Question(
-    questionText: 'What is the best-case time complexity of insertion sort?',
-    options: ['O(n)', 'O(n log n)', 'O(n^2)', 'O(1)'],
-    correctAnswerIndex: 0,
-),//3
+  questionText: 'What is the time complexity of merge sort in the average case?',
+  options: ['O(n log n)', 'O(n)', 'O(log n)', 'O(n^2)'],
+  correctAnswerIndex: 0,
+),
 Question(
-    questionText: 'Which of the following statements is true about insertion sort?',
-    options: ['It is a stable sorting algorithm', 'It is not a stable sorting algorithm', 'It is an in-place sorting algorithm', 'Both a and c'],
-    correctAnswerIndex: 3,
-),//4
+  questionText: 'What is the time complexity of merge sort in the average case?',
+  options: ['O(n log n)', 'O(n)', 'O(log n)', 'O(n^2)'],
+  correctAnswerIndex: 0,
+),
 Question(
-    questionText: 'In insertion sort, how many passes are required to sort an array of n elements?',
-    options: ['n', 'n-1', 'n/2', '1'],
-    correctAnswerIndex: 0,
-),//5
+  questionText: 'What is the primary purpose of merge sort?',
+  options: ['To sort an array', 'To search an element', 'To reverse an array', 'None of the above'],
+  correctAnswerIndex: 0,
+),
 Question(
-    questionText: 'In insertion sort, how many passes are required to sort an array of n elements?',
-    options: ['n', 'n-1', 'n/2', '1'],
-    correctAnswerIndex: 0,
-),//6
+  questionText: 'Which of the following is true about merge sort?',
+  options: ['It is a divide-and-conquer algorithm', 'It is not stable', 'It can sort linked lists in O(n log n)', 'Both A and C'],
+  correctAnswerIndex: 3,
+),
 Question(
-    questionText: 'What is the space complexity of insertion sort?',
-    options: ['O(1)', 'O(n)', 'O(n log n)', 'O(n^2)'],
-    correctAnswerIndex: 0,
-),//7
+  questionText: 'How does merge sort divide the array?',
+  options: ['Into halves', 'Into quarters', 'Into thirds', 'Randomly'],
+  correctAnswerIndex: 0,
+),
 Question(
-    questionText: 'Which of the following is a characteristic of insertion sort?',
-    options: ['It performs better on small datasets', 'It is adaptive', 'It is recursive', 'Both a and b'],
-    correctAnswerIndex: 3,
-),//8
+  questionText: 'What is the first step in the merge sort algorithm?',
+  options: ['Merge the arrays', 'Divide the array', 'Sort the array', 'None of the above'],
+  correctAnswerIndex: 1,
+),
 Question(
-    questionText: 'Which sorting algorithm is often compared to insertion sort due to its simplicity?',
-    options: ['Bubble sort', 'Selection sort', 'Merge sort', 'Quick sort'],
-    correctAnswerIndex: 0,
-),//9
+  questionText: 'How many times is the merge function called in merge sort for an array of size n?',
+  options: ['n', 'n log n', 'log n', '1'],
+  correctAnswerIndex: 1,
+),
 Question(
-    questionText: 'What does insertion sort do during each pass through the array?',
-    options: ['Selects the smallest element and moves it to the front', 'Swaps adjacent elements if they are out of order', 'Inserts the next element into the correct position in the sorted portion', 'Sorts the entire array in one pass'],
-    correctAnswerIndex: 2,
-),//10
+  questionText: 'In merge sort, what is the base case for the recursive function?',
+  options: ['When the array has one element', 'When the array is empty', 'When the array is sorted', 'None of the above'],
+  correctAnswerIndex: 0,
+),
 Question(
-    questionText: 'What happens to the relative order of equal elements in insertion sort?',
-    options: ['It is preserved', 'It is not preserved', 'It is random', 'It cannot be determined'],
-    correctAnswerIndex: 0,
-),//11
+  questionText: 'Which of the following best describes the merge process in merge sort?',
+  options: ['Combining two sorted arrays into one sorted array', 'Splitting an array into two parts', 'Sorting an array in-place', 'None of the above'],
+  correctAnswerIndex: 0,
+),
 Question(
-    questionText: 'Given the array [5, 2, 4, 6, 1, 3], what will be the array after the first pass of insertion sort?',
-    options: ['[2, 5, 4, 6, 1, 3]', '[5, 2, 4, 6, 1, 3]', '[2, 4, 5, 6, 1, 3]', '[5, 4, 6, 2, 1, 3]'],
-    correctAnswerIndex: 0,
-),//12
+  questionText: 'What is the worst-case time complexity of merge sort?',
+  options: ['O(n)', 'O(log n)', 'O(n log n)', 'O(n^2)'],
+  correctAnswerIndex: 2,
+),
 Question(
-    questionText: 'If insertion sort is applied to the array [8, 3, 5, 4, 6], what is the result after the second pass?',
-    options: ['[3, 8, 5, 4, 6]', '[3, 5, 8, 4, 6]', '[3, 4, 5, 8, 6]', '[8, 3, 5, 4, 6]'],
-    correctAnswerIndex: 1,
-),//13
+  questionText: 'Which of the following is a key advantage of merge sort?',
+  options: ['It is an in-place sorting algorithm', 'It is stable and works well on large datasets', 'It uses less memory', 'None of the above'],
+  correctAnswerIndex: 1,
+),
 Question(
-    questionText: 'Consider the array [7, 2, 9, 1, 5]. After the third pass of insertion sort, what will the array look like?',
-    options: ['[1, 2, 7, 9, 5]', '[1, 2, 7, 5, 9]', '[1, 2, 5, 7, 9]', '[7, 2, 1, 5, 9]'],
-    correctAnswerIndex: 2,
-),//14
+  questionText: 'What happens to the order of equal elements in merge sort?',
+  options: ['The order is not preserved', 'The order is preserved', 'They are randomly ordered', 'None of the above'],
+  correctAnswerIndex: 1,
+),
 Question(
-    questionText: 'For the array [12, 11, 13, 5, 6], what is the final sorted array after applying insertion sort?',
-    options: ['[5, 6, 11, 12, 13]', '[12, 11, 13, 5, 6]', '[11, 12, 5, 6, 13]', '[6, 5, 11, 12, 13]'],
-    correctAnswerIndex: 0,
-),//15
+  questionText: 'How does merge sort handle an array of size 0 or 1?',
+  options: ['It throws an error', 'It does nothing', 'It merges the array', 'None of the above'],
+  correctAnswerIndex: 1,
+),
 Question(
-    questionText: 'After applying insertion sort on the array [4, 3, 2, 1], what will be the array after the first complete iteration?',
-    options: ['[1, 2, 3, 4]', '[4, 3, 2, 1]', '[3, 4, 2, 1]', '[4, 2, 3, 1]'],
-    correctAnswerIndex: 3,
-),//16
+  questionText: 'Which of the following sorting algorithms is similar to merge sort?',
+  options: ['Quick sort', 'Heap sort', 'Bubble sort', 'None of the above'],
+  correctAnswerIndex: 0,
+),
 Question(
-    questionText: 'What is the primary use case for insertion sort?',
-    options: ['Sorting small datasets', 'Sorting large datasets', 'Searching for an element', 'Merging two arrays'],
-    correctAnswerIndex: 0,
-),//17
+  questionText: 'What data structure is often used to implement merge sort?',
+  options: ['Arrays', 'Linked lists', 'Both A and B', 'None of the above'],
+  correctAnswerIndex: 2,
+),
 Question(
-    questionText: 'How does insertion sort handle an already sorted array?',
-    options: ['It takes longer than unsorted arrays', 'It completes in the same time as for an unsorted array', 'It behaves differently', 'It throws an error'],
-    correctAnswerIndex: 1,
-),//18
+  questionText: 'What is the primary disadvantage of merge sort?',
+  options: ['It is not efficient for small datasets', 'It requires additional space for temporary arrays', 'It is not a stable sort', 'None of the above'],
+  correctAnswerIndex: 1,
+),
 Question(
-    questionText: 'What is the main advantage of insertion sort over other sorting algorithms?',
-    options: ['It is the fastest', 'It is easy to understand and implement', 'It uses less memory', 'It is stable'],
-    correctAnswerIndex: 1,
-),//19
+  questionText: 'What is the merge sort algorithm’s approach to sorting an array?',
+  options: ['Sorting in-place', 'Dividing, sorting, and merging', 'Using a heap', 'None of the above'],
+  correctAnswerIndex: 1,
+),
 Question(
-    questionText: 'Which sorting algorithm is generally more efficient for larger datasets than insertion sort?',
-    options: ['Bubble sort', 'Selection sort', 'Merge sort', 'Insertion sort'],
-    correctAnswerIndex: 2,
-),//20
+  questionText: 'In which scenario is merge sort particularly useful?',
+  options: ['When data is already sorted', 'When data is too large to fit in memory', 'When speed is the only concern', 'None of the above'],
+  correctAnswerIndex: 1,
+),
 Question(
-    questionText: 'What is the main characteristic of a stable sorting algorithm?',
-    options: ['It sorts in ascending order', 'It preserves the relative order of equal elements', 'It uses more memory', 'It can sort both ascending and descending'],
-    correctAnswerIndex: 1,
-),//21
+  questionText: 'When merging two sorted arrays, what do you need to maintain?',
+  options: ['The order of elements', 'The size of the arrays', 'The indices of elements', 'None of the above'],
+  correctAnswerIndex: 0,
+),
 Question(
-    questionText: 'Which of the following is an advantage of insertion sort?',
-    options: ['It is faster for small lists', 'It can handle large lists', 'It requires extra memory', 'It is complex to implement'],
-    correctAnswerIndex: 0,
-),//22
-Question(
-    questionText: 'If the array [10, 20, 30, 5] is sorted using insertion sort, what will be the position of the number 5 after the first iteration?',
-    options: ['1', '2', '3', '4'],
-    correctAnswerIndex: 3,
-),//23
-Question(
-    questionText: 'Given the array [5, 4, 3, 2, 1], how many comparisons will insertion sort make during the sorting process?',
-    options: ['10', '15', '5', '0'],
-    correctAnswerIndex: 1,
-),//24
-Question(
-    questionText: 'For the array [2, 8, 5, 3, 7], what will be the result after the first pass of insertion sort?',
-    options: ['[2, 5, 3, 7, 8]', '[2, 8, 5, 3, 7]', '[2, 3, 5, 7, 8]', '[2, 5, 8, 3, 7]'],
-    correctAnswerIndex: 0,
-),//25
-Question(
-    questionText: 'What will the array [1, 4, 3, 2, 5] look like after applying insertion sort for two passes?',
-    options: ['[1, 2, 3, 4, 5]', '[1, 3, 4, 2, 5]', '[1, 2, 3, 4, 5]', '[1, 4, 3, 2, 5]'],
-    correctAnswerIndex: 1,
-),//26
-Question(
-    questionText: 'When sorting the array [6, 5, 4, 3, 2, 1] using insertion sort, how does it compare to sorting an already sorted array?',
-    options: ['It is faster', 'It is slower', 'It is the same', 'It cannot be compared'],
-    correctAnswerIndex: 1,
-),//27
-Question(
-    questionText: 'What is the primary reason for using insertion sort in practice?',
-    options: ['It is the fastest sorting algorithm', 'It is simple to implement and efficient for small datasets', 'It can sort large datasets efficiently', 'It is a non-comparison sort'],
-    correctAnswerIndex: 1,
-),//28
-Question(
-    questionText: 'What is the main characteristic of insertion sort regarding memory usage?',
-    options: ['It is memory-intensive', 'It is an in-place sorting algorithm', 'It requires auxiliary data structures', 'It needs a lot of temporary storage'],
-    correctAnswerIndex: 1,
-),//29
-Question(
-    questionText: 'What is the main drawback of insertion sort?',
-    options: ['It is slow for large datasets', 'It is not adaptive', 'It cannot sort strings', 'It requires additional memory'],
-    correctAnswerIndex: 0,
-),//30
+  questionText: 'What is a real-world application of merge sort?',
+  options: ['Sorting files on a disk', 'Searching for an element in an array', 'Generating random numbers', 'None of the above'],
+  correctAnswerIndex: 0,
+),
+
+
 ];
-class InsertionSortQuiz extends StatelessWidget {
+
+class MergesortQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
-    List<Question> randomQuestions = getRandomQuestions(InsertionSortQuestions);
-    String testId = '13_insertionsort'; // Example test_id, modify as needed
+  List<Question> randomQuestions = getRandomQuestions(MergeSortQuestions);
+  String testId = '14_mergesort'; // Example test_id, modify as needed
     return QuizUI(quizQuestions: randomQuestions, testId: testId); // Use the common UI
   }
 }

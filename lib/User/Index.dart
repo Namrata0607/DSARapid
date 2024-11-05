@@ -2,8 +2,8 @@ import 'package:dsa_rapid/UI_Helper/UI.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:dsa_rapid/SignInUp.dart';
-import 'package:dsa_rapid/admin_dash.dart';
+import 'package:dsa_rapid/User/SignInUp.dart';
+import 'package:dsa_rapid/Admin/admin_dash.dart';
 
 class Index extends StatefulWidget {
   const Index({super.key});
@@ -196,7 +196,7 @@ class _IndexState extends State<Index> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => AdminDash()),
+                          MaterialPageRoute(builder: (context) => adminLogin()),
                         );
                       },
                       child: Text(

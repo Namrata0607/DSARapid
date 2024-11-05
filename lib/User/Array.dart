@@ -1,10 +1,10 @@
 import 'package:dsa_rapid/UI_Helper/UI.dart';
 import 'package:flutter/material.dart';
-import 'package:dsa_rapid/Dashboard.dart';
+import 'package:dsa_rapid/User/Dashboard.dart';
 import 'dart:math';
 import 'package:url_launcher/url_launcher.dart'; 
 import 'package:dsa_rapid/UI_Helper/UI.dart'; // Import the helper
-import 'package:dsa_rapid/SignInUp.dart';
+import 'package:dsa_rapid/User/SignInUp.dart';
 
 
 

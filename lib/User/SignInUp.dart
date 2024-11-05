@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:html' as html;
-import 'package:dsa_rapid/Dashboard.dart';
+import 'package:dsa_rapid/User/Dashboard.dart';
 import 'package:dsa_rapid/UI_Helper/UI.dart';
 import 'package:flutter/material.dart';
 import 'auth_service.dart';
