@@ -376,12 +376,116 @@ class FinalQuiz extends StatelessWidget {
             String testId = 'final_test';
             return QuizUI(quizQuestions: arrayQuestions, testId: testId);
           } else {
-            return Home();
+            return Leaderboard();
           }
         } else {
           return Center(child: Text('Error loading data'));
         }
       },
+    );
+  }
+}
+
+
+
+class Leaderboard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: appBack(context),
+      body: FutureBuilder<QuerySnapshot>(
+        future: FirebaseFirestore.instance.collection('user_db').get(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(child: Text('No data found.'));
+          }
+
+          // Extract data from the snapshot
+          final students = snapshot.data!.docs.map((doc) {
+            final data = doc.data() as Map<String, dynamic>;
+            return Student(
+              name: data['full_name'] ?? 'N/A',
+              rollNumber: data['roll_no'] ?? 'N/A',
+              className: data['class'] ?? 'N/A',
+              division: data['division'] ?? 'N/A',
+              // Convert marks to int, handling cases where it might be a string
+              marks: int.tryParse(data['final'].toString()) ?? 0,
+            );
+          }).toList();
+
+          // Filter students to include only those with marks greater than zero
+          final filteredStudents = students.where((student) => student.marks > 0).toList();
+
+          // Sort students by marks in descending order for ranking
+          filteredStudents.sort((a, b) => b.marks.compareTo(a.marks));
+
+          // Assign ranks based on sorted order
+          for (int i = 0; i < filteredStudents.length; i++) {
+            filteredStudents[i] = filteredStudents[i].copyWith(rank: i + 1);
+          }
+
+          return SingleChildScrollView(
+            child: DataTable(
+              columns: const [
+                DataColumn(label: Text('Rank')),
+                DataColumn(label: Text('Name')),
+                DataColumn(label: Text('Roll Number')),
+                DataColumn(label: Text('Class')),
+                DataColumn(label: Text('Division')),
+                DataColumn(label: Text('Marks')),
+              ],
+              rows: filteredStudents.map((student) {
+                return DataRow(cells: [
+                  DataCell(Text(student.rank.toString())), // Display rank
+                  DataCell(Text(student.name)),
+                  DataCell(Text(student.rollNumber)),
+                  DataCell(Text(student.className)),
+                  DataCell(Text(student.division)),
+                  DataCell(Text(student.marks.toString())),
+                ]);
+              }).toList(),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class Student {
+  final String name;
+  final String rollNumber;
+  final String className;
+  final String division;
+  final int marks;
+  final int rank; // New field for rank
+
+  Student({
+    required this.name,
+    required this.rollNumber,
+    required this.className,
+    required this.division,
+    required this.marks,
+    this.rank = 0, // Default value for rank
+  });
+
+  // Copy method to create a new Student with a different rank
+  Student copyWith({int? rank}) {
+    return Student(
+      name: this.name,
+      rollNumber: this.rollNumber,
+      className: this.className,
+      division: this.division,
+      marks: this.marks,
+      rank: rank ?? this.rank,
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dsa_rapid/User/Dashboard.dart';
+import 'package:dsa_rapid/User/ViewUpdateProfile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -118,18 +119,34 @@ Future<void> submitQuiz() async {
   String quizId = widget.testId;
   int score = calculateScore(); // Method to calculate score based on selected answers
 
-  if(quizId == 'final_test')
-  {
-    try {
+if (quizId == 'final_test') {
+  try {
     await testDocument.update({
       'final': score,
-      'flag' : 1, // Replace 100 with the desired number
+      'flag': 1,
     });
     print("Field updated successfully!");
+
+    // Show Snackbar with final score
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Final Score: $score'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+
+    // Delay for Snackbar visibility, then navigate to Leaderboard
+    Future.delayed(Duration(seconds: 2), () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Leaderboard()),
+      );
+    });
   } catch (e) {
     print("Failed to update field: $e");
   }
-  }
+}
+
   else
   {
   try {
