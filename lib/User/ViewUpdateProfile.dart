@@ -116,211 +116,188 @@ class _ViewprofileState extends State<Viewprofile> {
 //   }
 // }
 
-final List<Question> arrayQuestions = [
+final List<Question> finaltest = [
   Question(
-    questionText: 'What is an array?',
-    options: ['A data structure', 'A function', 'An operator', 'A loop'],
+    questionText: 'What is a linked list?',
+    options: ['A linear data structure with nodes', 'A dynamic array', 'A fixed-size array', 'A stack'],
     correctAnswerIndex: 0,
   ),//1
+  
   Question(
-    questionText: 'How is an array accessed?',
-    options: ['By index', 'By name', 'By function', 'By operator'],
-    correctAnswerIndex: 0,
+    questionText: 'Which data structure uses FIFO (First In, First Out) principle?',
+    options: ['Stack', 'Queue', 'Array', 'Binary Tree'],
+    correctAnswerIndex: 1,
   ),//2
+
   Question(
-    questionText: 'What is the time complexity of accessing an element in an array by index?',
-    options: ['O(1)', 'O(n)', 'O(log n)', 'O(n^2)'],
+    questionText: 'What is a stack?',
+    options: ['A collection with LIFO principle', 'A dynamic array', 'A binary tree', 'A queue'],
     correctAnswerIndex: 0,
   ),//3
+
   Question(
-    questionText: 'What is the disadvantage of arrays?',
-    options: [
-      'Fixed size',
-      'Efficient memory usage',
-      'Ease of access by index',
-      'Faster than other data structures'
-    ],
+    questionText: 'What is the time complexity of searching in a binary search tree (average case)?',
+    options: ['O(log n)', 'O(n)', 'O(n log n)', 'O(n^2)'],
     correctAnswerIndex: 0,
   ),//4
 
   Question(
-     questionText: 'What is the index of the first element in an array?',
-    options: ['0', '1', '2', 'Depends on the language'],
-    correctAnswerIndex: 0,
+    questionText: 'In which data structure are elements added and removed from the same end?',
+    options: ['Queue', 'Stack', 'Array', 'Heap'],
+    correctAnswerIndex: 1,
   ),//5
 
-   Question(
-    questionText: 'Which of the following is the correct way to declare an array in C?',
-     options: ['int arr(10);', 'int arr[10];', 'arr{10};', 'array int arr[10];'],
-     correctAnswerIndex: 1,
+  Question(
+    questionText: 'What is the height of an AVL tree with 7 nodes?',
+    options: ['2', '3', '4', '5'],
+    correctAnswerIndex: 1,
   ),//6
 
-   Question(
-    questionText: 'If int arr[5] = {10, 20, 30, 40, 50}; what is the value of arr[3]?',
-     options: ['10', '20', '40', '50'],
-     correctAnswerIndex: 2,
+  Question(
+    questionText: 'What is a heap?',
+    options: ['A tree-based structure', 'A graph', 'A queue', 'A list'],
+    correctAnswerIndex: 0,
   ),//7
 
   Question(
-    questionText: 'What is an array?',
-    options: ['A collection of variables of different types stored at contiguous memory locations',
-     ' A collection of variables of the same type stored at contiguous memory locations', 
-     'A collection of variables of the same type stored randomly in memory', 
-     'A collection of variables of different types stored randomly in memory'],
-    correctAnswerIndex: 2,
+    questionText: 'What is the time complexity of inserting an element in a max-heap?',
+    options: ['O(log n)', 'O(n)', 'O(1)', 'O(n log n)'],
+    correctAnswerIndex: 0,
   ),//8
 
   Question(
-    questionText: 'How do you access the first element of an array in C/C++?',
-    options: ['arr[1]', 'arr[0]', 'arr(1)', 'arr[2]'],
-    correctAnswerIndex: 1,
+    questionText: 'What is a binary tree?',
+    options: ['A tree with at most two children per node', 'A tree with one child per node', 'A cyclic graph', 'A linear list'],
+    correctAnswerIndex: 0,
   ),//9
 
   Question(
-    questionText: 'Which of the following operations is not possible with arrays directly?',
-    options: ['Insertion of an element at the beginning', 'Accessing an element at a specific index', 'Traversing the array', 'Sorting the array'],
+    questionText: 'What is the maximum number of nodes in a binary tree of height h?',
+    options: ['2^h - 1', '2h', 'h^2', 'h'],
     correctAnswerIndex: 0,
   ),//10
 
-   Question(
-    questionText: 'If int arr[4] = {11, 22, 30, 45}; what is the value of arr[3]?',
-     options: ['11', '22', '30', '45'],
-     correctAnswerIndex: 3,
+  Question(
+    questionText: 'Which data structure is commonly used for implementing recursion?',
+    options: ['Stack', 'Queue', 'Array', 'Graph'],
+    correctAnswerIndex: 0,
   ),//11
-   Question(
-    questionText: 'Which of the following allows dynamic resizing in arrays?',
-    options: ['Dynamic arrays', 'Static arrays', 'Both', 'None'],
+
+  Question(
+    questionText: 'What is the best-case time complexity of quicksort?',
+    options: ['O(n log n)', 'O(n)', 'O(n^2)', 'O(log n)'],
     correctAnswerIndex: 0,
   ),//12
 
-   Question(
-    questionText: 'What is a multidimensional array?',
-    options: [
-      'Array with more than one dimension',
-      'Array with one dimension',
-      'Array without elements',
-      'Array that cannot be resized'
-    ],
-    correctAnswerIndex: 0,
+  Question(
+    questionText: 'Which data structure can be used to detect cycles in a graph?',
+    options: ['Stack', 'Queue', 'Heap', 'DFS with parent tracking'],
+    correctAnswerIndex: 3,
   ),//13
 
-   Question(
-     questionText: 'What is the time complexity of inserting an element at the end of an array?',
-    options: ['O(1)', 'O(n)', 'O(log n)', 'O(n^2)'],
-    correctAnswerIndex: 0,
+  Question(
+    questionText: 'Which sorting algorithm has the worst-case time complexity of O(n^2)?',
+    options: ['Merge sort', 'Quick sort', 'Bubble sort', 'Heap sort'],
+    correctAnswerIndex: 2,
   ),//14
 
-   Question(
-   questionText: 'How do you declare an array in most programming languages?',
-    options: ['int[] arr;', 'int arr[];', 'arr[] int;', 'array of int'],
+  Question(
+    questionText: 'What is the time complexity of inserting a node in a linked list at the beginning?',
+    options: ['O(1)', 'O(n)', 'O(log n)', 'O(n^2)'],
     correctAnswerIndex: 0,
   ),//15
 
-   Question(
-     questionText: 'What does it mean when an array is "zero-indexed"?',
-    options: [
-      'The first element is at index 0',
-      'The array starts with a zero',
-      'Array cannot hold any values',
-      'Array contains only one element'
-    ],
+  Question(
+    questionText: 'Which data structure is used for implementing priority queues?',
+    options: ['Heap', 'Stack', 'Linked List', 'Array'],
     correctAnswerIndex: 0,
   ),//16
 
-   Question(
-    questionText: 'If int arr[3] = {78,98,20}; what is the value of arr[1]?',
-     options: ['78', '98', '20'],
-     correctAnswerIndex: 2,
+  Question(
+    questionText: 'What is the difference between a singly and a doubly linked list?',
+    options: ['Singly linked lists have one pointer per node', 'Doubly linked lists have two pointers per node', 'Both are types of arrays', 'Both A and B'],
+    correctAnswerIndex: 3,
   ),//17
 
-   Question(
-     questionText: 'Which of the following is not a valid way to iterate through an array?',
-    options: ['For loop', 'While loop', 'Do-while loop', 'Switch statement'],
-    correctAnswerIndex: 3,
+  Question(
+    questionText: 'Which traversal method is used in depth-first search?',
+    options: ['In-order', 'Pre-order', 'Level-order', 'Reverse level-order'],
+    correctAnswerIndex: 1,
   ),//18
 
-   Question(
-    questionText: 'What is the time complexity of accessing an element in a 2D array?',
-    options: ['O(1)', 'O(n)', 'O(n^2)', 'O(log n)'],
+  Question(
+    questionText: 'What does "enqueue" mean in terms of a queue?',
+    options: ['Adding an element', 'Removing an element', 'Traversing elements', 'Sorting elements'],
     correctAnswerIndex: 0,
   ),//19
 
-   Question(
-    questionText: 'Which of the following is not a valid way to iterate through an array?',
-    options: ['For loop', 'While loop', 'Do-while loop', 'Switch statement'],
-    correctAnswerIndex: 3,
+  Question(
+    questionText: 'In which data structure are elements arranged in a hierarchy?',
+    options: ['Array', 'Tree', 'Queue', 'Linked List'],
+    correctAnswerIndex: 1,
   ),//20
 
-   Question(
-    questionText: 'How can you copy the contents of one array to another?',
-    options: ['By loop', 'By function', 'By reference', 'All of the above'],
-    correctAnswerIndex: 3,
+  Question(
+    questionText: 'What is the main property of a hash table?',
+    options: ['Constant time complexity for search', 'Sorted elements', 'Requires large memory', 'Hierarchical structure'],
+    correctAnswerIndex: 0,
   ),//21
 
-   Question(
-    questionText: 'If int arr[6] = {78,98,20,33,22,11}; what is the value of arr[5]?',
-     options: ['78', '98', '20','11'],
-     correctAnswerIndex: 3,
+  Question(
+    questionText: 'What is the primary use of a graph data structure?',
+    options: ['Model relationships between entities', 'Sort elements', 'Store data in sequence', 'Manage FIFO tasks'],
+    correctAnswerIndex: 0,
   ),//22
 
-   Question(
-    questionText: 'What is a jagged array?',
-    options: [
-      'An array with rows of different lengths',
-      'An array with rows of the same length',
-      'A type of stack',
-      'A type of queue'
-    ],
+  Question(
+    questionText: 'Which of the following sorting algorithms is stable?',
+    options: ['Merge sort', 'Quick sort', 'Heap sort', 'Selection sort'],
     correctAnswerIndex: 0,
   ),//23
 
-   Question(
-    questionText: 'How do you find the length of an array in most programming languages?',
-    options: [ 'array.size', 'array.length','length(array)', 'size(array)'],
-    correctAnswerIndex: 1,
+  Question(
+    questionText: 'What is the purpose of breadth-first search (BFS)?',
+    options: ['Explore nodes level by level', 'Explore nodes depth by depth', 'Sort nodes', 'Create a tree'],
+    correctAnswerIndex: 0,
   ),//24
 
-   Question(
-   questionText: 'What happens when you access an index that is out of bounds in an array?',
-    options: [
-      'An error occurs',
-      'It returns the last element',
-      'It returns the first element',
-      'It returns null'
-    ],
+  Question(
+    questionText: 'Which data structure is used for implementing depth-first search (DFS)?',
+    options: ['Stack', 'Queue', 'Array', 'Tree'],
     correctAnswerIndex: 0,
   ),//25
 
   Question(
-    questionText: 'Which of the following is a valid array operation?',
-    options: ['Insertion', 'Deletion', 'Traversal', 'All of the above'],
-    correctAnswerIndex: 3,
+    questionText: 'What is the primary disadvantage of a hash table?',
+    options: ['Possible collisions', 'Slow access time', 'Memory overhead', 'Fixed size'],
+    correctAnswerIndex: 0,
   ),//26
 
   Question(
-    questionText: 'If int arr[5] = {1, 2, 3, 4, 5}; what will be the result of arr[5]?',
-    options: ['5', '0', 'Runtime error or undefined behavior', 'Index out of bounds error'],
-    correctAnswerIndex: 2,
+    questionText: 'What is the time complexity of removing an element from the beginning of a linked list?',
+    options: ['O(1)', 'O(n)', 'O(log n)', 'O(n^2)'],
+    correctAnswerIndex: 0,
   ),//27
 
   Question(
-    questionText: 'Which of the following is not a feature of arrays?',
-    options: [' Fixed size', 'Contiguous memory allocation', 'Store elements of different data types', ' Access time is O(1) by index'],
-    correctAnswerIndex: 2,
+    questionText: 'In a binary search tree, what is the left child of a node generally less than?',
+    options: ['Parent node', 'Root node', 'Right child', 'All nodes'],
+    correctAnswerIndex: 0,
   ),//28
 
   Question(
-    questionText: 'Which of the following is a limitation of arrays?',
-    options: ['Arrays allow access to elements by index', 'Arrays can store multiple values in one variable', 'Arrays have a fixed size once created', 'Arrays allow traversal of elements'],
-    correctAnswerIndex: 2,
+    questionText: 'Which traversal method is used to retrieve a binary search tree in sorted order?',
+    options: ['In-order', 'Pre-order', 'Post-order', 'Level-order'],
+    correctAnswerIndex: 0,
   ),//29
 
   Question(
-    questionText: 'If int arr[4] = {1, 3, 4, 5}; what will be the result of arr[4]?',
-    options:  ['5', '4', 'Runtime error or undefined behavior', 'Index out of bounds error'],
-    correctAnswerIndex: 2,
+    questionText: 'What type of data structure is used to represent a weighted graph?',
+    options: ['Adjacency matrix or list with weights', 'Stack', 'Queue', 'Binary tree'],
+    correctAnswerIndex: 0,
   ),//30
 ];
+
 
 
 
@@ -374,7 +351,7 @@ class FinalQuiz extends StatelessWidget {
 
           if (flag1 == 0 && flag2) {
             String testId = 'final_test';
-            return QuizUI(quizQuestions: arrayQuestions, testId: testId);
+            return QuizUI(quizQuestions: finaltest, testId: testId);
           } else {
             return Leaderboard();
           }
