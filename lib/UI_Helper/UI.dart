@@ -67,6 +67,9 @@ TextStyle h3(){
 
 
 // Define the Question class
+
+
+
 class Question {
   final String questionText;
   final List<String> options;
@@ -93,10 +96,10 @@ List<Question> getRandomQuestions(List<Question> allQuestions) {
 }
 
 class QuizUI extends StatefulWidget {
-  final List<Question> quizQuestions; // Pass the questions from the topic file
+  final List<Question> quizQuestions;
   final String testId;
-  
-  QuizUI({required this.quizQuestions,required this.testId});
+
+  QuizUI({required this.quizQuestions, required this.testId});
 
   @override
   _QuizUIState createState() => _QuizUIState();
@@ -113,110 +116,119 @@ class _QuizUIState extends State<QuizUI> {
     });
   }
 
-  
-Future<void> submitQuiz() async {
-  // Access the testId from the widget
-  String quizId = widget.testId;
-  int score = calculateScore(); // Method to calculate score based on selected answers
+  Future<void> submitQuiz() async {
+    String quizId = widget.testId;
+    int score = calculateScore();
 
-if (quizId == 'final_test') {
-  try {
-    await testDocument.update({
-      'final': score,
-      'flag': 1,
-    });
-    print("Field updated successfully!");
+    // Determine feedback message
+    String feedback;
+    Color bgColor;
 
-    // Show Snackbar with final score
+    if (score >= 8) {
+      feedback = 'Excellent!';
+      bgColor = Colors.green;
+    } else if (score >= 4) {
+      feedback = 'Good Job!';
+      bgColor = Colors.orange;
+    } else {
+      feedback = 'Needs Improvement';
+      bgColor = Colors.red;
+    }
+
+    // Show a floating feedback message
+    showFloatingFeedback(feedback, bgColor);
+
+    // Handle Firestore updates
+    if (quizId == 'final_test') {
+      try {
+        await testDocument.update({
+          'final': score,
+          'flag': 1,
+        });
+        print("Field updated successfully!");
+
+        Future.delayed(Duration(seconds: 2), () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Leaderboard()),
+          );
+        });
+      } catch (e) {
+        print("Failed to update field: $e");
+      }
+    } else {
+      try {
+        await submitTest(quizId, score);
+        setState(() {
+          isSubmitted = true;
+          this.score = score;
+        });
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to submit quiz: $e')),
+        );
+      }
+    }
+  }
+
+  void showFloatingFeedback(String message, Color bgColor) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Final Score: $score'),
-        duration: Duration(seconds: 2),
+        content: Text(
+          message,
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: bgColor,
+        duration: Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        margin: EdgeInsets.all(20),
       ),
     );
-
-    // Delay for Snackbar visibility, then navigate to Leaderboard
-    Future.delayed(Duration(seconds: 2), () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Leaderboard()),
-      );
-    });
-  } catch (e) {
-    print("Failed to update field: $e");
-  }
-}
-
-  else
-  {
-  try {
-    await submitTest(quizId, score);
-    // Show the result screen in a dialog
-    setState(() {
-      isSubmitted = true;
-      this.score = score;
-    });
-  } catch (e) {
-    // Handle any errors here
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Failed to submit quiz: $e')),
-    );
-  }
   }
 
-}
+  int calculateScore() {
+    int score = 0;
+    for (int i = 0; i < widget.quizQuestions.length; i++) {
+      if (selectedAnswers[i] == widget.quizQuestions[i].correctAnswerIndex) {
+        score++;
+      }
+    }
+    return score;
+  }
 
+  Future<void> submitTest(String quizId, int score) async {
+    try {
+      final snapshot = await testDocument.get();
+      if (snapshot.exists) {
+        List<dynamic> existingTestIds = snapshot['test_id'] ?? [];
+        List<dynamic> existingMarks = snapshot['marks'] ?? [];
+        List<dynamic> existingTimes = snapshot['time'] ?? [];
 
-// Method to calculate score
-int calculateScore() {
-  int score = 0;
-  for (int i = 0; i < widget.quizQuestions.length; i++) {
-    if (selectedAnswers[i] == widget.quizQuestions[i].correctAnswerIndex) {
-      score++;
+        existingTestIds.add(quizId);
+        existingMarks.add(score);
+        existingTimes.add(DateTime.now().toString());
+
+        await testDocument.update({
+          'test_id': existingTestIds,
+          'marks': existingMarks,
+          'time': existingTimes,
+        });
+      } else {
+        await testDocument.set({
+          'test_id': [quizId],
+          'marks': [score],
+          'time': [DateTime.now().toString()],
+        });
+      }
+    } catch (e) {
+      print('Error updating test data: $e');
+      throw e;
     }
   }
-  return score;
-}
-
-// submitTest function
-Future<void> submitTest(String quizId, int score) async {
-  // Get the user ID from Firebase Authentication
-
-
-  try {
-    // Retrieve current document data
-    final snapshot = await testDocument.get();
-    if (snapshot.exists) {
-      List<dynamic> existingTestIds = snapshot['test_id'] ?? [];
-      List<dynamic> existingMarks = snapshot['marks'] ?? [];
-      List<dynamic> existingTimes = snapshot['time'] ?? [];
-
-      // Manually add the new entries to each array
-      existingTestIds.add(quizId);
-      existingMarks.add(score);
-      existingTimes.add(DateTime.now().toString());
-
-      // Update the document with the modified arrays
-      await testDocument.update({
-        'test_id': existingTestIds,
-        'marks': existingMarks,
-        'time': existingTimes,
-      });
-    } else {
-      // If document doesn't exist, create it with initial arrays
-      await testDocument.set({
-        'test_id': [quizId],
-        'marks': [score],
-        'time': [DateTime.now().toString()],
-      });
-    }
-  } catch (e) {
-    print('Error updating test data: $e'); // Log the error if the update fails
-    throw e; // Optionally re-throw the error for further handling
-  }
-}
-
-
 
   void restartQuiz() {
     setState(() {
@@ -264,14 +276,10 @@ Future<void> submitTest(String quizId, int score) async {
             child: ElevatedButton(
               onPressed: selectedAnswers.length == widget.quizQuestions.length
                   ? () async {
-                      // Call the submitQuiz function
                       await submitQuiz();
                     }
-                  : null, // Enable button only if all questions are answered
-              child: Text(
-                'Submit Quiz',
-                style: TextStyle(fontSize: 20),
-              ),
+                  : null,
+              child: Text('Submit Quiz', style: TextStyle(fontSize: 20)),
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.all(16.0),
                 backgroundColor: Color.fromARGB(255, 105, 1, 161),
@@ -298,7 +306,6 @@ Future<void> submitTest(String quizId, int score) async {
               '${questionIndex + 1}. ${question.questionText}',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10),
             ...question.options.asMap().entries.map((entry) {
               int optionIndex = entry.key;
               String optionText = entry.value;
@@ -318,65 +325,35 @@ Future<void> submitTest(String quizId, int score) async {
   }
 
   Widget buildResultScreen(int score) {
+    String feedback = score >= 8
+        ? 'Excellent!'
+        : score >= 4
+            ? 'Good Job!'
+            : 'Needs Improvement';
+
     return Center(
       child: SizedBox(
-        height: 300,
+        height: 350,
         width: 400,
         child: Card(
-          elevation: 8.0, // Adds shadow effect
+          elevation: 8.0,
           color: Color.fromARGB(255, 244, 224, 255),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0), // Rounded corners
+            borderRadius: BorderRadius.circular(15.0),
           ),
           child: Padding(
-            padding: EdgeInsets.all(20.0), // Adds padding inside the card
+            padding: EdgeInsets.all(20.0),
             child: Column(
-              mainAxisSize: MainAxisSize.min, // Keeps the card size minimal
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  'Your Score: $score / ${widget.quizQuestions.length}',
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                Text('Your Score: $score / ${widget.quizQuestions.length}',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                 SizedBox(height: 20),
-                SizedBox(
-                  height: 50,
-                  width: 180,
-                  child: ElevatedButton(
-                    onPressed: restartQuiz,
-                    child: Text(
-                      'Restart Quiz',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.all(16.0),
-                      backgroundColor: Color.fromARGB(255, 105, 1, 161),
-                      foregroundColor: Colors.white,
-                    ),
-                  ),
-                ),
+                Text(feedback, style: TextStyle(fontSize: 26)),
+                SizedBox(height: 20),
+                buildButton('Restart Quiz', restartQuiz),
                 SizedBox(height: 10),
-                SizedBox(
-                  height: 50,
-                  width: 180,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context); // Go back to previous screen
-                    },
-                    child: Text(
-                      'Quit Quiz',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.all(16.0),
-                      backgroundColor: Color.fromARGB(255, 105, 1, 161),
-                      foregroundColor: Colors.white,
-                    ),
-                  ),
-                ),
+                buildButton('Quit Quiz', () => Navigator.pop(context)),
               ],
             ),
           ),
@@ -384,4 +361,20 @@ Future<void> submitTest(String quizId, int score) async {
       ),
     );
   }
+
+  Widget buildButton(String text, VoidCallback onPressed) {
+    return SizedBox(
+      height: 50,
+      width: 180,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        child: Text(text, style: TextStyle(fontSize: 18)),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color.fromARGB(255, 105, 1, 161),
+          foregroundColor: Colors.white,
+        ),
+      ),
+    );
+  }
 }
+
