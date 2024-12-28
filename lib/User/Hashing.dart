@@ -586,7 +586,7 @@ class HashingQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
     List<Question> randomQuestions = getRandomQuestions(HashingQuestions);
-    String testId = '16_hashing'; // Example test_id, modify as needed
+    String testId = 'Hashing'; // Example test_id, modify as needed
     return QuizUI(quizQuestions:randomQuestions, testId: testId ); // Use the common UI
   }
 }

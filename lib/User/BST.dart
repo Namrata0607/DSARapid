@@ -1,11 +1,5 @@
 import 'package:dsa_rapid/UI_Helper/UI.dart';
 import 'package:flutter/material.dart';
-import 'package:dsa_rapid/User/Dashboard.dart';
-import 'package:flutter/services.dart';
-import 'dart:math';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
-import 'dart:math';
-import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
@@ -829,7 +823,7 @@ class BSTQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
   List<Question> randomQuestions = getRandomQuestions(BSTQuestions);
-  String testId = '17_bst'; // Example test_id, modify as needed
+  String testId = 'BST'; // Example test_id, modify as needed
     return QuizUI(quizQuestions: randomQuestions, testId: testId); // Use the common UI
   }
 }

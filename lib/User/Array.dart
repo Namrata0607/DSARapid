@@ -236,9 +236,9 @@ class _ArrayVisualizerScreenState extends State<ArrayVisualizerScreen> {
                   child: Text('Create Default'),
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.purple),
+                        WidgetStateProperty.all<Color>(Colors.purple),
                     foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
+                        WidgetStateProperty.all<Color>(Colors.white),
                   ),
                 ),
                 ElevatedButton(
@@ -246,9 +246,9 @@ class _ArrayVisualizerScreenState extends State<ArrayVisualizerScreen> {
                   child: Text('Clear'),
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.purple),
+                        WidgetStateProperty.all<Color>(Colors.purple),
                     foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
+                        WidgetStateProperty.all<Color>(Colors.white),
                   ),
                 ),
                 ElevatedButton(
@@ -256,9 +256,9 @@ class _ArrayVisualizerScreenState extends State<ArrayVisualizerScreen> {
                   child: Text('Insert'),
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.purple),
+                        WidgetStateProperty.all<Color>(Colors.purple),
                     foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
+                        WidgetStateProperty.all<Color>(Colors.white),
                   ),
                 ),
                 ElevatedButton(
@@ -266,9 +266,9 @@ class _ArrayVisualizerScreenState extends State<ArrayVisualizerScreen> {
                   child: Text('Delete'),
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.purple),
+                        WidgetStateProperty.all<Color>(Colors.purple),
                     foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
+                        WidgetStateProperty.all<Color>(Colors.white),
                   ),
                 ),
                 ElevatedButton(
@@ -276,9 +276,9 @@ class _ArrayVisualizerScreenState extends State<ArrayVisualizerScreen> {
                   child: Text('Update'),
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.purple),
+                        WidgetStateProperty.all<Color>(Colors.purple),
                     foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
+                        WidgetStateProperty.all<Color>(Colors.white),
                   ),
                 ),
                 ElevatedButton(
@@ -286,9 +286,9 @@ class _ArrayVisualizerScreenState extends State<ArrayVisualizerScreen> {
                   child: Text('Find Index'),
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.purple),
+                        WidgetStateProperty.all<Color>(Colors.purple),
                     foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
+                        WidgetStateProperty.all<Color>(Colors.white),
                   ),
                 ),
               ],
@@ -750,7 +750,8 @@ class ArrayQuiz extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Question> randomQuestions = getRandomQuestions(arrayQuestions);
-    String testId = '1'; // Example test_id, modify as needed
+    String testId = 'Array'; 
+    // String topicName = 'Array';
     return QuizUI(quizQuestions:randomQuestions , testId: testId); // Use the common UI
   }
 }

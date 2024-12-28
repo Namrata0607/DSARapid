@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:dsa_rapid/User/Dashboard.dart';
 import 'package:dsa_rapid/UI_Helper/UI.dart';
-import 'dart:math';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -570,7 +568,7 @@ class SelectionSortQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
     List<Question> randomQuestions = getRandomQuestions(SelectionSortQuestions);
-    String testId = '12_selectionsort'; // Example test_id, modify as needed
+    String testId = 'Selection Sort'; // Example test_id, modify as needed
     return QuizUI(quizQuestions: randomQuestions, testId: testId); // Use the common UI
   }
 }

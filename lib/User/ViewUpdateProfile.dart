@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dsa_rapid/User/Dashboard.dart';
 import 'package:dsa_rapid/UI_Helper/UI.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +43,7 @@ class _ViewprofileState extends State<Viewprofile> {
 
                 //  // Extract arrays for test data from Firestore
                   final data = snapshot.data!.data() as Map<String, dynamic>?;
+                  // final List<dynamic> testnames = data?['topic_name'] ?? []; 
                   final List<dynamic> testIds = data?['test_id'] ?? [];
                   final List<dynamic> marks = data?['marks'] ?? [];
                   final List<dynamic> times = data?['time'] ?? [];
@@ -58,34 +58,40 @@ class _ViewprofileState extends State<Viewprofile> {
                   final int rowCount = testIds.length;
 
                   return Center(
-                    child: Container(
-                      padding: EdgeInsets.all(16.0),
-                      margin: EdgeInsets.all(20.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 3,
-                            blurRadius: 5,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: DataTable(
-                         columns: const [
-                          DataColumn(label: Text('Test id', style: TextStyle(fontWeight: FontWeight.bold))),
-                          DataColumn(label: Text('Marks', style: TextStyle(fontWeight: FontWeight.bold))),
-                          DataColumn(label: Text('Time', style: TextStyle(fontWeight: FontWeight.bold))),
-                        ],
-                        rows: List<DataRow>.generate(rowCount, (index) {
-                          return DataRow(cells: [
-                            DataCell(Text(testIds[index]?.toString() ?? 'N/A')),
-                            DataCell(Text(marks[index]?.toString() ?? 'N/A')),
-                            DataCell(Text(times[index]?.toString() ?? 'N/A')),
-                          ]);
-                        }),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Container(
+                        height: 600,
+                        width: 700,
+                        padding: EdgeInsets.all(16.0),
+                        margin: EdgeInsets.all(20.0),
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 244, 224, 255),
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 3,
+                              blurRadius: 5,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: DataTable(
+                           columns: const [
+                            DataColumn(label: Text('Topic Names', style: TextStyle(fontWeight: FontWeight.bold))),
+                            DataColumn(label: Text('Test Id', style: TextStyle(fontWeight: FontWeight.bold))),
+                            DataColumn(label: Text('Marks', style: TextStyle(fontWeight: FontWeight.bold))),
+                            DataColumn(label: Text('Time', style: TextStyle(fontWeight: FontWeight.bold))),
+                          ],
+                          rows: List<DataRow>.generate(rowCount, (index) {
+                            return DataRow(cells: [
+                              DataCell(Text(testIds[index]?.toString() ?? 'N/A')),
+                              DataCell(Text(marks[index]?.toString() ?? 'N/A')),
+                              DataCell(Text(times[index]?.toString() ?? 'N/A')),
+                            ]);
+                          }),
+                        ),
                       ),
                     ),
                   );
@@ -299,12 +305,6 @@ final List<Question> finaltest = [
 ];
 
 
-
-
-
-
-
-
 class FinalQuiz extends StatelessWidget {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -324,10 +324,34 @@ class FinalQuiz extends StatelessWidget {
         flag1 = data['flag'] as int?;
 
         // Check for test_id array containing "1", "2", "3" as strings
-        List<dynamic>? testIdArray = data['test_id'];
-        if (testIdArray != null && testIdArray.contains("1") && testIdArray.contains("2") && testIdArray.contains("3")) {
-          flag2 = true;
-        }
+        List<dynamic>? testTopicArray = data['test_id'];
+        List<String> requiredTopics = [
+        "Array",
+        "Stack",
+        "Queue",
+        "Circular Queue",
+        "Priority Queue",
+        "Singly Linked List",
+        "Doubly Linked List",
+        "Circular Linked List",
+        "Linear Search",
+        "Binary Search",
+        "Bubble Sort",
+        "Selection Sort",
+        "Insertion Sort",
+        "Merge Sort",
+        "Quick Sort",
+        "Hashing",
+        "Binary Search Tree",
+        "Heap Tree",
+        "AVL Tree",
+        "BFS",
+        "DFS"
+      ];
+        if (testTopicArray != null && 
+        requiredTopics.every((topic) => testTopicArray.contains(topic))) {
+      flag2 = true;
+    }
       }
     } catch (e) {
       print('Error fetching flag values: $e');

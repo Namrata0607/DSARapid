@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:dsa_rapid/UI_Helper/UI.dart';
-import 'package:dsa_rapid/User/Dashboard.dart';
-import 'dart:math';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -531,15 +529,13 @@ Question(
   options: ['Sorting files on a disk', 'Searching for an element in an array', 'Generating random numbers', 'None of the above'],
   correctAnswerIndex: 0,
 ),
-
-
 ];
 
 class MergesortQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
   List<Question> randomQuestions = getRandomQuestions(MergeSortQuestions);
-  String testId = '14_mergesort'; // Example test_id, modify as needed
+  String testId = 'Merge Sort'; // Example test_id, modify as needed
     return QuizUI(quizQuestions: randomQuestions, testId: testId); // Use the common UI
   }
 }

@@ -5,7 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  
   const FirebaseOptions firebaseOptions = FirebaseOptions(
       apiKey: "AIzaSyBOewaldLgxm141r47USG4sNf8xfhCHgso",
       authDomain: "dsarapid-33e23.firebaseapp.com",

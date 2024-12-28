@@ -555,7 +555,7 @@ class InsertionSortQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
     List<Question> randomQuestions = getRandomQuestions(InsertionSortQuestions);
-    String testId = '13_insertionsort'; // Example test_id, modify as needed
+    String testId = 'Insertion Sort'; // Example test_id, modify as needed
     return QuizUI(quizQuestions: randomQuestions, testId: testId); // Use the common UI
   }
 }

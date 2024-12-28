@@ -577,7 +577,7 @@ class BinarySearchQuiz extends StatelessWidget {
   @override
  Widget build(BuildContext context) {
     List<Question> randomQuestions = getRandomQuestions( BinarySearchQuestions);
-    String testId = '10_binarysearch'; // Example test_id, modify as needed
-    return QuizUI(quizQuestions: BinarySearchQuestions, testId: testId); // Use the common UI
+    String testId = 'Binary Search'; // Example test_id, modify as needed
+    return QuizUI(quizQuestions: randomQuestions, testId: testId); // Use the common UI
   }
 }
