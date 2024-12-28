@@ -80,7 +80,7 @@ class _ViewprofileState extends State<Viewprofile> {
                         child: DataTable(
                            columns: const [
                             DataColumn(label: Text('Topic Names', style: TextStyle(fontWeight: FontWeight.bold))),
-                            DataColumn(label: Text('Test Id', style: TextStyle(fontWeight: FontWeight.bold))),
+                            // DataColumn(label: Text('Test Id', style: TextStyle(fontWeight: FontWeight.bold))),
                             DataColumn(label: Text('Marks', style: TextStyle(fontWeight: FontWeight.bold))),
                             DataColumn(label: Text('Time', style: TextStyle(fontWeight: FontWeight.bold))),
                           ],
