@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dsa_rapid/UI_Helper/UI.dart';
+import 'package:dsa_rapid/User/Dashboard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -377,7 +378,7 @@ class FinalQuiz extends StatelessWidget {
             String testId = 'final_test';
             return QuizUI(quizQuestions: finaltest, testId: testId);
           } else {
-            return Leaderboard();
+            return Home();
           }
         } else {
           return Center(child: Text('Error loading data'));
@@ -385,6 +386,8 @@ class FinalQuiz extends StatelessWidget {
       },
     );
   }
+
+  
 }
 
 
