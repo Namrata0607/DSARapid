@@ -133,10 +133,7 @@ class CircularLinkedListVisualizerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Circular Linked List Visualizer',
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-      ),
+      debugShowCheckedModeBanner: false,
       home: CircularLinkedListScreen(),
     );
   }

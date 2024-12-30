@@ -39,10 +39,7 @@ class InsertionSort extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Insertion Sort Visualizer',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+     debugShowCheckedModeBanner: false,
       home: InsertionSortScreen(),
     );
   }

@@ -53,10 +53,7 @@ class DoublyLinkedListVisualizerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Doubly Linked List Visualizer',
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-      ),
+      debugShowCheckedModeBanner: false,
       home: DoublyLinkedListScreen(),
     );
   }

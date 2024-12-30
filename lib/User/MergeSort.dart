@@ -37,10 +37,7 @@ class MergeSort extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Merge Sort Visualizer',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+    debugShowCheckedModeBanner: false,
       home: MergeSortScreen(),
     );
   }

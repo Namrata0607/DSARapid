@@ -40,10 +40,6 @@ class BubbleSort extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Bubble Sort Visualizer',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
       home: BubbleSortScreen(),
     );
   }

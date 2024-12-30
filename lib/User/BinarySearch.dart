@@ -44,10 +44,6 @@ class BinarySearch extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Binary Search Visualizer',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
       home: BinarySearchScreen(),
     );
   }

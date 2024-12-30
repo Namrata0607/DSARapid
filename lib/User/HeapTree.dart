@@ -42,10 +42,7 @@ class HeapTree extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Heap Tree Visualizer',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+     debugShowCheckedModeBanner: false,
       home: HeapTreeScreen(),
     );
   }
@@ -82,11 +79,7 @@ Min-Heap Extraction Algorithm:
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Heap Tree Visualizer'),
-        backgroundColor: const Color.fromARGB(255, 214, 59, 198),
-        titleTextStyle: TextStyle(color: Colors.white),
-      ),
+      appBar: appBack(context),
       body: Column(
         children: [
           Expanded(

@@ -40,10 +40,7 @@ class BSTVisualizer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Binary Search Tree Visualizer',
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-      ),
+      debugShowCheckedModeBanner: false,
       home: BSTScreen(),
     );
   }

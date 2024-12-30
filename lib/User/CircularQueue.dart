@@ -46,16 +46,8 @@ class CircularQueueVisualizerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Circular Queue Visualizer',
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-      ),
-      home: Scaffold(
-        // appBar: AppBar(
-        //   title: Text('Circular Queue Visualizer'),
-        // ),
-        body: CircularQueueScreen(),
-      ),
+      debugShowCheckedModeBanner: false,
+      home: CircularQueueScreen(),
     );
   }
 }

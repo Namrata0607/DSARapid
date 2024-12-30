@@ -42,13 +42,8 @@ class PriorityQueueVisualizerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Priority Queue Visualizer',
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-      ),
-      home: Scaffold(
-        body: PriorityQueueScreen(),
-      ),
+      debugShowCheckedModeBanner: false,
+      home: PriorityQueueScreen(),
     );
   }
 }

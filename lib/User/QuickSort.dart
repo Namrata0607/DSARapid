@@ -37,10 +37,7 @@ class QuickSort extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Quick Sort Visualizer',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      debugShowCheckedModeBanner: false,
       home: QuickSortScreen(),
     );
   }

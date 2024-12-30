@@ -38,10 +38,7 @@ class QueueVisualizer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Queue Visualizer',
-      theme: ThemeData(
-        primarySwatch: Colors.purple, // Purple theme
-      ),
+      debugShowCheckedModeBanner: false,
       home: QueueScreen(),
     );
   }
@@ -196,7 +193,7 @@ class _QueueScreenState extends State<QueueScreen> {
                   child: Text('Create Default'),
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.purple), // Purple buttons
+                        MaterialStateProperty.all<Color>(Color.fromARGB(255, 105, 1, 161),), // Purple buttons
                     foregroundColor:
                         MaterialStateProperty.all<Color>(Colors.white),
                   ),
@@ -206,7 +203,7 @@ class _QueueScreenState extends State<QueueScreen> {
                   child: Text('Enqueue'),
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.purple),
+                        MaterialStateProperty.all<Color>(Color.fromARGB(255, 105, 1, 161),),
                     foregroundColor:
                         MaterialStateProperty.all<Color>(Colors.white),
                   ),
@@ -216,7 +213,7 @@ class _QueueScreenState extends State<QueueScreen> {
                   child: Text('Dequeue'),
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.purple),
+                        MaterialStateProperty.all<Color>(Color.fromARGB(255, 105, 1, 161),),
                     foregroundColor:
                         MaterialStateProperty.all<Color>(Colors.white),
                   ),
@@ -226,7 +223,7 @@ class _QueueScreenState extends State<QueueScreen> {
                   child: Text('Peek'),
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.purple),
+                        MaterialStateProperty.all<Color>( Color.fromARGB(255, 105, 1, 161),),
                     foregroundColor:
                         MaterialStateProperty.all<Color>(Colors.white),
                   ),
@@ -236,7 +233,7 @@ class _QueueScreenState extends State<QueueScreen> {
                   child: Text('Clear'),
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.purple),
+                        MaterialStateProperty.all<Color>( Color.fromARGB(255, 105, 1, 161),),
                     foregroundColor:
                         MaterialStateProperty.all<Color>(Colors.white),
                   ),

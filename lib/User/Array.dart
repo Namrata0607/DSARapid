@@ -7,7 +7,6 @@ import 'package:dsa_rapid/UI_Helper/UI.dart'; // Import the helper
 import 'package:dsa_rapid/User/SignInUp.dart';
 
 
-
 class ArrayNotes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -50,10 +49,6 @@ class ArrayVisualizer extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Array Operations Visualizer',
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-      ),
       home: ArrayVisualizerScreen(),
     );
   }
@@ -75,10 +70,7 @@ class _ArrayVisualizerScreenState extends State<ArrayVisualizerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Array Operations Visualizer'),
-        backgroundColor: Colors.purple,
-      ),
+      appBar: appBack(context),
       body: Column(
         children: [
           Expanded(
@@ -106,7 +98,7 @@ class _ArrayVisualizerScreenState extends State<ArrayVisualizerScreen> {
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.purple,
+                                    color:  Color.fromARGB(255, 105, 1, 161),
                                   ),
                                 ),
                                 Divider(),
@@ -139,7 +131,7 @@ class _ArrayVisualizerScreenState extends State<ArrayVisualizerScreen> {
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.purple,
+                                    color:  Color.fromARGB(255, 105, 1, 161),
                                   ),
                                 ),
                                 Divider(),
@@ -198,8 +190,7 @@ class _ArrayVisualizerScreenState extends State<ArrayVisualizerScreen> {
                                                 width: 60,
                                                 color: highlightedIndex == index
                                                     ? Colors.greenAccent
-                                                    : Color.fromARGB(
-                                                        255, 175, 87, 160),
+                                                    :  Color.fromARGB(255, 105, 1, 161),
                                                 alignment: Alignment.center,
                                                 child: Text(
                                                   value.toString(),
@@ -236,7 +227,7 @@ class _ArrayVisualizerScreenState extends State<ArrayVisualizerScreen> {
                   child: Text('Create Default'),
                   style: ButtonStyle(
                     backgroundColor:
-                        WidgetStateProperty.all<Color>(Colors.purple),
+                        WidgetStateProperty.all<Color>( Color.fromARGB(255, 105, 1, 161),),
                     foregroundColor:
                         WidgetStateProperty.all<Color>(Colors.white),
                   ),
@@ -246,7 +237,7 @@ class _ArrayVisualizerScreenState extends State<ArrayVisualizerScreen> {
                   child: Text('Clear'),
                   style: ButtonStyle(
                     backgroundColor:
-                        WidgetStateProperty.all<Color>(Colors.purple),
+                        WidgetStateProperty.all<Color>( Color.fromARGB(255, 105, 1, 161),),
                     foregroundColor:
                         WidgetStateProperty.all<Color>(Colors.white),
                   ),
@@ -256,7 +247,7 @@ class _ArrayVisualizerScreenState extends State<ArrayVisualizerScreen> {
                   child: Text('Insert'),
                   style: ButtonStyle(
                     backgroundColor:
-                        WidgetStateProperty.all<Color>(Colors.purple),
+                        WidgetStateProperty.all<Color>( Color.fromARGB(255, 105, 1, 161),),
                     foregroundColor:
                         WidgetStateProperty.all<Color>(Colors.white),
                   ),
@@ -266,7 +257,7 @@ class _ArrayVisualizerScreenState extends State<ArrayVisualizerScreen> {
                   child: Text('Delete'),
                   style: ButtonStyle(
                     backgroundColor:
-                        WidgetStateProperty.all<Color>(Colors.purple),
+                        WidgetStateProperty.all<Color>( Color.fromARGB(255, 105, 1, 161),),
                     foregroundColor:
                         WidgetStateProperty.all<Color>(Colors.white),
                   ),
@@ -276,7 +267,7 @@ class _ArrayVisualizerScreenState extends State<ArrayVisualizerScreen> {
                   child: Text('Update'),
                   style: ButtonStyle(
                     backgroundColor:
-                        WidgetStateProperty.all<Color>(Colors.purple),
+                        WidgetStateProperty.all<Color>( Color.fromARGB(255, 105, 1, 161),),
                     foregroundColor:
                         WidgetStateProperty.all<Color>(Colors.white),
                   ),
@@ -286,7 +277,7 @@ class _ArrayVisualizerScreenState extends State<ArrayVisualizerScreen> {
                   child: Text('Find Index'),
                   style: ButtonStyle(
                     backgroundColor:
-                        WidgetStateProperty.all<Color>(Colors.purple),
+                        WidgetStateProperty.all<Color>( Color.fromARGB(255, 105, 1, 161),),
                     foregroundColor:
                         WidgetStateProperty.all<Color>(Colors.white),
                   ),

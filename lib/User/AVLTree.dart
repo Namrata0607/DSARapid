@@ -43,10 +43,6 @@ class AVLTreeVisualizer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'AVL Tree Visualizer',
-      theme: ThemeData(
-        primarySwatch: Colors.purple, // Set theme to purple
-      ),
       home: AVLTreeScreen(),
     );
   }

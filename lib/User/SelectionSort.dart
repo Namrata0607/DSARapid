@@ -37,10 +37,7 @@ class SelectionSort extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Selection Sort Visualizer',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      debugShowCheckedModeBanner: false,
       home: SelectionSortScreen(),
     );
   }
