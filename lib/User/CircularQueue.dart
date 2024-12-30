@@ -41,15 +41,21 @@ void main() {
   runApp(CircularQueueVisualizerApp());
 }
 
+
 class CircularQueueVisualizerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Circular Queue Visualizer',
       theme: ThemeData(
-        primarySwatch: Colors.purple, // Purple theme
+        primarySwatch: Colors.purple,
       ),
-      home: CircularQueueScreen(),
+      home: Scaffold(
+        // appBar: AppBar(
+        //   title: Text('Circular Queue Visualizer'),
+        // ),
+        body: CircularQueueScreen(),
+      ),
     );
   }
 }
@@ -66,9 +72,9 @@ class _CircularQueueScreenState extends State<CircularQueueScreen> {
   final int maxSize = 7; // Max size of the queue
   String currentAlgorithm = ""; // To display algorithm explanation
   String currentOutput = ""; // To display step-by-step output
-  int? currentHighlight; // To highlight current operation element
 
-  @override
+
+    @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -254,135 +260,176 @@ class _CircularQueueScreenState extends State<CircularQueueScreen> {
     );
   }
 
+  // Section builder for algorithm and output
+  Widget _buildSection({required String title, required String content}) {
+    return Expanded(
+      child: Container(
+        color: Colors.white,
+        padding: EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.purple,
+              ),
+            ),
+            Divider(),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Text(
+                  content,
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Operations buttons
+  Widget _buildOperations() {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      color: Colors.grey.shade100,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          ElevatedButton(
+            onPressed: _createDefaultQueue,
+            child: Text('Create Default'),
+          ),
+          ElevatedButton(
+            onPressed: () => _showEnqueueDialog(context),
+            child: Text('Enqueue'),
+          ),
+          ElevatedButton(
+            onPressed: _dequeue,
+            child: Text('Dequeue'),
+          ),
+          ElevatedButton(
+            onPressed: _peek,
+            child: Text('Peek'),
+          ),
+          ElevatedButton(
+            onPressed: _clearQueue,
+            child: Text('Clear'),
+          ),
+        ],
+      ),
+    );
+  }
+
   // Create default circular queue
   void _createDefaultQueue() {
     setState(() {
-      queue = [10, 20, 30, null, null, null, null]; // Initialize default values
-      front = 0; // Set front to first element
-      rear = 2; // Set rear to the last element
-      currentHighlight = null; // Reset highlight
+      queue = [10, 20, 30, null, null, null, null];
+      front = 0;
+      rear = 2;
       currentAlgorithm = """
 1. A circular queue is a linear data structure in which the last position is connected back to the first position.
-2. The 'Enqueue' operation inserts an element in the queue. If the queue reaches the end, it wraps around to the beginning.
-3. The 'Dequeue' operation removes an element from the front of the queue and updates the front pointer.
+2. The 'Enqueue' operation inserts an element in the queue.
+3. The 'Dequeue' operation removes an element from the front of the queue.
 4. The 'Peek' operation returns the front element without removing it.
 5. The maximum size of the queue is 7 elements.
 """;
-      currentOutput =
-          "Default circular queue created with values 10, 20, 30."; // Initialize output
+      currentOutput = "Default circular queue created with values 10, 20, 30.";
     });
   }
 
-  // Build the queue bars for visualizing
+  // Build queue visualizer bars
   List<Widget> _buildQueueBars() {
     return List<Widget>.generate(queue.length, (index) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5.0),
-        child: AnimatedContainer(
+        child: Container(
           height: 50,
           width: 50,
-          duration: Duration(milliseconds: 300),
-          color: (index == currentHighlight)
-              ? Colors.green // Highlight current operation element
-              : (queue[index] == null ? Colors.grey : Colors.purple),
+          color: queue[index] == null ? Colors.grey : Colors.purple,
           alignment: Alignment.center,
           child: Text(
-            queue[index]?.toString() ?? '', // Show value or empty string
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            queue[index]?.toString() ?? '',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
       );
     });
   }
 
-  // Show dialog to input value for enqueueing
+  // Show dialog for enqueue
   Future<void> _showEnqueueDialog(BuildContext context) async {
-    if ((rear + 1) % maxSize == front) {
-      // Check for queue overflow
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Queue overflow! Max size of $maxSize reached."),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
-
     int? value = await _showInputDialog(context, 'Enqueue Value');
     if (value != null) {
       setState(() {
-        if (front == -1) {
-          front = rear = 0; // Queue was empty, set front and rear to 0
-        } else {
-          rear = (rear + 1) % maxSize; // Wrap around on enqueue
+        if ((rear + 1) % maxSize == front) {
+          _showSnackbar(context, 'Queue overflow!');
+          return;
         }
-        queue[rear] = value; // Insert value
-        currentHighlight = rear; // Highlight the new element
-        currentOutput += "Enqueued $value into the queue.\n"; // Update output
+        if (front == -1) {
+          front = rear = 0;
+        } else {
+          rear = (rear + 1) % maxSize;
+        }
+        queue[rear] = value;
+        currentOutput += "Enqueued $value.\n";
       });
     }
   }
 
-  // Dequeue an element from the front
+  // Dequeue operation
   void _dequeue() {
     if (front == -1) {
-      // Check for queue underflow
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Queue underflow! No elements to dequeue."),
-          backgroundColor: Colors.red,
-        ),
-      );
+      _showSnackbar(context, 'Queue underflow!');
       return;
     }
-
-    int? dequeuedValue = queue[front];
-    queue[front] = null; // Remove element from queue
     setState(() {
-      currentHighlight = front; // Highlight the removed element
-      currentOutput += "Dequeued $dequeuedValue from the queue.\n";
+      int? dequeuedValue = queue[front];
+      queue[front] = null;
+      currentOutput += "Dequeued $dequeuedValue.\n";
       if (front == rear) {
-        // Queue becomes empty
         front = rear = -1;
       } else {
-        front = (front + 1) % maxSize; // Wrap around on dequeue
+        front = (front + 1) % maxSize;
       }
     });
   }
 
-  // Peek the front element without removing it
+  // Peek operation
   void _peek() {
     if (front == -1) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Queue is empty! Nothing to peek."),
-          backgroundColor: Colors.red,
-        ),
-      );
+      _showSnackbar(context, 'Queue is empty!');
       return;
     }
-
     setState(() {
-      currentHighlight = front; // Highlight the front element
-      currentOutput += "Peeked at value ${queue[front]} at the front.\n";
+      currentOutput += "Peeked ${queue[front]}.\n";
     });
   }
 
-  // Clear the queue
+  // Clear queue
   void _clearQueue() {
     setState(() {
-      queue = List.filled(maxSize, null); // Clear all elements
-      front = rear = -1; // Reset front and rear pointers
-      currentHighlight = null; // Reset highlight
-      currentOutput = "Queue has been cleared.\n"; // Update output
+      queue = List.filled(maxSize, null);
+      front = rear = -1;
+      currentOutput = "Queue cleared.\n";
     });
   }
 
-  // Show input dialog for enqueue operation
+  // Show snackbar with red color
+  void _showSnackbar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+
+  // Show input dialog
   Future<int?> _showInputDialog(BuildContext context, String title) async {
     int? value;
     return await showDialog<int>(
@@ -400,7 +447,7 @@ class _CircularQueueScreenState extends State<CircularQueueScreen> {
           actions: [
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pop(value); // Return the entered value
+                Navigator.of(context).pop(value);
               },
               child: Text("Submit"),
             ),

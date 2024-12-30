@@ -302,55 +302,50 @@ class _StackScreenState extends State<StackScreen> {
   // Show dialog to input value for pushing into the stack
   Future<void> _showPushDialog(BuildContext context) async {
   if (topIndex >= maxStackSize - 1) {
-    // Use ScaffoldMessenger outside of the setState method
+    // Show the SnackBar for overflow
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text("Stack overflow! Max size of $maxStackSize reached."),
         backgroundColor: Colors.red,
       ),
     );
-    return;
+    return; // Exit without changing the state
   }
 
   int? value = await _showInputDialog(context, 'Push Value');
   if (value != null) {
     setState(() {
-      topIndex++; // Move the top index up
-      stack[topIndex] = value; // Add element to the top of the stack
-      currentHighlight = topIndex; // Highlight newly pushed element
+      topIndex++; // Increment top index
+      stack[topIndex] = value; // Add element to the stack
+      currentHighlight = topIndex; // Highlight the newly added element
       currentOutput += "Pushed $value onto the stack.\n";
     });
   }
 }
 
 
-  // Pop an element from the stack (leave placeholder)
-  void _popFromStack() {
-    if (topIndex >= 0 && stack[topIndex] != null) {
-      setState(() {
-        int poppedValue = stack[topIndex]!; // Get the top element
-        stack[topIndex] = null; // Remove the popped value (set it to null)
-        currentHighlight = topIndex; // Highlight the popped position
-        topIndex--; // Move the top index down
-        currentOutput += "Popped $poppedValue from the stack.\n";
-      });
 
-      // Show snack bar with pop info
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Popped element: $stack[topIndex + 1]"),
-          backgroundColor: Colors.grey,
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Stack underflow! Cannot pop from an empty stack."),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
+  // Pop an element from the stack (leave placeholder)
+ void _popFromStack() {
+  if (topIndex < 0) {
+    // Stack is empty
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Stack underflow! No elements to pop."),
+        backgroundColor: Colors.red,
+      ),
+    );
+    return;
   }
+
+  setState(() {
+    stack[topIndex] = null; // Clear the top element
+    currentOutput += "Popped element from the stack.\n";
+    currentHighlight = topIndex - 1; // Highlight the new top element
+    topIndex--; // Move the top index down
+  });
+}
+
 
   // Peek the top element of the stack
   void _peekStack() {
@@ -418,13 +413,13 @@ class _StackScreenState extends State<StackScreen> {
     );
   }
 
-  // App back button with title
-  PreferredSizeWidget appBack(BuildContext context) {
-    return AppBar(
-      title: Text('Stack Visualizer'),
-      backgroundColor: Colors.purple,
-    );
-  }
+  // // App back button with title
+  // PreferredSizeWidget appBack(BuildContext context) {
+  //   return AppBar(
+  //     title: Text('Stack Visualizer'),
+  //     backgroundColor: Colors.purple,
+  //   );
+  // }
 }
 
 //Test
