@@ -63,6 +63,13 @@ class _HomeState extends State<Home> {
     );
   }
 
+  void _Leaderboard(){
+     Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Leaderboard()),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -161,10 +168,13 @@ class _HomeState extends State<Home> {
                 title: Text("Logout"),
                 onTap: () async {
                   try {
-                    await _auth.signOut();
-                    Navigator.pushReplacement(
-                      context,
+                    // Sign out the user
+                    await FirebaseAuth.instance.signOut();
+
+                    // Navigate to the Sign-In page and remove all previous routes
+                    Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(builder: (context) => SignInPage()),
+                      (route) => false,
                     );
                   } catch (e) {
                     print('Error during sign out: $e');
@@ -207,6 +217,26 @@ class _HomeState extends State<Home> {
                   ),
                 ),
               ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(255, 105, 1, 161),
+                  minimumSize: Size(
+                    MediaQuery.of(context).size.width * 0.2,
+                    MediaQuery.of(context).size.height * 0.06,
+                  ),
+                ),
+                onPressed: _Leaderboard,
+                child: Text(
+                  'Leader Board',
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.025,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+
             ],
           ),
         ),

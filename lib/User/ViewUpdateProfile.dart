@@ -78,7 +78,19 @@ class _ViewprofileState extends State<Viewprofile> {
                             ),
                           ],
                         ),
-                        child: DataTable(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Text(
+                            "Your Progress",
+                            style: TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(255, 102, 51, 153),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          DataTable(
                            columns: const [
                             DataColumn(label: Text('Topic Names', style: TextStyle(fontWeight: FontWeight.bold))),
                             // DataColumn(label: Text('Test Id', style: TextStyle(fontWeight: FontWeight.bold))),
@@ -93,6 +105,9 @@ class _ViewprofileState extends State<Viewprofile> {
                             ]);
                           }),
                         ),
+                          ]
+                         
+                        )
                       ),
                     ),
                   );
@@ -305,7 +320,6 @@ final List<Question> finaltest = [
   ),//30
 ];
 
-
 class FinalQuiz extends StatelessWidget {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -391,7 +405,6 @@ class FinalQuiz extends StatelessWidget {
 }
 
 
-
 class Leaderboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -436,26 +449,94 @@ class Leaderboard extends StatelessWidget {
             filteredStudents[i] = filteredStudents[i].copyWith(rank: i + 1);
           }
 
-          return SingleChildScrollView(
-            child: DataTable(
-              columns: const [
-                DataColumn(label: Text('Rank')),
-                DataColumn(label: Text('Name')),
-                DataColumn(label: Text('Roll Number')),
-                DataColumn(label: Text('Class')),
-                DataColumn(label: Text('Division')),
-                DataColumn(label: Text('Marks')),
-              ],
-              rows: filteredStudents.map((student) {
-                return DataRow(cells: [
-                  DataCell(Text(student.rank.toString())), // Display rank
-                  DataCell(Text(student.name)),
-                  DataCell(Text(student.rollNumber)),
-                  DataCell(Text(student.className)),
-                  DataCell(Text(student.division)),
-                  DataCell(Text(student.marks.toString())),
-                ]);
-              }).toList(),
+          return Center(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Container(
+                width: 800,
+                height: 700,
+                padding: const EdgeInsets.all(16.0),
+                margin: const EdgeInsets.all(20.0),
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 244, 224, 255),
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 3,
+                      blurRadius: 5,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Leaderboard Title
+                    const Text(
+                      "Leader Board",
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 102, 51, 153),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    // Data Table
+                    DataTable(
+                      columns: const [
+                        DataColumn(label: Text('Rank', style: TextStyle(fontWeight: FontWeight.bold))),
+                        DataColumn(label: Text('Name', style: TextStyle(fontWeight: FontWeight.bold))),
+                        DataColumn(label: Text('Roll Number', style: TextStyle(fontWeight: FontWeight.bold))),
+                        DataColumn(label: Text('Class', style: TextStyle(fontWeight: FontWeight.bold))),
+                        DataColumn(label: Text('Division', style: TextStyle(fontWeight: FontWeight.bold))),
+                        DataColumn(label: Text('Marks', style: TextStyle(fontWeight: FontWeight.bold))),
+                      ],
+                      rows: filteredStudents.map((student) {
+                        // Determine row color based on rank
+                        Color rowColor;
+                        if (student.rank == 1) {
+                          rowColor = const Color.fromARGB(255, 112, 234, 255); // Gold for 1st rank
+                        } else if (student.rank == 2) {
+                          rowColor = const Color.fromARGB(255, 159, 241, 255); // Silver for 2nd rank
+                        } else if (student.rank == 3) {
+                          rowColor = const Color.fromARGB(255, 186, 245, 255); // Bronze for 3rd rank
+                        } else {
+                          rowColor = const Color.fromARGB(255, 211, 248, 255); // Default for other ranks
+                        }
+
+                        // Helper method for DataCell styling
+                        DataCell createStyledDataCell(String text) {
+                          return DataCell(
+                            Text(
+                              text,
+                              style: TextStyle(
+                                fontWeight: student.rank == 1 ? FontWeight.bold : FontWeight.normal,
+                                color: student.rank == 1
+                                    ? const Color.fromARGB(255, 255, 0, 0)
+                                    : Colors.black,
+                              ),
+                            ),
+                          );
+                        }
+
+                        return DataRow(
+                          color: MaterialStateProperty.resolveWith((states) => rowColor),
+                          cells: [
+                            createStyledDataCell(student.rank.toString()),
+                            createStyledDataCell(student.name),
+                            createStyledDataCell(student.rollNumber.toString()),
+                            createStyledDataCell(student.className),
+                            createStyledDataCell(student.division),
+                            createStyledDataCell(student.marks.toString()),
+                          ],
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+
             ),
           );
         },
