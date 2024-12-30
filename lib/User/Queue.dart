@@ -10,8 +10,8 @@ class QueueNotes extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'PDF Viewer',
-      home: PDFViewerScreen(),  // Directly open the PDF on load
+      title: 'Queue Notes',
+      home: PDFViewerScreen(),
     );
   }
 }
@@ -33,7 +33,6 @@ class PDFViewerScreen extends StatelessWidget {
     );
   }
 }
-
 
 class QueueVisualizer extends StatelessWidget {
   @override
@@ -65,190 +64,187 @@ class _QueueScreenState extends State<QueueScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: appBack(context),
-        body: Column(
-          children: [
-            Expanded(
-              child: Row(
-                children: [
-                  // Left Container (for Algorithm and Output)
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      color: Colors.grey.shade300,
-                      padding: EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          // Algorithm section
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              color: Colors.white,
-                              padding: EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Algorithm',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.purple, // Purple heading
-                                    ),
+    return Scaffold(
+      appBar: appBack(context),
+      body: Column(
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                // Left Container (for Algorithm and Output)
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: Colors.grey.shade300,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        // Algorithm section
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Algorithm',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple, // Purple heading
                                   ),
-                                  Divider(),
-                                  Expanded(
-                                    child: SingleChildScrollView(
-                                      child: Text(
-                                        currentAlgorithm,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          // Output/Step-by-step explanation section
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              color: Colors.white,
-                              padding: EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Step-by-Step Output',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.purple, // Purple heading
-                                    ),
-                                  ),
-                                  Divider(),
-                                  Expanded(
-                                    child: SingleChildScrollView(
-                                      child: Text(
-                                        currentOutput,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  // Right Container (for Queue Visualizer)
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      color: Colors.white,
-                      padding: EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          Text(
-                            'Queue Visualizer',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.purple, // Purple heading
-                            ),
-                          ),
-                          Divider(),
-                          Expanded(
-                            child: Center(
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: _buildBars(),
                                 ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentAlgorithm,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        // Output/Step-by-step explanation section
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Step-by-Step Output',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple, // Purple heading
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentOutput,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                // Right Container (for Queue Visualizer)
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Queue Visualizer',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purple, // Purple heading
+                          ),
+                        ),
+                        Divider(),
+                        Expanded(
+                          child: Center(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: _buildBars(),
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            // Bottom Container (for Operation Buttons)
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-              color: Colors.grey.shade100,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    onPressed: _createDefaultQueue,
-                    child: Text('Create Default'),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.purple), // Purple buttons
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
-                    ),
+          ),
+          // Bottom Container (for Operation Buttons)
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            color: Colors.grey.shade100,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  onPressed: _createDefaultQueue,
+                  child: Text('Create Default'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple), // Purple buttons
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
                   ),
-                  ElevatedButton(
-                    onPressed: () => _showEnqueueDialog(context),
-                    child: Text('Enqueue'),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.purple),
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
-                    ),
+                ),
+                ElevatedButton(
+                  onPressed: () => _showEnqueueDialog(context),
+                  child: Text('Enqueue'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
                   ),
-                  ElevatedButton(
-                    onPressed: _dequeueFromQueue,
-                    child: Text('Dequeue'),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.purple),
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
-                    ),
+                ),
+                ElevatedButton(
+                  onPressed: _dequeueFromQueue,
+                  child: Text('Dequeue'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
                   ),
-                  ElevatedButton(
-                    onPressed: _peekQueue,
-                    child: Text('Peek'),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.purple),
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
-                    ),
+                ),
+                ElevatedButton(
+                  onPressed: _peekQueue,
+                  child: Text('Peek'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
                   ),
-                  ElevatedButton(
-                    onPressed: _clearQueue,
-                    child: Text('Clear'),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.purple),
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
-                    ),
+                ),
+                ElevatedButton(
+                  onPressed: _clearQueue,
+                  child: Text('Clear'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -301,115 +297,112 @@ class _QueueScreenState extends State<QueueScreen> {
 
   // Show dialog to input value for enqueuing into the queue
   Future<void> _showEnqueueDialog(BuildContext context) async {
+    // Check if the queue is full
     if (size >= maxQueueSize) {
+      // Show SnackBar with overflow message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Queue overflow! Max size of $maxQueueSize reached."),
           backgroundColor: Colors.red,
         ),
       );
-      return;
+      return; // Exit the function to prevent further enqueue operation
     }
 
+    // Show input dialog to enqueue value
     int? value = await _showInputDialog(context, 'Enqueue Value');
     if (value != null) {
       setState(() {
-        queue[enqueueIndex] = value; // Add element to the queue
-        currentHighlight = enqueueIndex; // Highlight newly enqueued element
-        enqueueIndex = (enqueueIndex + 1) % maxQueueSize; // Increment enqueue index
-        size++; // Increase size
-        currentOutput += "Enqueued $value into the queue.\n";
+        // Add element to the queue
+        queue[enqueueIndex] = value;
+        // Highlight the newly enqueued element
+        currentHighlight = enqueueIndex;
+        // Increment the enqueue index (wrap around if necessary)
+        enqueueIndex = (enqueueIndex + 1) % maxQueueSize;
+        // Increase the queue size
+        size++;
+        currentAlgorithm = "Enqueued $value into the queue.";
+        currentOutput = "Queue after enqueue: ${queue.where((e) => e != null).join(', ')}";
       });
     }
   }
 
-  // Dequeue an element from the queue (leave placeholder)
+  // Dequeue operation
   void _dequeueFromQueue() {
-    if (size > 0 && queue[dequeueIndex] != null) {
-      setState(() {
-        int dequeuedValue = queue[dequeueIndex]!; // Remove first element
-        queue[dequeueIndex] = null; // Leave placeholder
-        currentHighlight = dequeueIndex; // Highlight dequeued position
-        dequeueIndex = (dequeueIndex + 1) % maxQueueSize; // Increment dequeue index
-        currentOutput += "Dequeued $dequeuedValue from the queue.\n";
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Dequeued element: $dequeuedValue"),
-            backgroundColor: Colors.green,
-          ),
-        );
-      });
-    } else {
+    if (size == 0) {
+      // Show SnackBar with underflow message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Queue underflow! Cannot dequeue from an empty queue."),
+          content: Text("Queue underflow! Cannot dequeue."),
           backgroundColor: Colors.red,
         ),
       );
+      return;
     }
-  }
 
-  // Peek the front element of the queue
-  void _peekQueue() {
-    if (size > 0 && queue[dequeueIndex] != null) {
-      int frontValue = queue[dequeueIndex]!; // Get front element
-      setState(() {
-        currentHighlight = dequeueIndex; // Highlight front element
-        currentOutput += "Front element is $frontValue (peeked).\n";
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Front element: $frontValue"),
-          backgroundColor: Colors.blue,
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Queue is empty! No elements to peek."),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
-
-  // Clear the queue
-  void _clearQueue() {
     setState(() {
-      queue = List.filled(maxQueueSize, null); // Clear all elements from queue
-      enqueueIndex = 0;
-      dequeueIndex = 0;
-      size = 0;
-      currentHighlight = null;
-      currentOutput = "Queue cleared.";
+      int? dequeuedValue = queue[dequeueIndex];
+      queue[dequeueIndex] = null; // Remove from the front
+      currentHighlight = dequeueIndex;
+      dequeueIndex = (dequeueIndex + 1) % maxQueueSize;
+      size--;
+      currentAlgorithm = "Dequeued $dequeuedValue from the queue.";
+      currentOutput = "Queue after dequeue: ${queue.where((e) => e != null).join(', ')}";
     });
   }
 
-  // Generalized input dialog to get user input
-  Future<int?> _showInputDialog(BuildContext context, String title) async {
-    final TextEditingController controller = TextEditingController();
+  // Peek operation
+  void _peekQueue() {
+    if (size == 0) {
+      // Show SnackBar with underflow message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Queue is empty!"),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
 
-    return showDialog<int>(
+    setState(() {
+      int? peekedValue = queue[dequeueIndex];
+      currentAlgorithm = "Peeked value from the queue: $peekedValue";
+      currentOutput = "Queue state: ${queue.where((e) => e != null).join(', ')}";
+    });
+  }
+
+  // Clear operation
+  void _clearQueue() {
+    setState(() {
+      queue = List.filled(7, null); // Reset queue
+      enqueueIndex = 0;
+      dequeueIndex = 0;
+      size = 0;
+      currentAlgorithm = "Queue cleared.";
+      currentOutput = "Queue is now empty.";
+    });
+  }
+
+  
+  // Helper function for input dialog
+  Future<int?> _showInputDialog(BuildContext context, String label) {
+    TextEditingController controller = TextEditingController();
+    return showDialog<int?>(
       context: context,
-      builder: (context) {
+      builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(title),
+          title: Text(label),
           content: TextField(
             controller: controller,
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(hintText: 'Enter a number'),
+            decoration: InputDecoration(hintText: 'Enter a value'),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(), // Dismiss dialog
-              child: Text('Cancel'),
-            ),
+          actions: <Widget>[
             TextButton(
               onPressed: () {
-                final value = int.tryParse(controller.text);
-                Navigator.of(context).pop(value); // Return value
+                Navigator.of(context).pop(int.tryParse(controller.text));
               },
-              child: Text('OK'),
+              child: Text('Submit'),
             ),
           ],
         );
@@ -417,7 +410,6 @@ class _QueueScreenState extends State<QueueScreen> {
     );
   }
 }
-
 //Test
 
 final List<Question> QueueQuestions = [
