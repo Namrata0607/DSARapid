@@ -99,7 +99,7 @@ Binary Search Tree Operations:
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Algorithm',
+                                    'BST Algorithm',
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,

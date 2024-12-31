@@ -103,7 +103,7 @@ Min-Heap Extraction Algorithm:
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Algorithm',
+                                  'Heap Tree Algorithm',
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,

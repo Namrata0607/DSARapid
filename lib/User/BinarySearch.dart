@@ -93,7 +93,7 @@ class _BinarySearchScreenState extends State<BinarySearchScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Algorithm',
+                                    'Binary Search Algorithm',
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,

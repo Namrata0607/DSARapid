@@ -78,7 +78,7 @@ class _HashTableVisualizerState extends State<HashTable> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Algorithm', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.purple)),
+                                  Text('Hashing Algorithm', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.purple)),
                                   Divider(),
                                   Expanded(child: SingleChildScrollView(child: Text(currentAlgorithm))),
                                 ],

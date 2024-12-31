@@ -86,7 +86,7 @@ class _BubbleSortScreenState extends State<BubbleSortScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Algorithm',
+                                  'Bubble Sort Algorithm',
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,

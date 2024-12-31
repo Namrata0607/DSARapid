@@ -218,11 +218,11 @@ class _DoublyLinkedListScreenState extends State<DoublyLinkedListScreen>
   }
 
   String _getAlgorithmDescription() {
-    return "1. **Add Node**:\n"
+    return "1. Add Node:\n"
         "   - Create a new node with the specified value.\n"
         "   - If the position is 1 or the list is empty, set the new node as the head.\n"
         "   - Otherwise, traverse the list to the specified position and insert the node.\n\n"
-        "2. **Remove Node**:\n"
+        "2. Remove Node:\n"
         "   - Check if the list is empty.\n"
         "   - If the head contains the specified value, update the head.\n"
         "   - Otherwise, traverse the list to find the node with the specified value and remove it.\n";

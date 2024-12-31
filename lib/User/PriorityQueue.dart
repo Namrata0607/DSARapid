@@ -88,7 +88,7 @@ class _PriorityQueueScreenState extends State<PriorityQueueScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Algorithm',
+                                    'Priority Queue Algorithm',
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,

@@ -95,7 +95,7 @@ class _CircularQueueScreenState extends State<CircularQueueScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Algorithm',
+                                    'Circular Queue Algorithm',
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,

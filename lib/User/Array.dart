@@ -94,7 +94,7 @@ class _ArrayVisualizerScreenState extends State<ArrayVisualizerScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Algorithm',
+                                  'Array Algorithm',
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,

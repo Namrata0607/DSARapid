@@ -93,7 +93,6 @@ class _ViewprofileState extends State<Viewprofile> {
                           DataTable(
                            columns: const [
                             DataColumn(label: Text('Topic Names', style: TextStyle(fontWeight: FontWeight.bold))),
-                            // DataColumn(label: Text('Test Id', style: TextStyle(fontWeight: FontWeight.bold))),
                             DataColumn(label: Text('Marks', style: TextStyle(fontWeight: FontWeight.bold))),
                             DataColumn(label: Text('Time', style: TextStyle(fontWeight: FontWeight.bold))),
                           ],
@@ -338,7 +337,6 @@ class FinalQuiz extends StatelessWidget {
         var data = snapshot.data() as Map<String, dynamic>;
         flag1 = data['flag'] as int?;
 
-        // Check for test_id array containing "1", "2", "3" as strings
         List<dynamic>? testTopicArray = data['test_id'];
         List<String> requiredTopics = [
         "Array",

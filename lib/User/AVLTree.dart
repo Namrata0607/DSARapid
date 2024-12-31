@@ -43,6 +43,7 @@ class AVLTreeVisualizer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: AVLTreeScreen(),
     );
   }
@@ -105,7 +106,7 @@ AVL Tree Insertion Algorithm:
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Algorithm',
+                                    'AVL Tree Algorithm',
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
