@@ -58,6 +58,7 @@ class _QueueScreenState extends State<QueueScreen> {
   int size = 0; // Keeps track of the number of valid elements
   final int maxQueueSize = 7; // Maximum queue size
   int? currentHighlight; // To highlight current operation element
+  int rearPointer = -1; // Keeps track of the last element inserted (rear pointer)
 
   @override
   Widget build(BuildContext context) {
@@ -253,6 +254,7 @@ class _QueueScreenState extends State<QueueScreen> {
       enqueueIndex = 3; // Set next enqueue index
       dequeueIndex = 0; // Reset dequeue index
       size = 3; // Set size to 3
+      rearPointer = 2; // Set rear pointer at the last filled element
       currentHighlight = null;
       currentAlgorithm = """
 1. A queue is a linear data structure that follows the FIFO (First In First Out) principle.
@@ -294,30 +296,25 @@ class _QueueScreenState extends State<QueueScreen> {
 
   // Show dialog to input value for enqueuing into the queue
   Future<void> _showEnqueueDialog(BuildContext context) async {
-    // Check if the queue is full
-    if (size >= maxQueueSize) {
-      // Show SnackBar with overflow message
+    if (rearPointer == maxQueueSize - 1) {
+      // If rearPointer is at maxQueueSize - 1, show overflow
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Queue overflow! Max size of $maxQueueSize reached."),
           backgroundColor: Colors.red,
         ),
       );
-      return; // Exit the function to prevent further enqueue operation
+      return; // Prevent enqueue if queue is full
     }
 
-    // Show input dialog to enqueue value
     int? value = await _showInputDialog(context, 'Enqueue Value');
     if (value != null) {
       setState(() {
         // Add element to the queue
-        queue[enqueueIndex] = value;
-        // Highlight the newly enqueued element
-        currentHighlight = enqueueIndex;
-        // Increment the enqueue index (wrap around if necessary)
-        enqueueIndex = (enqueueIndex + 1) % maxQueueSize;
-        // Increase the queue size
-        size++;
+        rearPointer++;
+        queue[rearPointer] = value;
+        currentHighlight = rearPointer; // Highlight the newly enqueued element
+        size++; // Increase size
         currentAlgorithm = "Enqueued $value into the queue.";
         currentOutput = "Queue after enqueue: ${queue.where((e) => e != null).join(', ')}";
       });
@@ -341,7 +338,10 @@ class _QueueScreenState extends State<QueueScreen> {
       int? dequeuedValue = queue[dequeueIndex];
       queue[dequeueIndex] = null; // Remove from the front
       currentHighlight = dequeueIndex;
-      dequeueIndex = (dequeueIndex + 1) % maxQueueSize;
+      dequeueIndex++;
+      if (dequeueIndex >= maxQueueSize) {
+        dequeueIndex = 0; // Reset dequeue index
+      }
       size--;
       currentAlgorithm = "Dequeued $dequeuedValue from the queue.";
       currentOutput = "Queue after dequeue: ${queue.where((e) => e != null).join(', ')}";
@@ -375,31 +375,39 @@ class _QueueScreenState extends State<QueueScreen> {
       enqueueIndex = 0;
       dequeueIndex = 0;
       size = 0;
+      rearPointer = -1; // Reset rear pointer
       currentAlgorithm = "Queue cleared.";
-      currentOutput = "Queue is now empty.";
+      currentOutput = "Queue is empty.";
     });
   }
 
-  
-  // Helper function for input dialog
-  Future<int?> _showInputDialog(BuildContext context, String label) {
+  // Show input dialog
+  Future<int?> _showInputDialog(BuildContext context, String title) async {
     TextEditingController controller = TextEditingController();
-    return showDialog<int?>(
+    return await showDialog<int>(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
-          title: Text(label),
+          title: Text(title),
           content: TextField(
             controller: controller,
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(hintText: 'Enter a value'),
+            decoration: InputDecoration(
+              hintText: 'Enter value',
+            ),
           ),
-          actions: <Widget>[
+          actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(int.tryParse(controller.text));
               },
-              child: Text('Submit'),
+              child: Text('OK'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
             ),
           ],
         );
@@ -407,6 +415,11 @@ class _QueueScreenState extends State<QueueScreen> {
     );
   }
 }
+
+void main() => runApp(QueueVisualizer());
+
+
+
 //Test
 
 final List<Question> QueueQuestions = [
@@ -563,3 +576,388 @@ class QueueQuiz extends StatelessWidget {
     return QuizUI(quizQuestions: randomQuestions ,testId: testId); // Use the common UI
   }
 }
+
+
+// class QueueVisualizer extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       home: QueueScreen(),
+//     );
+//   }
+// }
+
+// class QueueScreen extends StatefulWidget {
+//   @override
+//   _QueueScreenState createState() => _QueueScreenState();
+// }
+
+// class _QueueScreenState extends State<QueueScreen> {
+//   List<int?> queue = List.filled(7, null); // Queue initialized with null placeholders
+//   String currentAlgorithm = ""; // Holds the algorithm description
+//   String currentOutput = ""; // Holds the step-by-step output
+//   int enqueueIndex = 0; // Keeps track of the next enqueue index
+//   int dequeueIndex = 0; // Keeps track of the next dequeue index
+//   int size = 0; // Keeps track of the number of valid elements
+//   final int maxQueueSize = 7; // Maximum queue size
+//   int? currentHighlight; // To highlight current operation element
+//   int rearPointer = 0; // Keeps track of the last element inserted (rear pointer)
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: appBack(context),
+//       body: Column(
+//         children: [
+//           Expanded(
+//             child: Row(
+//               children: [
+//                 // Left Container (for Algorithm and Output)
+//                 Expanded(
+//                   flex: 1,
+//                   child: Container(
+//                     color: Colors.grey.shade300,
+//                     padding: EdgeInsets.all(8.0),
+//                     child: Column(
+//                       children: [
+//                         // Algorithm section
+//                         Expanded(
+//                           flex: 1,
+//                           child: Container(
+//                             color: Colors.white,
+//                             padding: EdgeInsets.all(8.0),
+//                             child: Column(
+//                               crossAxisAlignment: CrossAxisAlignment.start,
+//                               children: [
+//                                 Text(
+//                                   'Algorithm',
+//                                   style: TextStyle(
+//                                     fontSize: 20,
+//                                     fontWeight: FontWeight.bold,
+//                                     color: Colors.purple, // Purple heading
+//                                   ),
+//                                 ),
+//                                 Divider(),
+//                                 Expanded(
+//                                   child: SingleChildScrollView(
+//                                     child: Text(
+//                                       currentAlgorithm,
+//                                       style: TextStyle(
+//                                         fontSize: 16,
+//                                       ),
+//                                     ),
+//                                   ),
+//                                 ),
+//                               ],
+//                             ),
+//                           ),
+//                         ),
+//                         SizedBox(height: 10),
+//                         // Output/Step-by-step explanation section
+//                         Expanded(
+//                           flex: 1,
+//                           child: Container(
+//                             color: Colors.white,
+//                             padding: EdgeInsets.all(8.0),
+//                             child: Column(
+//                               crossAxisAlignment: CrossAxisAlignment.start,
+//                               children: [
+//                                 Text(
+//                                   'Step-by-Step Output',
+//                                   style: TextStyle(
+//                                     fontSize: 20,
+//                                     fontWeight: FontWeight.bold,
+//                                     color: Colors.purple, // Purple heading
+//                                   ),
+//                                 ),
+//                                 Divider(),
+//                                 Expanded(
+//                                   child: SingleChildScrollView(
+//                                     child: Text(
+//                                       currentOutput,
+//                                       style: TextStyle(
+//                                         fontSize: 16,
+//                                       ),
+//                                     ),
+//                                   ),
+//                                 ),
+//                               ],
+//                             ),
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   ),
+//                 ),
+//                 SizedBox(width: 10),
+//                 // Right Container (for Queue Visualizer)
+//                 Expanded(
+//                   flex: 2,
+//                   child: Container(
+//                     color: Colors.white,
+//                     padding: EdgeInsets.all(8.0),
+//                     child: Column(
+//                       children: [
+//                         Text(
+//                           'Queue Visualizer',
+//                           style: TextStyle(
+//                             fontSize: 20,
+//                             fontWeight: FontWeight.bold,
+//                             color: Colors.purple, // Purple heading
+//                           ),
+//                         ),
+//                         Divider(),
+//                         Expanded(
+//                           child: Center(
+//                             child: SingleChildScrollView(
+//                               scrollDirection: Axis.horizontal,
+//                               child: Row(
+//                                 mainAxisAlignment: MainAxisAlignment.center,
+//                                 children: _buildBars(),
+//                               ),
+//                             ),
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//           // Bottom Container (for Operation Buttons)
+//           Container(
+//             padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+//             color: Colors.grey.shade100,
+//             child: Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceAround,
+//               children: [
+//                 ElevatedButton(
+//                   onPressed: _createDefaultQueue,
+//                   child: Text('Create Default'),
+//                   style: ButtonStyle(
+//                     backgroundColor:
+//                         MaterialStateProperty.all<Color>(Color.fromARGB(255, 105, 1, 161),), // Purple buttons
+//                     foregroundColor:
+//                         MaterialStateProperty.all<Color>(Colors.white),
+//                   ),
+//                 ),
+//                 ElevatedButton(
+//                   onPressed: () => _showEnqueueDialog(context),
+//                   child: Text('Enqueue'),
+//                   style: ButtonStyle(
+//                     backgroundColor:
+//                         MaterialStateProperty.all<Color>(Color.fromARGB(255, 105, 1, 161),),
+//                     foregroundColor:
+//                         MaterialStateProperty.all<Color>(Colors.white),
+//                   ),
+//                 ),
+//                 ElevatedButton(
+//                   onPressed: _dequeueFromQueue,
+//                   child: Text('Dequeue'),
+//                   style: ButtonStyle(
+//                     backgroundColor:
+//                         MaterialStateProperty.all<Color>(Color.fromARGB(255, 105, 1, 161),),
+//                     foregroundColor:
+//                         MaterialStateProperty.all<Color>(Colors.white),
+//                   ),
+//                 ),
+//                 ElevatedButton(
+//                   onPressed: _peekQueue,
+//                   child: Text('Peek'),
+//                   style: ButtonStyle(
+//                     backgroundColor:
+//                         MaterialStateProperty.all<Color>( Color.fromARGB(255, 105, 1, 161),),
+//                     foregroundColor:
+//                         MaterialStateProperty.all<Color>(Colors.white),
+//                   ),
+//                 ),
+//                 ElevatedButton(
+//                   onPressed: _clearQueue,
+//                   child: Text('Clear'),
+//                   style: ButtonStyle(
+//                     backgroundColor:
+//                         MaterialStateProperty.all<Color>( Color.fromARGB(255, 105, 1, 161),),
+//                     foregroundColor:
+//                         MaterialStateProperty.all<Color>(Colors.white),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+
+//   // Create default queue
+//   void _createDefaultQueue() {
+//     setState(() {
+//       queue = [10, 20, 30, null, null, null, null]; // Default queue with 3 elements
+//       enqueueIndex = 3; // Set next enqueue index
+//       dequeueIndex = 0; // Reset dequeue index
+//       size = 3; // Set size to 3
+//       rearPointer = 3; // Set rear pointer at the last filled element
+//       currentHighlight = null;
+//       currentAlgorithm = """
+// 1. A queue is a linear data structure that follows the FIFO (First In First Out) principle.
+// 2. 'Enqueue' operation adds an element to the end of the queue.
+// 3. 'Dequeue' operation removes the element from the front of the queue, leaving a placeholder.
+// 4. 'Peek' operation returns the front element without removing it.
+// 5. The maximum size of this queue is 7 elements.
+// 6. 'Clear' operation removes all elements from the queue.
+// """;
+//       currentOutput = "Default queue created with values 10, 20, 30.";
+//     });
+//   }
+
+//   // Build the visual bars for the queue
+//   List<Widget> _buildBars() {
+//     return List<Widget>.generate(queue.length, (index) {
+//       return Padding(
+//         padding: const EdgeInsets.symmetric(horizontal: 5.0),
+//         child: AnimatedContainer(
+//           height: 50,
+//           width: 100,
+//           duration: Duration(milliseconds: 300),
+//           color: (index == currentHighlight)
+//               ? Colors.green // Highlight current operation element
+//               : (queue[index] == null ? Colors.grey : Colors.purple), // Purple for valid elements, grey for empty
+//           alignment: Alignment.center,
+//           child: Text(
+//             queue[index]?.toString() ?? '',
+//             style: TextStyle(
+//               color: Colors.white,
+//               fontSize: 18,
+//               fontWeight: FontWeight.bold,
+//             ),
+//           ),
+//         ),
+//       );
+//     });
+//   }
+
+//   // Show dialog to input value for enqueuing into the queue
+//   Future<void> _showEnqueueDialog(BuildContext context) async {
+//     // Check if the queue is full (without circular behavior)
+//     if (size >= maxQueueSize || rearPointer >= maxQueueSize) {
+//       // Show SnackBar with overflow message if the queue appears full
+//       ScaffoldMessenger.of(context).showSnackBar(
+//         SnackBar(
+//           content: Text("Queue overflow! Max size of $maxQueueSize reached."),
+//           backgroundColor: Colors.red,
+//         ),
+//       );
+//       return; // Exit the function to prevent further enqueue operation
+//     }
+
+//     // Show input dialog to enqueue value
+//     int? value = await _showInputDialog(context, 'Enqueue Value');
+//     if (value != null) {
+//       setState(() {
+//         // Add element to the queue
+//         queue[enqueueIndex] = value;
+//         // Highlight the newly enqueued element
+//         currentHighlight = enqueueIndex;
+//         // Increment the enqueue index (stop at max size, no wrap-around)
+//         enqueueIndex++;
+//         if (enqueueIndex >= maxQueueSize) {
+//           enqueueIndex = maxQueueSize - 1; // Prevent further index increment once full
+//         }
+//         // Increase the queue size
+//         size++;
+//         // Update rear pointer
+//         rearPointer = enqueueIndex;
+//         currentAlgorithm = "Enqueued $value into the queue.";
+//         currentOutput = "Queue after enqueue: ${queue.where((e) => e != null).join(', ')}";
+//       });
+//     }
+//   }
+
+//   // Dequeue operation
+//   void _dequeueFromQueue() {
+//     if (size == 0) {
+//       // Show SnackBar with underflow message
+//       ScaffoldMessenger.of(context).showSnackBar(
+//         SnackBar(
+//           content: Text("Queue underflow! Cannot dequeue."),
+//           backgroundColor: Colors.red,
+//         ),
+//       );
+//       return;
+//     }
+
+//     setState(() {
+//       int? dequeuedValue = queue[dequeueIndex];
+//       queue[dequeueIndex] = null; // Remove from the front
+//       currentHighlight = dequeueIndex;
+//       dequeueIndex++;
+//       if (dequeueIndex >= maxQueueSize) {
+//         dequeueIndex = 0; // Reset dequeue index
+//       }
+//       size--;
+//       currentAlgorithm = "Dequeued $dequeuedValue from the queue.";
+//       currentOutput = "Queue after dequeue: ${queue.where((e) => e != null).join(', ')}";
+//     });
+//   }
+
+//   // Peek operation
+//   void _peekQueue() {
+//     if (size == 0) {
+//       // Show SnackBar with underflow message
+//       ScaffoldMessenger.of(context).showSnackBar(
+//         SnackBar(
+//           content: Text("Queue is empty!"),
+//           backgroundColor: Colors.red,
+//         ),
+//       );
+//       return;
+//     }
+
+//     setState(() {
+//       int? peekedValue = queue[dequeueIndex];
+//       currentAlgorithm = "Peeked value from the queue: $peekedValue";
+//       currentOutput = "Queue state: ${queue.where((e) => e != null).join(', ')}";
+//     });
+//   }
+
+//   // Clear operation
+//   void _clearQueue() {
+//     setState(() {
+//       queue = List.filled(7, null); // Reset queue
+//       enqueueIndex = 0;
+//       dequeueIndex = 0;
+//       size = 0;
+//       rearPointer = 0; // Reset rear pointer
+//       currentAlgorithm = "Queue cleared.";
+//       currentOutput = "Queue is now empty.";
+//     });
+//   }
+
+//   // Helper function for input dialog
+//   Future<int?> _showInputDialog(BuildContext context, String label) {
+//     TextEditingController controller = TextEditingController();
+//     return showDialog<int?>(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return AlertDialog(
+//           title: Text(label),
+//           content: TextField(
+//             controller: controller,
+//             keyboardType: TextInputType.number,
+//             decoration: InputDecoration(hintText: 'Enter a value'),
+//           ),
+//           actions: <Widget>[
+//             TextButton(
+//               onPressed: () {
+//                 Navigator.of(context).pop(int.tryParse(controller.text));
+//               },
+//               child: Text('Submit'),
+//             ),
+//           ],
+//         );
+//       },
+//     );
+//   }
+// }
