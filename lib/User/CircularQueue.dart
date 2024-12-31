@@ -37,10 +37,6 @@ class PDFViewerScreen extends StatelessWidget {
 }
 
 
-void main() {
-  runApp(CircularQueueVisualizerApp());
-}
-
 
 class CircularQueueVisualizerApp extends StatelessWidget {
   @override
@@ -65,252 +61,183 @@ class _CircularQueueScreenState extends State<CircularQueueScreen> {
   String currentAlgorithm = ""; // To display algorithm explanation
   String currentOutput = ""; // To display step-by-step output
 
-
-    @override
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: appBack(context),
-        body: Column(
-          children: [
-            Expanded(
-              child: Row(
-                children: [
-                  // Left Container (Algorithm and Output sections)
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      color: Colors.grey.shade300,
-                      padding: EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          // Algorithm section
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              color: Colors.white,
-                              padding: EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Circular Queue Algorithm',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.purple,
-                                    ),
-                                  ),
-                                  Divider(),
-                                  Expanded(
-                                    child: SingleChildScrollView(
-                                      child: Text(
-                                        currentAlgorithm,
-                                        style: TextStyle(fontSize: 16),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          // Output section
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              color: Colors.white,
-                              padding: EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Step-by-Step Output',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.purple,
-                                    ),
-                                  ),
-                                  Divider(),
-                                  Expanded(
-                                    child: SingleChildScrollView(
-                                      child: Text(
-                                        currentOutput,
-                                        style: TextStyle(fontSize: 16),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  // Right Container (Queue Visualizer)
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      color: Colors.white,
-                      padding: EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          Text(
-                            'Circular Queue Visualizer',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.purple,
-                            ),
-                          ),
-                          Divider(),
-                          Expanded(
-                            child: Center(
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: _buildQueueBars(),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // Bottom Container (Operations buttons)
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-              color: Colors.grey.shade100,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    onPressed: _createDefaultQueue,
-                    child: Text('Create Default'),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.purple),
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => _showEnqueueDialog(context),
-                    child: Text('Enqueue'),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.purple),
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: _dequeue,
-                    child: Text('Dequeue'),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.purple),
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: _peek,
-                    child: Text('Peek'),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.purple),
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: _clearQueue,
-                    child: Text('Clear'),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.purple),
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Section builder for algorithm and output
-  Widget _buildSection({required String title, required String content}) {
-    return Expanded(
-      child: Container(
-        color: Colors.white,
-        padding: EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.purple,
-              ),
-            ),
-            Divider(),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Text(
-                  content,
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Operations buttons
-  Widget _buildOperations() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      color: Colors.grey.shade100,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+    return Scaffold(
+      appBar: appBack(context),
+      body: Column(
         children: [
-          ElevatedButton(
-            onPressed: _createDefaultQueue,
-            child: Text('Create Default'),
+          Expanded(
+            child: Row(
+              children: [
+                // Left Container (Algorithm and Output sections)
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: Colors.grey.shade300,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        // Algorithm section
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Circular Queue Algorithm',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple,
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentAlgorithm,
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        // Output section
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Step-by-Step Output',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple,
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentOutput,
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                // Right Container (Queue Visualizer)
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Circular Queue Visualizer',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purple,
+                          ),
+                        ),
+                        Divider(),
+                        Expanded(
+                          child: Center(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: _buildQueueBars(),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-          ElevatedButton(
-            onPressed: () => _showEnqueueDialog(context),
-            child: Text('Enqueue'),
-          ),
-          ElevatedButton(
-            onPressed: _dequeue,
-            child: Text('Dequeue'),
-          ),
-          ElevatedButton(
-            onPressed: _peek,
-            child: Text('Peek'),
-          ),
-          ElevatedButton(
-            onPressed: _clearQueue,
-            child: Text('Clear'),
+          // Bottom Container (Operations buttons)
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            color: Colors.grey.shade100,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  onPressed: _createDefaultQueue,
+                  child: Text('Create Default'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () => _showEnqueueDialog(context),
+                  child: Text('Enqueue'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: _dequeue,
+                  child: Text('Dequeue'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: _peek,
+                  child: Text('Peek'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: _clearQueue,
+                  child: Text('Clear'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -355,13 +282,15 @@ class _CircularQueueScreenState extends State<CircularQueueScreen> {
 
   // Show dialog for enqueue
   Future<void> _showEnqueueDialog(BuildContext context) async {
+    // Check if the queue is full before taking input
+    if ((rear + 1) % maxSize == front) {
+      _showSnackbar(context, 'Queue overflow!');
+      return;
+    }
+
     int? value = await _showInputDialog(context, 'Enqueue Value');
     if (value != null) {
       setState(() {
-        if ((rear + 1) % maxSize == front) {
-          _showSnackbar(context, 'Queue overflow!');
-          return;
-        }
         if (front == -1) {
           front = rear = 0;
         } else {
@@ -424,30 +353,28 @@ class _CircularQueueScreenState extends State<CircularQueueScreen> {
   // Show input dialog
   Future<int?> _showInputDialog(BuildContext context, String title) async {
     int? value;
-    return await showDialog<int>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: TextField(
-            keyboardType: TextInputType.number,
-            onChanged: (val) {
-              value = int.tryParse(val);
+    return await showDialog<int>(context: context, builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(title),
+        content: TextField(
+          keyboardType: TextInputType.number,
+          onChanged: (val) {
+            value = int.tryParse(val);
+          },
+          decoration: InputDecoration(hintText: "Enter a number"),
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop(value);
             },
-            decoration: InputDecoration(hintText: "Enter a number"),
+            child: Text("Submit"),
           ),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop(value);
-              },
-              child: Text("Submit"),
-            ),
-          ],
-        );
-      },
-    );
+        ],
+      );
+    });
   }
+
 }
 
 
