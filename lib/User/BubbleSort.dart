@@ -51,18 +51,16 @@ class BubbleSortScreen extends StatefulWidget {
 }
 
 class _BubbleSortScreenState extends State<BubbleSortScreen> {
-  List<int> array = []; // Initially empty array
-  int? currentIndex; // For visual representation of current index
-  bool sorting = false; // State for sort animation
-  String currentAlgorithm = ""; // Holds the current algorithm
-  String currentOutput = ""; // Holds the step-by-step output
+  List<int> array = [];
+  int? currentIndex;
+  bool sorting = false;
+  String currentAlgorithm = "";
+  String currentOutput = "";
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-      appBar:appBack(context),
+    return Scaffold( // Use Scaffold here
+      appBar: appBack(context),
       body: Column(
         children: [
           Expanded(
@@ -240,9 +238,9 @@ class _BubbleSortScreenState extends State<BubbleSortScreen> {
           ),
         ],
       ),
-    ),
     );
   }
+
 
   // Create default array
   void _createDefaultArray() {

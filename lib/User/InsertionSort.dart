@@ -38,9 +38,9 @@ class PDFViewerScreen extends StatelessWidget {
 class InsertionSort extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-     debugShowCheckedModeBanner: false,
-      home: InsertionSortScreen(),
+    return Scaffold(
+    //  debugShowCheckedModeBanner: false,
+      body: InsertionSortScreen(),
     );
   }
 }

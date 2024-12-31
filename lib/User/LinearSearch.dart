@@ -36,9 +36,9 @@ class PDFViewerScreen extends StatelessWidget {
 class LinearSearch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-     debugShowCheckedModeBanner: false,
-      home: LinearSearchScreen(),
+    return Scaffold(
+    //  debugShowCheckedModeBanner: false,
+      body: LinearSearchScreen(),
     );
   }
 }
@@ -317,49 +317,60 @@ class _LinearSearchScreenState extends State<LinearSearchScreen> {
 
   // Perform linear search with animation
   Future<void> _linearSearch(int value) async {
-    searching = true;
+  setState(() {
+    searching = true; // Mark the state as searching
+    currentIndex = null; // Reset the current index
     currentOutput = ""; // Clear previous output
+  });
 
-    for (int i = 0; i < array.length; i++) {
+  for (int i = 0; i < array.length; i++) {
+    setState(() {
+      currentIndex = i; // Highlight the current index
+      currentOutput += "Step ${i + 1}: Checking index $i\n"; // Update output
+      currentOutput += "Current Value: ${array[i]}\n"; // Show current value
+      currentOutput += "Comparing with target value: $value\n"; // Show comparison
+    });
+
+    await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
+
+    if (array[i] == value) {
       setState(() {
-        currentIndex = i; // Highlight current index
-        currentOutput += "Step ${i + 1}: Checking index $i\n"; // Update output
-        currentOutput += "Current Value: ${array[i]}\n"; // Show current value
-        currentOutput += "Comparing with target value: $value\n"; // Show comparison
+        currentIndex = i; // Highlight the found index
+        currentOutput += "Match found!\n";
+        currentOutput += "Value $value found at index $i.\n"; // Update output
       });
-      await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
-
-      if (array[i] == value) {
-        // Found the value
-        setState(() {
-          currentIndex = i; // Highlight found index
-          currentOutput += "Match found!\n";
-          currentOutput += "Value $value found at index $i.\n"; // Update output
-        });
-        await Future.delayed(Duration(seconds: 2));
-        break;
-      } else {
-        currentOutput += "No match at index $i. Continuing search...\n"; // Update output for no match
-      }
-    }
-
-    // Show result in a snackbar if not found
-    if (currentIndex != null && array[currentIndex!] == value) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('$value found at index: $currentIndex'),
-        ),
-      );
+      await Future.delayed(Duration(seconds: 2)); // Pause to show result
+      break;
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('$value not found in the array'),
-        ),
-      );
+      setState(() {
+        currentOutput += "No match at index $i. Continuing search...\n"; // No match
+      });
     }
-
-    searching = false;
   }
+
+  if (currentIndex == null || array[currentIndex!] != value) {
+    // Value not found
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('$value not found in the array'),
+      ),
+    );
+    setState(() {
+      currentOutput += "Value $value not found in the array.\n"; // Update output
+    });
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('$value found at index: $currentIndex'),
+      ),
+    );
+  }
+
+  setState(() {
+    searching = false; // End the search state
+  });
+}
+
 
   // Generalized input dialog to get user input
   Future<int?> _showInputDialog(BuildContext context, String title) async {

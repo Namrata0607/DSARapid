@@ -36,9 +36,9 @@ class PDFViewerScreen extends StatelessWidget {
 class SelectionSort extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SelectionSortScreen(),
+    return Scaffold(
+      // debugShowCheckedModeBanner: false,
+      body: SelectionSortScreen(),
     );
   }
 }
@@ -311,61 +311,63 @@ class _SelectionSortScreenState extends State<SelectionSortScreen> {
   }
 
   // Perform selection sort with animation
-  Future<void> _selectionSort() async {
-    sorting = true;
-    currentOutput = ""; // Clear previous output
+Future<void> _selectionSort() async {
+  sorting = true;
+  currentOutput = ""; // Clear previous output
 
-    for (int i = 0; i < array.length - 1; i++) {
-      int minIdx = i;
+  for (int i = 0; i < array.length - 1; i++) {
+    int minIdx = i;
+    setState(() {
+      currentIndex = i; // Highlight the current index
+      currentOutput += "Step ${i + 1}: Starting from index $i. Current array: ${array.toString()}\n";
+    });
+
+    await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
+
+    for (int j = i + 1; j < array.length; j++) {
       setState(() {
-        currentIndex = i; // Highlight the current index
-        currentOutput += "Step ${i + 1}: Starting from index $i. Current array: ${array.toString()}\n";
+        minIndex = minIdx; // Highlight the current minimum index
+        currentOutput += "Comparing ${array[minIdx]} (current min) and ${array[j]} at index $j.\n";
       });
 
-      await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
-
-      for (int j = i + 1; j < array.length; j++) {
+      if (array[j] < array[minIdx]) {
+        minIdx = j; // Update the index of the minimum element
         setState(() {
-          minIndex = minIdx; // Highlight the current minimum index
-          currentOutput += "Comparing ${array[minIdx]} (current min) and ${array[j]} at index $j.\n";
-        });
-
-        if (array[j] < array[minIdx]) {
-          minIdx = j; // Update the index of the minimum element
-          setState(() {
-            currentOutput += "Found a new minimum ${array[minIdx]} at index $minIdx.\n"; // Update output
-          });
-        }
-        await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
-      }
-
-      // Swap the found minimum element with the first element
-      if (minIdx != i) {
-        setState(() {
-          // Swap the elements
-          int temp = array[minIdx];
-          array[minIdx] = array[i];
-          array[i] = temp;
-          currentOutput += "Swapping ${array[i]} and ${array[minIdx]}.\n";
+          currentOutput += "Found a new minimum ${array[minIdx]} at index $minIdx.\n"; // Update output
         });
       }
-
       await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
     }
 
-    setState(() {
-      currentOutput += "Sorting complete! Final sorted array: ${array.toString()}.\n";
-    });
+    // Swap the found minimum element with the first element
+    if (minIdx != i) {
+      setState(() {
+        // Swap the elements
+        int temp = array[minIdx];
+        array[minIdx] = array[i];
+        array[i] = temp;
+        currentOutput += "Swapping ${array[i]} and ${array[minIdx]}.\n";
+      });
+    }
 
-    // Show result in a snackbar
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Sorting complete!'),
-      ),
-    );
-
-    sorting = false; // Reset sorting state
+    await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
   }
+
+  setState(() {
+    currentOutput += "Sorting complete! Final sorted array: ${array.toString()}.\n";
+  });
+
+  // Show the Snackbar with "Sorting Completed"
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text("Sorting Completed!"),
+      duration: Duration(seconds: 2),
+    ),
+  );
+
+  sorting = false; // Reset sorting state
+}
+
 
   // Generalized input dialog to get user input
   Future<int?> _showInputDialog(BuildContext context, String title) async {

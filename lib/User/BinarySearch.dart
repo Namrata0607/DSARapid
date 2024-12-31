@@ -42,9 +42,9 @@ class PDFViewerScreen extends StatelessWidget {
 class BinarySearch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: BinarySearchScreen(),
+    return Scaffold(
+      // debugShowCheckedModeBanner: false,
+      body: BinarySearchScreen(),
     );
   }
 }
@@ -305,49 +305,56 @@ class _BinarySearchScreenState extends State<BinarySearchScreen> {
   }
 
   // Perform binary search with animation
-  Future<void> _binarySearch(int value) async {
-    searching = true;
-    low = 0;
-    high = array.length - 1;
-    currentOutput = ""; // Clear previous output
+  // Perform binary search with animation
+Future<void> _binarySearch(int value) async {
+  searching = true;
+  low = 0;
+  high = array.length - 1;
+  currentOutput = ""; // Clear previous output
 
-    while (low! <= high!) {
-      mid = (low! + high!) ~/ 2; // Find the middle index
+  while (low! <= high!) {
+    mid = (low! + high!) ~/ 2; // Find the middle index
+    setState(() {
+      // Highlight low, high, and mid indices
+      currentOutput += "Current low: $low, high: $high, mid: $mid\n";
+      currentOutput += "Comparing ${array[mid!]} with $value.\n";
+    });
+    await Future.delayed(Duration(seconds: 4)); // Pause for visual effect
+
+    if (array[mid!] == value) {
       setState(() {
-        // Highlight low, high, and mid indices
-        currentOutput += "Current low: $low, high: $high, mid: $mid\n";
-        currentOutput += "Comparing ${array[mid!]} with $value.\n";
+        currentOutput += "$value found at index: $mid!\n";
       });
-      await Future.delayed(Duration(seconds: 4)); // Pause for visual effect
-
-      if (array[mid!] == value) {
-        setState(() {
-          currentOutput += "$value found at index: $mid!\n";
-        });
-        await Future.delayed(Duration(seconds: 1));
-        break;
-      } else if (array[mid!] < value) {
-        low = mid! + 1; // Adjust low index
-        setState(() {
-          currentOutput += "Searching in the right half.\n";
-        });
-      } else {
-        high = mid! - 1; // Adjust high index
-        setState(() {
-          currentOutput += "Searching in the left half.\n";
-        });
-      }
-      await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
-    }
-
-    if (low! > high!) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("$value found at index: $mid!"))
+      );
+      await Future.delayed(Duration(seconds: 1));
+      break;
+    } else if (array[mid!] < value) {
+      low = mid! + 1; // Adjust low index
       setState(() {
-        currentOutput += "$value not found in the array.\n";
+        currentOutput += "Searching in the right half.\n";
+      });
+    } else {
+      high = mid! - 1; // Adjust high index
+      setState(() {
+        currentOutput += "Searching in the left half.\n";
       });
     }
-
-    searching = false;
+    await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
   }
+
+  if (low! > high!) {
+    setState(() {
+      currentOutput += "$value not found in the array.\n";
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("$value not found in the array."))
+    );
+  }
+
+  searching = false;
+}
 
   // Build the visual bars for the array
   List<Widget> _buildBars() {
