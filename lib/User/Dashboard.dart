@@ -379,8 +379,8 @@ final List<Widget Function()> visualizerClasses = [
   () => BSTVisualizer(),
   () => HeapTree(),  // Heap tree visualizer
   () => AVLTreeVisualizer(),
-  () => BSTVisualizer(),  // BFS visualizer (replace with actual BFS if applicable)
-  () => BSTVisualizer(),  // DFS visualizer (replace with actual DFS if applicable)
+  () => BFSGraphVisualizer(),  // BFS visualizer (replace with actual BFS if applicable)
+  () => DFSGraphVisualizer(),  // DFS visualizer (replace with actual DFS if applicable)
 ];
 
 // Dynamically create the VisualizerBtn list
