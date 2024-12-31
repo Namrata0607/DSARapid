@@ -35,7 +35,6 @@ class PDFViewerScreen extends StatelessWidget {
 }
 
 
-
 class StackVisualizer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -57,203 +56,202 @@ class _StackScreenState extends State<StackScreen> {
   String currentOutput = ""; // Holds the step-by-step output
   int topIndex = -1; // Keeps track of the current top index of the stack
   final int maxStackSize = 7; // Maximum stack size
-  int? currentHighlight; // To highlight current operation element
+  int? currentHighlight; // To highlight the current operation element
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: appBack(context),
-        body: Column(
-          children: [
-            Expanded(
-              child: Row(
-                children: [
-                  // Left Container (for Algorithm and Output)
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      color: Colors.grey.shade300,
-                      padding: EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          // Algorithm section
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              color: Colors.white,
-                              padding: EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Stack Algorithm',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.purple, // Purple heading
-                                    ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Stack Visualizer'),
+        backgroundColor: Color.fromARGB(255, 105, 1, 161), // Purple color
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                // Left Container (for Algorithm and Output)
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: Colors.grey.shade300,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        // Algorithm section
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Stack Algorithm',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple,
                                   ),
-                                  Divider(),
-                                  Expanded(
-                                    child: SingleChildScrollView(
-                                      child: Text(
-                                        currentAlgorithm,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          // Output/Step-by-step explanation section
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              color: Colors.white,
-                              padding: EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Step-by-Step Output',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.purple, // Purple heading
-                                    ),
-                                  ),
-                                  Divider(),
-                                  Expanded(
-                                    child: SingleChildScrollView(
-                                      child: Text(
-                                        currentOutput,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  // Right Container (for Stack Visualizer)
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      color: Colors.white,
-                      padding: EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          Text(
-                            'Stack Visualizer',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color:  Color.fromARGB(255, 105, 1, 161), // Purple heading
-                            ),
-                          ),
-                          Divider(),
-                          Expanded(
-                            child: Center(
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.vertical,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: _buildBars(),
                                 ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentAlgorithm,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        // Output/Step-by-step explanation section
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Step-by-Step Output',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple,
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentOutput,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                // Right Container (for Stack Visualizer)
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Stack Visualizer',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 105, 1, 161),
+                          ),
+                        ),
+                        Divider(),
+                        Expanded(
+                          child: Center(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.vertical,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: _buildBars(),
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            // Bottom Container (for Operation Buttons)
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-              color: Colors.grey.shade100,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    onPressed: _createDefaultStack,
-                    child: Text('Create Default'),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>( Color.fromARGB(255, 105, 1, 161),), // Purple buttons
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
+          ),
+          // Bottom Container (for Operation Buttons)
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            color: Colors.grey.shade100,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  onPressed: _createDefaultStack,
+                  child: Text('Create Default'),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                      Color.fromARGB(255, 105, 1, 161),
                     ),
+                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
                   ),
-                  ElevatedButton(
-                    onPressed: () => _showPushDialog(context),
-                    child: Text('Push'),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>( Color.fromARGB(255, 105, 1, 161),),
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
+                ),
+                ElevatedButton(
+                  onPressed: () => _showPushDialog(context),
+                  child: Text('Push'),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                      Color.fromARGB(255, 105, 1, 161),
                     ),
+                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
                   ),
-                  ElevatedButton(
-                    onPressed: _popFromStack,
-                    child: Text('Pop'),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>( Color.fromARGB(255, 105, 1, 161),),
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
+                ),
+                ElevatedButton(
+                  onPressed: _popFromStack,
+                  child: Text('Pop'),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                      Color.fromARGB(255, 105, 1, 161),
                     ),
+                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
                   ),
-                  ElevatedButton(
-                    onPressed: _peekStack,
-                    child: Text('Peek'),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>( Color.fromARGB(255, 105, 1, 161),),
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
+                ),
+                ElevatedButton(
+                  onPressed: _peekStack,
+                  child: Text('Peek'),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                      Color.fromARGB(255, 105, 1, 161),
                     ),
+                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
                   ),
-                  ElevatedButton(
-                    onPressed: _clearStack,
-                    child: Text('Clear'),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>( Color.fromARGB(255, 105, 1, 161),),
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
+                ),
+                ElevatedButton(
+                  onPressed: _clearStack,
+                  child: Text('Clear'),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                      Color.fromARGB(255, 105, 1, 161),
                     ),
+                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  // Create default stack
   void _createDefaultStack() {
     setState(() {
-      stack = [10, 20, 30, null, null, null, null]; // Default stack with 3 elements
-      topIndex = 2; // Set top index to 2
+      stack = [10, 20, 30, null, null, null, null];
+      topIndex = 2;
       currentHighlight = null;
       currentAlgorithm = """
 1. A stack is a linear data structure that follows the LIFO (Last In First Out) principle.
@@ -267,7 +265,6 @@ class _StackScreenState extends State<StackScreen> {
     });
   }
 
-  // Build the visual bars for the stack
   List<Widget> _buildBars() {
     return List<Widget>.generate(stack.length, (index) {
       return Padding(
@@ -277,8 +274,10 @@ class _StackScreenState extends State<StackScreen> {
           width: 100,
           duration: Duration(milliseconds: 300),
           color: (index == currentHighlight)
-              ? Colors.green // Highlight current operation element
-              : (stack[index] == null ? Colors.grey : Color.fromARGB(255, 105, 1, 161)), // Purple for valid elements, grey for empty
+              ? Colors.green
+              : (stack[index] == null
+                  ? Colors.grey
+                  : Color.fromARGB(255, 105, 1, 161)),
           alignment: Alignment.center,
           child: Text(
             stack[index]?.toString() ?? '',
@@ -292,7 +291,7 @@ class _StackScreenState extends State<StackScreen> {
       );
     });
   }
-  // Show dialog to input value for pushing into the stack
+
   Future<void> _showPushDialog(BuildContext context) async {
     if (topIndex >= maxStackSize - 1) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -307,15 +306,14 @@ class _StackScreenState extends State<StackScreen> {
     int? value = await _showInputDialog(context, 'Push Value');
     if (value != null) {
       setState(() {
-        topIndex++; // Increment top index
-        stack[topIndex] = value; // Add element to the stack
-        currentHighlight = topIndex; // Highlight the newly added element
+        topIndex++;
+        stack[topIndex] = value;
+        currentHighlight = topIndex;
         currentOutput += "Pushed $value onto the stack.\n";
       });
     }
   }
 
-  // Pop an element from the stack (leave placeholder)
   void _popFromStack() {
     if (topIndex < 0) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -328,19 +326,18 @@ class _StackScreenState extends State<StackScreen> {
     }
 
     setState(() {
-      stack[topIndex] = null; // Clear the top element
+      stack[topIndex] = null;
       currentOutput += "Popped element from the stack.\n";
-      currentHighlight = topIndex - 1; // Highlight the new top element
-      topIndex--; // Move the top index down
+      currentHighlight = topIndex - 1;
+      topIndex--;
     });
   }
 
-  // Peek the top element of the stack
   void _peekStack() {
     if (topIndex >= 0 && stack[topIndex] != null) {
-      int topValue = stack[topIndex]!; // Get the top element
+      int topValue = stack[topIndex]!;
       setState(() {
-        currentHighlight = topIndex; // Highlight the top element
+        currentHighlight = topIndex;
         currentOutput += "Top element is $topValue (peeked).\n";
       });
       ScaffoldMessenger.of(context).showSnackBar(
@@ -359,17 +356,15 @@ class _StackScreenState extends State<StackScreen> {
     }
   }
 
-  // Clear the stack
   void _clearStack() {
     setState(() {
-      stack = List.filled(maxStackSize, null); // Clear all elements from the stack
-      topIndex = -1; // Reset top index
+      stack = List.filled(maxStackSize, null);
+      topIndex = -1;
       currentHighlight = null;
       currentOutput = "Stack cleared.";
     });
   }
 
-  // Generalized input dialog to get user input
   Future<int?> _showInputDialog(BuildContext context, String title) async {
     final TextEditingController controller = TextEditingController();
 
