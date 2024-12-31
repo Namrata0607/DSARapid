@@ -61,10 +61,7 @@ class _StackScreenState extends State<StackScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Stack Visualizer'),
-        backgroundColor: Color.fromARGB(255, 105, 1, 161), // Purple color
-      ),
+      appBar: appBack(context),
       body: Column(
         children: [
           Expanded(
