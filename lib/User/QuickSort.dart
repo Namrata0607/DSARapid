@@ -33,13 +33,385 @@ class PDFViewerScreen extends StatelessWidget {
 }
 
 
+// class QuickSort extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       home: QuickSortScreen(),
+//     );
+//   }
+// }
+
+// class QuickSortScreen extends StatefulWidget {
+//   @override
+//   _QuickSortScreenState createState() => _QuickSortScreenState();
+// }
+
+// class _QuickSortScreenState extends State<QuickSortScreen> {
+//   List<int> array = []; // Initially empty array
+//   int? pivotIndex; // For visual representation of pivot index
+//   bool sorting = false; // State for sort animation
+//   String currentAlgorithm = ""; // Holds the current algorithm
+//   String currentOutput = ""; // Holds the step-by-step output
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       home: Scaffold(
+//         appBar: appBack(context),
+//         body: Column(
+//           children: [
+//             Expanded(
+//               child: Row(
+//                 children: [
+//                   // Left Container (for Algorithm and Output)
+//                   Expanded(
+//                     flex: 1,
+//                     child: Container(
+//                       color: Colors.grey.shade300,
+//                       padding: EdgeInsets.all(8.0),
+//                       child: Column(
+//                         children: [
+//                           // Algorithm section
+//                           Expanded(
+//                             flex: 1,
+//                             child: Container(
+//                               color: Colors.white,
+//                               padding: EdgeInsets.all(8.0),
+//                               child: Column(
+//                                 crossAxisAlignment: CrossAxisAlignment.start,
+//                                 children: [
+//                                   Text(
+//                                     'Algorithm',
+//                                     style: TextStyle(
+//                                       fontSize: 20,
+//                                       fontWeight: FontWeight.bold,
+//                                       color: Colors.purple,
+//                                     ),
+//                                   ),
+//                                   Divider(),
+//                                   Expanded(
+//                                     child: SingleChildScrollView(
+//                                       child: Text(
+//                                         currentAlgorithm,
+//                                         style: TextStyle(
+//                                           fontSize: 16,
+//                                         ),
+//                                       ),
+//                                     ),
+//                                   ),
+//                                 ],
+//                               ),
+//                             ),
+//                           ),
+//                           SizedBox(height: 10),
+//                           // Output/Step-by-step explanation section
+//                           Expanded(
+//                             flex: 1,
+//                             child: Container(
+//                               color: Colors.white,
+//                               padding: EdgeInsets.all(8.0),
+//                               child: Column(
+//                                 crossAxisAlignment: CrossAxisAlignment.start,
+//                                 children: [
+//                                   Text(
+//                                     'Step-by-Step Output',
+//                                     style: TextStyle(
+//                                       fontSize: 20,
+//                                       fontWeight: FontWeight.bold,
+//                                       color: Colors.purple,
+//                                     ),
+//                                   ),
+//                                   Divider(),
+//                                   Expanded(
+//                                     child: SingleChildScrollView(
+//                                       child: Text(
+//                                         currentOutput,
+//                                         style: TextStyle(
+//                                           fontSize: 16,
+//                                         ),
+//                                       ),
+//                                     ),
+//                                   ),
+//                                 ],
+//                               ),
+//                             ),
+//                           ),
+//                         ],
+//                       ),
+//                     ),
+//                   ),
+//                   SizedBox(width: 10),
+//                   // Right Container (for Array Visualizer)
+//                   Expanded(
+//                     flex: 2,
+//                     child: Container(
+//                       color: Colors.white,
+//                       padding: EdgeInsets.all(8.0),
+//                       child: Column(
+//                         children: [
+//                           Text(
+//                             'Quick Sort Visualizer',
+//                             style: TextStyle(
+//                               fontSize: 20,
+//                               fontWeight: FontWeight.bold,
+//                               color: Colors.purple,
+//                             ),
+//                           ),
+//                           Divider(),
+//                           Expanded(
+//                             child: Center(
+//                               child: SingleChildScrollView(
+//                                 scrollDirection: Axis.horizontal,
+//                                 child: Row(
+//                                   children: array.isEmpty
+//                                       ? [
+//                                           Text(
+//                                             'Array is empty',
+//                                             style: TextStyle(
+//                                                 fontSize: 18, color: Colors.red),
+//                                           )
+//                                         ]
+//                                       : _buildBars(),
+//                                 ),
+//                               ),
+//                             ),
+//                           ),
+//                         ],
+//                       ),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//             // Bottom Container (for Operation Buttons)
+//             Container(
+//               padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+//               color: Colors.grey.shade100,
+//               child: Row(
+//                 mainAxisAlignment: MainAxisAlignment.spaceAround,
+//                 children: [
+//                   ElevatedButton(
+//                     onPressed: _createDefaultArray,
+//                     child: Text('Create Default'),
+//                     style: ButtonStyle(
+//                       backgroundColor:
+//                           MaterialStateProperty.all<Color>(Colors.purple),
+//                       foregroundColor:
+//                           MaterialStateProperty.all<Color>(Colors.white),
+//                     ),
+//                   ),
+//                   ElevatedButton(
+//                     onPressed: _clearArray,
+//                     child: Text('Clear'),
+//                     style: ButtonStyle(
+//                       backgroundColor:
+//                           MaterialStateProperty.all<Color>(Colors.purple),
+//                       foregroundColor:
+//                           MaterialStateProperty.all<Color>(Colors.white),
+//                     ),
+//                   ),
+//                   ElevatedButton(
+//                     onPressed: () => _showInsertDialog(context),
+//                     child: Text('Insert'),
+//                     style: ButtonStyle(
+//                       backgroundColor:
+//                           MaterialStateProperty.all<Color>(Colors.purple),
+//                       foregroundColor:
+//                           MaterialStateProperty.all<Color>(Colors.white),
+//                     ),
+//                   ),
+//                   ElevatedButton(
+//                     onPressed: sorting ? null : () => _quickSort(0, array.length - 1),
+//                     child: Text('Sort'),
+//                     style: ButtonStyle(
+//                       backgroundColor:
+//                           MaterialStateProperty.all<Color>(Colors.purple),
+//                       foregroundColor:
+//                           MaterialStateProperty.all<Color>(Colors.white),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+
+//   // Create default array
+//   void _createDefaultArray() {
+//     setState(() {
+//       array = [10, 80, 30, 90, 40, 50, 70]; // Default array
+//       currentOutput = "Default array created.";
+//       pivotIndex = null; // Reset pivot index
+//       currentAlgorithm = """
+// 1. Choose a pivot element from the array.
+// 2. Partition the array into two sub-arrays:
+//    - Elements less than the pivot
+//    - Elements greater than the pivot
+// 3. Recursively apply the above steps to the sub-arrays.
+// 4. Combine the sorted sub-arrays.
+// """;
+//     });
+//   }
+
+//   // Clear the array
+//   void _clearArray() {
+//     setState(() {
+//       array = []; // Clear the array
+//       pivotIndex = null;
+//       currentAlgorithm = "";
+//       currentOutput = "Array cleared.";
+//     });
+//   }
+
+//   // Show dialog to input value for inserting into the array
+//   Future<void> _showInsertDialog(BuildContext context) async {
+//     int? value = await _showInputDialog(context, 'Insert Value');
+//     if (value != null) {
+//       setState(() {
+//         array.add(value); // Add element to array
+//         currentOutput = "Inserted $value into the array.";
+//       });
+//     }
+//   }
+
+//   // Build the visual bars for the array
+//   List<Widget> _buildBars() {
+//     return List<Widget>.generate(array.length, (index) {
+//       return Padding(
+//         padding: const EdgeInsets.symmetric(horizontal: 5.0),
+//         child: AnimatedContainer(
+//           height: 100, // Fixed height for all bars
+//           width: 60,
+//           duration: Duration(milliseconds: 300),
+//           color: (index == pivotIndex) ? Colors.green : Colors.purple, // Pivot index color
+//           alignment: Alignment.bottomCenter,
+//           child: Center(
+//             child: Text(
+//               array[index].toString(),
+//               style: TextStyle(
+//                 color: Colors.white,
+//                 fontSize: 18,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//           ),
+//         ),
+//       );
+//     });
+//   }
+
+//   // Quick Sort algorithm with animation
+//   Future<void> _quickSort(int low, int high) async {
+//     sorting = true; // Set sorting state
+//     currentOutput = ""; // Clear previous output
+
+//     if (low < high) {
+//       // Call partition
+//       int pivot = await _partition(low, high);
+//       // Recursively sort the elements
+//       await _quickSort(low, pivot - 1);
+//       await _quickSort(pivot + 1, high);
+//     }
+
+//     // Only show the Snackbar after the last sorting is complete
+//     if (low == 0 && high == array.length - 1) {
+//       setState(() {
+//         currentOutput += "Sorting complete! Final sorted array: ${array.toString()}.\n";
+//       });
+
+//       // Show result in a snackbar
+//       ScaffoldMessenger.of(context).showSnackBar(
+//         SnackBar(
+//           content: Text('Sorting complete! Final sorted array: ${array.toString()}'),
+//         ),
+//       );
+//       sorting = false; // Reset sorting state
+//     }
+//   }
+
+//   // Partition function for Quick Sort
+//   Future<int> _partition(int low, int high) async {
+//     int pivot = array[high]; // Choose the last element as pivot
+//     int i = low - 1; // Index of smaller element
+
+//     setState(() {
+//       pivotIndex = high; // Highlight pivot index
+//     });
+//     await Future.delayed(Duration(seconds: 3)); // Pause for visual effect
+
+//     for (int j = low; j < high; j++) {
+//       setState(() {
+//         currentOutput += "Comparing ${array[j]} with pivot $pivot.\n"; // Show comparison
+//       });
+//       await Future.delayed(Duration(seconds: 3)); // Pause for visual effect
+//       if (array[j] < pivot) {
+//         i++; // Increment index of smaller element
+//         setState(() {
+//           // Swap array[i] and array[j]
+//           int temp = array[i];
+//           array[i] = array[j];
+//           array[j] = temp;
+//           currentOutput += "Swapping ${array[i]} and ${array[j]}.\n"; // Show swap
+//         });
+//         await Future.delayed(Duration(seconds: 3)); // Pause for visual effect
+//       }
+//     }
+
+//     // Swap array[i + 1] and array[high] (or pivot)
+//     setState(() {
+//       int temp = array[i + 1];
+//       array[i + 1] = array[high];
+//       array[high] = temp;
+//       currentOutput += "Placing pivot $pivot at index ${i + 1}.\n"; // Show pivot placement
+//     });
+//     await Future.delayed(Duration(seconds: 1)); // Pause for visual effect
+
+//     return i + 1; // Return the partition index
+//   }
+
+//   // Generalized input dialog to get user input
+//   Future<int?> _showInputDialog(BuildContext context, String title) async {
+//     final TextEditingController controller = TextEditingController();
+
+//     return showDialog<int>(
+//       context: context,
+//       builder: (context) {
+//         return AlertDialog(
+//           title: Text(title),
+//           content: TextField(
+//             controller: controller,
+//             keyboardType: TextInputType.number,
+//             decoration: InputDecoration(hintText: 'Enter a number'),
+//           ),
+//           actions: [
+//             TextButton(
+//               onPressed: () => Navigator.of(context).pop(), // Dismiss dialog
+//               child: Text('Cancel'),
+//             ),
+//             TextButton(
+//               onPressed: () {
+//                 final value = int.tryParse(controller.text);
+//                 Navigator.of(context).pop(value); // Return value
+//               },
+//               child: Text('OK'),
+//             ),
+//           ],
+//         );
+//       },
+//     );
+//   }
+// }
+
 class QuickSort extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: QuickSortScreen(),
-    );
+    return QuickSortScreen(); // Return only the screen
   }
 }
 
@@ -57,187 +429,184 @@ class _QuickSortScreenState extends State<QuickSortScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: appBack(context),
-        body: Column(
-          children: [
-            Expanded(
-              child: Row(
-                children: [
-                  // Left Container (for Algorithm and Output)
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      color: Colors.grey.shade300,
-                      padding: EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          // Algorithm section
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              color: Colors.white,
-                              padding: EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Algorithm',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.purple,
-                                    ),
+    return Scaffold(
+      appBar: appBack(context),
+      body: Column(
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                // Left Container (for Algorithm and Output)
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: Colors.grey.shade300,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        // Algorithm section
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Algorithm',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple,
                                   ),
-                                  Divider(),
-                                  Expanded(
-                                    child: SingleChildScrollView(
-                                      child: Text(
-                                        currentAlgorithm,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          // Output/Step-by-step explanation section
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              color: Colors.white,
-                              padding: EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Step-by-Step Output',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.purple,
-                                    ),
-                                  ),
-                                  Divider(),
-                                  Expanded(
-                                    child: SingleChildScrollView(
-                                      child: Text(
-                                        currentOutput,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  // Right Container (for Array Visualizer)
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      color: Colors.white,
-                      padding: EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          Text(
-                            'Quick Sort Visualizer',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.purple,
-                            ),
-                          ),
-                          Divider(),
-                          Expanded(
-                            child: Center(
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  children: array.isEmpty
-                                      ? [
-                                          Text(
-                                            'Array is empty',
-                                            style: TextStyle(
-                                                fontSize: 18, color: Colors.red),
-                                          )
-                                        ]
-                                      : _buildBars(),
                                 ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentAlgorithm,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        // Output/Step-by-step explanation section
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Step-by-Step Output',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.purple,
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      currentOutput,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                // Right Container (for Array Visualizer)
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Quick Sort Visualizer',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purple,
+                          ),
+                        ),
+                        Divider(),
+                        Expanded(
+                          child: Center(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: array.isEmpty
+                                    ? [
+                                        Text(
+                                          'Array is empty',
+                                          style: TextStyle(
+                                              fontSize: 18, color: Colors.red),
+                                        )
+                                      ]
+                                    : _buildBars(),
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            // Bottom Container (for Operation Buttons)
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-              color: Colors.grey.shade100,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    onPressed: _createDefaultArray,
-                    child: Text('Create Default'),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.purple),
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
-                    ),
+          ),
+          // Bottom Container (for Operation Buttons)
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            color: Colors.grey.shade100,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  onPressed: _createDefaultArray,
+                  child: Text('Create Default'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
                   ),
-                  ElevatedButton(
-                    onPressed: _clearArray,
-                    child: Text('Clear'),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.purple),
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
-                    ),
+                ),
+                ElevatedButton(
+                  onPressed: _clearArray,
+                  child: Text('Clear'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
                   ),
-                  ElevatedButton(
-                    onPressed: () => _showInsertDialog(context),
-                    child: Text('Insert'),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.purple),
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
-                    ),
+                ),
+                ElevatedButton(
+                  onPressed: () => _showInsertDialog(context),
+                  child: Text('Insert'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
                   ),
-                  ElevatedButton(
-                    onPressed: sorting ? null : () => _quickSort(0, array.length - 1),
-                    child: Text('Sort'),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.purple),
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
-                    ),
+                ),
+                ElevatedButton(
+                  onPressed: sorting ? null : () => _quickSort(0, array.length - 1),
+                  child: Text('Sort'),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.purple),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -379,32 +748,29 @@ class _QuickSortScreenState extends State<QuickSortScreen> {
   Future<int?> _showInputDialog(BuildContext context, String title) async {
     final TextEditingController controller = TextEditingController();
 
-    return showDialog<int>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(title),
-          content: TextField(
-            controller: controller,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(hintText: 'Enter a number'),
+    return showDialog<int>(context: context, builder: (context) {
+      return AlertDialog(
+        title: Text(title),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(hintText: 'Enter a number'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('Cancel'),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(), // Dismiss dialog
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                final value = int.tryParse(controller.text);
-                Navigator.of(context).pop(value); // Return value
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
+          TextButton(
+            onPressed: () {
+              final value = int.tryParse(controller.text);
+              Navigator.of(context).pop(value); // Return value
+            },
+            child: Text('OK'),
+          ),
+        ],
+      );
+    });
   }
 }
 
