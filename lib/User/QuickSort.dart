@@ -777,7 +777,6 @@ class _QuickSortScreenState extends State<QuickSortScreen> {
 
 //Test
 
-
 final List<Question> QuickSortQuestions = [
  Question(
     questionText: 'What is the average time complexity of the Quick Sort algorithm?',
@@ -940,3 +939,5 @@ class QuickSortQuiz extends StatelessWidget {
     return QuizUI(quizQuestions: randomQuestions, testId: testId); // Use the common UI
   }
 }
+
+
