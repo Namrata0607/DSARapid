@@ -16,6 +16,8 @@ import 'package:dsa_rapid/User/QuickSort.dart';
 import 'package:dsa_rapid/User/SelectionSort.dart';
 import 'package:dsa_rapid/User/SinglyLinkedList.dart';
 import 'package:dsa_rapid/User/Stack.dart';
+import 'package:dsa_rapid/User/Index.dart';
+import 'package:dsa_rapid/User/main.dart';
 
 import 'SignInUp.dart';
 import 'package:flutter/material.dart';
@@ -173,7 +175,7 @@ class _HomeState extends State<Home> {
 
                     // Navigate to the Sign-In page and remove all previous routes
                     Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => SignInPage()),
+                      MaterialPageRoute(builder: (context) => Splash()),
                       (route) => false,
                     );
                   } catch (e) {
