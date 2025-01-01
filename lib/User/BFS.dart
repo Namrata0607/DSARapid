@@ -369,7 +369,7 @@ class _GraphVisualizerState extends State<BFSGraphVisualizer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("BFS Graph Visualizer"), backgroundColor: Colors.purple),
+      appBar: appBack(context),
       body: Column(
         children: [
           Expanded(

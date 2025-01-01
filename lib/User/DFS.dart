@@ -653,7 +653,7 @@ class _GraphVisualizerState extends State<DFSGraphVisualizer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("DFS Graph Visualizer"), backgroundColor: Colors.purple),
+      appBar: appBack(context),
       body: Column(
         children: [
           Expanded(

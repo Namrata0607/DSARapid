@@ -61,52 +61,58 @@ class _ViewprofileState extends State<Viewprofile> {
                   return Center(
                     child: SingleChildScrollView(
                       scrollDirection: Axis.vertical,
-                      child: Container(
-                        height: 600,
-                        width: 700,
-                        padding: EdgeInsets.all(16.0),
-                        margin: EdgeInsets.all(20.0),
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 244, 224, 255),
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 3,
-                              blurRadius: 5,
-                              offset: Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Text(
-                            "Your Progress",
-                            style: TextStyle(
-                              fontSize: 26,
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromARGB(255, 102, 51, 153),
-                            ),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Container(
+                          height: 600,
+                          width: 700,
+                          padding: EdgeInsets.all(16.0),
+                          margin: EdgeInsets.all(20.0),
+                          decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 244, 224, 255),
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 3,
+                                blurRadius: 5,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 20),
-                          DataTable(
-                           columns: const [
-                            DataColumn(label: Text('Topic Names', style: TextStyle(fontWeight: FontWeight.bold))),
-                            DataColumn(label: Text('Marks', style: TextStyle(fontWeight: FontWeight.bold))),
-                            DataColumn(label: Text('Time', style: TextStyle(fontWeight: FontWeight.bold))),
-                          ],
-                          rows: List<DataRow>.generate(rowCount, (index) {
-                            return DataRow(cells: [
-                              DataCell(Text(testIds[index]?.toString() ?? 'N/A')),
-                              DataCell(Text(marks[index]?.toString() ?? 'N/A')),
-                              DataCell(Text(times[index]?.toString() ?? 'N/A')),
-                            ]);
-                          }),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Text(
+                                "Your Progress",
+                                style: TextStyle(
+                                  fontSize: 26,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color.fromARGB(255, 102, 51, 153),
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              DataTable(
+                               columns: const [
+                                DataColumn(label: Text('Topic Names', style: TextStyle(fontWeight: FontWeight.bold))),
+                                DataColumn(label: Text('Marks', style: TextStyle(fontWeight: FontWeight.bold))),
+                                DataColumn(label: Text('Time', style: TextStyle(fontWeight: FontWeight.bold))),
+                              ],
+                              rows: List<DataRow>.generate(rowCount, (index) {
+                                return DataRow(cells: [
+                                  DataCell(Text(testIds[index]?.toString() ?? 'N/A')),
+                                  DataCell(Text(marks[index]?.toString() ?? 'N/A')),
+                                  DataCell(Text(times[index]?.toString() ?? 'N/A')),
+                                ]);
+                              }),
+                            ),
+                              ]
+                             
+                            ),
+                          )
                         ),
-                          ]
-                         
-                        )
                       ),
                     ),
                   );
